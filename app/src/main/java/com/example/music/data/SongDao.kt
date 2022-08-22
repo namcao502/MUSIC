@@ -17,4 +17,7 @@ interface SongDao {
 
     @Query("SELECT * FROM song ORDER BY name ASC")
     fun readAllSongs(): LiveData<List<Song>>
+
+    @Query("DELETE FROM song")
+    fun deleteAllSongs()
 }

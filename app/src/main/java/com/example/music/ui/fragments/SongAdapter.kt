@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.models.Song
+import java.util.concurrent.TimeUnit
 
 class SongAdapter: RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
@@ -40,12 +41,14 @@ class SongAdapter: RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
         with(holder){
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, "Clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
             }
             with(songList[position]){
                 binding.titleTxt.text = this.name
-                binding.lengthTxt.text = this.duration.toString()
-                binding.authorTxt.text = ""
+                val minutes = this.duration / 1000 / 60
+                val seconds = this.duration / 1000 % 60
+                binding.lengthTxt.text = "$minutes:$seconds"
+                binding.authorTxt.text = this.artists
             }
         }
 

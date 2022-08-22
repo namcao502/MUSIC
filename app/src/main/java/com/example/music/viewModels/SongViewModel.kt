@@ -35,4 +35,10 @@ class SongViewModel @Inject constructor(private val repository: SongRepository):
         }
     }
 
+    fun deleteAllSongs(){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllSongs()
+        }
+    }
+
 }
