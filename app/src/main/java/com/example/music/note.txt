@@ -1,0 +1,11 @@
+
+load tất cả danh sách phát
+
+ở fragment danh sách phát
+tuỳ chọn thêm danh sách phát mới, thêm bài hát mới vào danh sách, đổi tên danh sách, xoá danh sách
+
+ở fragment bài hát
+tuỳ chọn thêm bài hát vào danh sách phát
+
+tạo trình phát nhạc dưới nền
+

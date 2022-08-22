@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_playlist.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/playlist_row_item.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/row_item.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/song_row_item.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/add_playlist.xml" value="0.24895833333333334" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_menu.xml" value="0.20512820512820512" />
       </map>
     </option>
