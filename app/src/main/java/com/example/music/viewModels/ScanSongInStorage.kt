@@ -71,7 +71,7 @@ class ScanSongInStorage(context: Context) {
                 val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                 // Stores column values and the contentUri in a local object
                 // that represents the media file.
-                songList.add(Song(contentUri.toString(), name, artists, duration, size, 0, filePath, 0))
+                songList.add(Song(contentUri.toString(), name, artists, duration, size, -1, filePath, 0))
             }
         }
         return songList

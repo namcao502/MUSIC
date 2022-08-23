@@ -10,7 +10,7 @@
     <EditText
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:id="@+id/title_et"
+        android:id="@+id/title_et_menu_playlist_dialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"

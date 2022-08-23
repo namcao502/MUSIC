@@ -19,7 +19,7 @@ import com.example.music.viewModels.PlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistFragment : Fragment(), PlaylistAdapter.ItemClickListener {
+class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener {
 
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this) }
@@ -50,7 +50,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemClickListener {
         })
 
         binding.addBtn.setOnClickListener {
-            createDialogFor("Create", 0)
+            createDialogForAdd()
         }
     }
 
@@ -61,37 +61,33 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemClickListener {
 
     override fun onClick(action: String, playlist: Playlist) {
         if (action == "Rename"){
-            createDialogFor(action, playlist.id)
+            createDialogForRename(playlist)
         }
         if (action == "Delete"){
-            playlistViewModel.deletePlaylist(playlist)
+            createDialogForDelete(playlist)
         }
     }
 
-    private fun createDialogFor(action: String, playlistId: Int){
+    private fun createDialogForAdd(){
+
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.add_new_playlist_dialog, null)
+        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
-        builder.setMessage(action)
+        builder.setMessage("Create")
             .setTitle("")
             .setView(view)
-            .setPositiveButton(action,
+            .setPositiveButton("Create",
                 DialogInterface.OnClickListener { dialog, id ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et).text.toString()
+                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
                     if (title.isEmpty()){
                         Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        val playlist = Playlist(playlistId, title)
-                        if (action == "Rename"){
-                            playlistViewModel.updatePlaylist(playlist)
-                        }
-                        else {
-                            playlistViewModel.addPlaylist(playlist)
-                        }
+                        val playlist = Playlist(0, title)
+                        playlistViewModel.addPlaylist(playlist)
                     }
                 })
             .setNegativeButton("Cancel",
@@ -101,4 +97,55 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemClickListener {
         // Create the AlertDialog object and return it
         builder.create().show()
     }
+
+    private fun createDialogForRename(playlist: Playlist){
+
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = requireActivity().layoutInflater
+        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
+
+        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(playlist.name)
+
+        builder.setMessage("Rename")
+            .setTitle("")
+            .setView(view)
+            .setPositiveButton("Rename",
+                DialogInterface.OnClickListener { dialog, id ->
+
+                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                    if (title.isEmpty()){
+                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        val updatedPlaylist = Playlist(playlist.id, title)
+                        playlistViewModel.updatePlaylist(updatedPlaylist)
+                    }
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // User cancelled the dialog
+                })
+        // Create the AlertDialog object and return it
+        builder.create().show()
+    }
+
+    private fun createDialogForDelete(playlist: Playlist){
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setMessage("Delete ${playlist.name} playlist?")
+            .setTitle("")
+            .setPositiveButton("Delete",
+                DialogInterface.OnClickListener { dialog, id ->
+                    playlistViewModel.deletePlaylist(playlist)
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // User cancelled the dialog
+                })
+        // Create the AlertDialog object and return it
+        builder.create().show()
+    }
+
 }

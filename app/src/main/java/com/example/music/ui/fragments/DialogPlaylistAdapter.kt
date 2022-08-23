@@ -11,7 +11,7 @@ import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.Playlist
 
-class PlaylistAdapter(private val context: Context, private val itemClickListener: ItemPlaylistClickListener): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+class DialogPlaylistAdapter(private val context: Context, private val itemClickListener: ItemClickListener): RecyclerView.Adapter<DialogPlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -32,8 +32,9 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
+
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, "Clicked", Toast.LENGTH_SHORT).show()
+                itemClickListener.onItemPlaylistClick(playlist[position])
             }
 
             binding.menuBtn.setOnClickListener {
@@ -41,7 +42,7 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.onClick(menuItem.title.toString(), playlist[position])
+                        itemClickListener.onMenuClick(menuItem.title.toString(), playlist[position])
                         true
                     }
                     // Showing the popup menu
@@ -64,8 +65,9 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
         notifyDataSetChanged()
     }
 
-    interface ItemPlaylistClickListener {
-        fun onClick(action: String, playlist: Playlist)
+    interface ItemClickListener {
+        fun onMenuClick(action: String, playlist: Playlist)
+        fun onItemPlaylistClick(playlist: Playlist)
     }
 
 }

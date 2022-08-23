@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Title"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            app:layout_constraintEnd_toStartOf="@+id/menu_btn"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
             app:srcCompat="@drawable/icons8_musical_notes_48" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/menu_btn"
             android:layout_width="64dp"
             android:layout_height="64dp"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,19 +1,21 @@
 package com.example.music.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.example.music.R
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.models.Song
-import java.util.concurrent.TimeUnit
 
-class SongAdapter: RecyclerView.Adapter<SongAdapter.ViewHolder>() {
+class SongAdapter(private val context: Context, private val itemClickListener: ItemSongClickListener): RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
     var songList = emptyList<Song>()
 
-     inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = SongRowItemBinding.inflate(
@@ -29,25 +31,35 @@ class SongAdapter: RecyclerView.Adapter<SongAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-//        val currentItem = songList[position]
-//
-//        holder.itemView.title_txt.text = currentItem.name
-//        holder.itemView.author_txt.text = ""
-//        holder.itemView.length_txt.text = currentItem.duration.toString()
-//
-//        holder.itemView.setOnClickListener {
-//
-//        }
-
         with(holder){
             itemView.setOnClickListener {
                 Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
             }
+
+            binding.menuBtn.setOnClickListener {
+
+                PopupMenu(context, binding.menuBtn).apply {
+                    menuInflater.inflate(R.menu.row_song_menu, this.menu)
+                    setOnMenuItemClickListener { menuItem ->
+                        itemClickListener.onClick(menuItem.title.toString(), songList[position])
+                        true
+                    }
+                    // Showing the popup menu
+                    show()
+                }
+            }
+
             with(songList[position]){
                 binding.titleTxt.text = this.name
                 val minutes = this.duration / 1000 / 60
                 val seconds = this.duration / 1000 % 60
-                binding.lengthTxt.text = "$minutes:$seconds"
+                if (seconds < 10){
+                    binding.lengthTxt.text = "$minutes:0$seconds"
+                }
+                else {
+                    binding.lengthTxt.text = "$minutes:$seconds"
+                }
+
                 binding.authorTxt.text = this.artists
             }
         }
@@ -58,6 +70,10 @@ class SongAdapter: RecyclerView.Adapter<SongAdapter.ViewHolder>() {
     fun setData(listSong: List<Song>){
         this.songList = listSong
         notifyDataSetChanged()
+    }
+
+    interface ItemSongClickListener {
+        fun onClick(action: String, song: Song)
     }
 
 }

@@ -28,12 +28,12 @@
             android:layout_height="wrap_content"
             android:text="Title"
             android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            app:layout_constraintEnd_toStartOf="@+id/menu_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/menu_btn"
             android:layout_width="64dp"
             android:layout_height="64dp"
             app:layout_constraintEnd_toEndOf="parent"
