@@ -10,8 +10,7 @@ data class Song(
     val artists: String,
     val duration: Int,
     val size: Int,
-    var playlistID: Int,
     val filePath: String,
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val song_id: Int
 )

@@ -56,22 +56,24 @@ class MainActivity : AppCompatActivity() {
             tab.text = tabLayoutTitles[position]
         }.attach()
 
+        requestRead()
+
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.main_menu, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when(item.itemId){
+//            R.id.scan_menu -> requestRead()
+//        }
+//        return false
+//    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.sample_menu -> requestRead()
-        }
-        return false
-    }
-
-    private fun requestRead() {
+    fun requestRead() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED

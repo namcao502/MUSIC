@@ -12,7 +12,7 @@ class SongInPlaylistRepository @Inject constructor(private val songInPlaylistDao
         return songInPlaylistDao.addSongPlaylistCrossRef(songPlaylistCrossRef)
     }
 
-    fun getSongsOfPlaylist(playlistId: Int): LiveData<List<PlaylistWithSongs>>{
+    fun getSongsOfPlaylist(playlistId: Int): LiveData<PlaylistWithSongs>{
         return songInPlaylistDao.getSongsOfPlaylist(playlistId)
     }
 

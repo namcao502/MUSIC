@@ -20,7 +20,7 @@ class SongInPlaylistViewModel @Inject constructor(private val repository: SongIn
         }
     }
 
-    fun getSongsOfPlaylist(playlistId: Int): LiveData<List<PlaylistWithSongs>> {
+    fun getSongsOfPlaylist(playlistId: Int): LiveData<PlaylistWithSongs> {
         return repository.getSongsOfPlaylist(playlistId)
     }
 

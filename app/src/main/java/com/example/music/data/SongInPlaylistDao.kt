@@ -12,7 +12,7 @@ interface SongInPlaylistDao {
 
     @Transaction
     @Query("SELECT * FROM playlist WHERE playlist_id = :playlistId")
-    fun getSongsOfPlaylist(playlistId: Int): LiveData<List<PlaylistWithSongs>>
+    fun getSongsOfPlaylist(playlistId: Int): LiveData<PlaylistWithSongs>
 
     @Transaction
     @Query("SELECT * FROM song WHERE song_id = :songId")

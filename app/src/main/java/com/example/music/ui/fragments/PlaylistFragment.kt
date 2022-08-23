@@ -2,20 +2,21 @@ package com.example.music.ui.fragments
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
 import com.example.music.models.Playlist
-import com.example.music.models.Song
 import com.example.music.viewModels.PlaylistViewModel
 import com.example.music.viewModels.SongInPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +40,31 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
     ): View {
         // Inflate the layout for this fragment
         _binding =  FragmentPlaylistBinding.inflate(layoutInflater, container, false)
+
+        val menuHost: MenuHost = requireActivity()
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.main_playlist_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    R.id.sample_menu -> {
+                        // clearCompletedTasks()
+                        Toast.makeText(requireContext(), "From playlist", Toast.LENGTH_SHORT).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         return binding.root
     }
 
@@ -54,7 +80,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         })
 
         binding.addBtn.setOnClickListener {
-            createDialogForAdd()
+            createDialogForAddPlaylist()
         }
     }
 
@@ -65,10 +91,10 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
 
     override fun onClick(action: String, playlist: Playlist) {
         if (action == "Rename"){
-            createDialogForRename(playlist)
+            createDialogForRenamePlaylist(playlist)
         }
         if (action == "Delete"){
-            createDialogForDelete(playlist)
+            createDialogForDeletePlaylist(playlist)
         }
     }
 
@@ -82,12 +108,28 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         binding.addBtn.visibility = View.GONE
 
         songInPlaylistViewModel.getSongsOfPlaylist(playlist.playlist_id).observe(viewLifecycleOwner, Observer {
-            songInPlaylistAdapter.setData(it[0].listSong)
+            songInPlaylistAdapter.setData(it.listSong)
         })
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            binding.addBtn.visibility = View.VISIBLE
+            // Handle the back button event
+            binding.playlistRecyclerView.apply {
+                adapter = playlistAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner, Observer {
+                playlistAdapter.setData(it)
+            })
+
+            binding.addBtn.setOnClickListener {
+                createDialogForAddPlaylist()
+            }
+        }
     }
 
-
-    private fun createDialogForAdd(){
+    private fun createDialogForAddPlaylist(){
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
@@ -117,7 +159,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         builder.create().show()
     }
 
-    private fun createDialogForRename(playlist: Playlist){
+    private fun createDialogForRenamePlaylist(playlist: Playlist){
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
@@ -149,7 +191,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         builder.create().show()
     }
 
-    private fun createDialogForDelete(playlist: Playlist){
+    private fun createDialogForDeletePlaylist(playlist: Playlist){
 
         val builder = AlertDialog.Builder(requireContext())
 
