@@ -3,6 +3,7 @@ package com.example.music.ui.fragments
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
@@ -16,7 +17,9 @@ import com.example.music.R
 import com.example.music.databinding.FragmentSongBinding
 import com.example.music.models.Playlist
 import com.example.music.models.Song
+import com.example.music.models.SongPlaylistCrossRef
 import com.example.music.viewModels.PlaylistViewModel
+import com.example.music.viewModels.SongInPlaylistViewModel
 import com.example.music.viewModels.SongViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +29,7 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
 
     private val songViewModel: SongViewModel by viewModels()
     private val playlistViewModel: PlaylistViewModel by viewModels()
+    private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
     private val songAdapter: SongAdapter by lazy { SongAdapter(requireContext(), this) }
     private val dialogPlaylistAdapter: DialogPlaylistAdapter by lazy { DialogPlaylistAdapter(requireContext(), this) }
 
@@ -53,6 +57,8 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         songViewModel.readAllSongs().observe(viewLifecycleOwner, Observer {
             songAdapter.setData(it)
         })
+
+
     }
 
     override fun onDestroyView() {
@@ -60,6 +66,7 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         _binding = null
     }
 
+    //popup menu when click on a song
     override fun onClick(action: String, song: Song) {
         if (action == "Play"){
         }
@@ -68,8 +75,18 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
             currentSong = song
         }
         if (action == "Delete"){
-            createDialogForDelete(song)
+            createDialogForDeleteSong(song)
         }
+    }
+
+    override fun onItemPlaylistClick(playlist: Playlist) {
+        //add song to selected playlist
+        val songSelected = currentSong
+
+        val songPlaylistCrossRef = SongPlaylistCrossRef(songSelected.song_id, playlist.playlist_id)
+        songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
+
+        Toast.makeText(requireContext(), "Song ${songSelected.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
     }
 
     private fun createDialogForAddToPlaylist() {
@@ -97,13 +114,13 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         val addBtn = dialog.findViewById<FloatingActionButton>(R.id.add_btn)
 
         addBtn.setOnClickListener {
-            createDialogForAdd()
+            createDialogForAddPlaylist()
         }
 
         dialog.show()
     }
 
-    private fun createDialogForDelete(song: Song){
+    private fun createDialogForDeleteSong(song: Song){
 
         val builder = AlertDialog.Builder(requireContext())
 
@@ -121,24 +138,18 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         builder.create().show()
     }
 
+    //pop up menu when click on playlist
     override fun onMenuClick(action: String, playlist: Playlist) {
         if (action == "Rename"){
-            createDialogForRename(playlist)
+            createDialogForRenamePlaylist(playlist)
         }
         if (action == "Delete"){
-            createDialogForDelete(playlist)
+            createDialogForDeletePlaylist(playlist)
         }
     }
 
-    override fun onItemPlaylistClick(playlist: Playlist) {
-        //add song to selected playlist
-        val song = currentSong
-        song.playlistID = playlist.id
-        songViewModel.updateSong(song)
-        Toast.makeText(requireContext(), "Song ${song.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
-    }
 
-    private fun createDialogForAdd(){
+    private fun createDialogForAddPlaylist(){
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
@@ -168,7 +179,7 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         builder.create().show()
     }
 
-    private fun createDialogForRename(playlist: Playlist){
+    private fun createDialogForRenamePlaylist(playlist: Playlist){
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
@@ -188,7 +199,7 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
                         Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        val updatedPlaylist = Playlist(playlist.id, title)
+                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
                         playlistViewModel.updatePlaylist(updatedPlaylist)
                     }
                 })
@@ -200,7 +211,7 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         builder.create().show()
     }
 
-    private fun createDialogForDelete(playlist: Playlist){
+    private fun createDialogForDeletePlaylist(playlist: Playlist){
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage("Delete ${playlist.name} playlist?")

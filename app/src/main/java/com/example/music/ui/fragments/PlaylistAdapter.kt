@@ -34,6 +34,7 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
         with(holder){
             itemView.setOnClickListener {
                 Toast.makeText(itemView.context, "Clicked", Toast.LENGTH_SHORT).show()
+                itemClickListener.onPlaylistToSongClick(playlist[position])
             }
 
             binding.menuBtn.setOnClickListener {
@@ -66,6 +67,7 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
 
     interface ItemPlaylistClickListener {
         fun onClick(action: String, playlist: Playlist)
+        fun onPlaylistToSongClick(playlist: Playlist)
     }
 
 }

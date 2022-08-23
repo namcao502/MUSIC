@@ -29,5 +29,9 @@ object DatabaseModule {
     @Provides
     fun provideSongDao(database: Database) = database.songDao()
 
+    @Singleton
+    @Provides
+    fun provideSongInPlaylistDao(database: Database) = database.songInPlaylistDao()
+
 
 }

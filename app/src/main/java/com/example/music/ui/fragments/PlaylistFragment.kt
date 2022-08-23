@@ -15,14 +15,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
 import com.example.music.models.Playlist
+import com.example.music.models.Song
 import com.example.music.viewModels.PlaylistViewModel
+import com.example.music.viewModels.SongInPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener {
+class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
 
     private val playlistViewModel: PlaylistViewModel by viewModels()
+    private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
     private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this) }
+    private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext()) }
 
     private var _binding: FragmentPlaylistBinding? = null
     // This property is only valid between onCreateView and
@@ -67,6 +71,21 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener {
             createDialogForDelete(playlist)
         }
     }
+
+    override fun onPlaylistToSongClick(playlist: Playlist) {
+        //change adapter and load
+        binding.playlistRecyclerView.apply {
+            adapter = songInPlaylistAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        binding.addBtn.visibility = View.GONE
+
+        songInPlaylistViewModel.getSongsOfPlaylist(playlist.playlist_id).observe(viewLifecycleOwner, Observer {
+            songInPlaylistAdapter.setData(it[0].listSong)
+        })
+    }
+
 
     private fun createDialogForAdd(){
 
@@ -118,7 +137,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener {
                         Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        val updatedPlaylist = Playlist(playlist.id, title)
+                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
                         playlistViewModel.updatePlaylist(updatedPlaylist)
                     }
                 })

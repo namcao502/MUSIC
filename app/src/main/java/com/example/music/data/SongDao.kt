@@ -6,6 +6,7 @@ import com.example.music.models.Song
 
 @Dao
 interface SongDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSong(song: Song)
 

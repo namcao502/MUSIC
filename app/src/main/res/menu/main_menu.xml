@@ -9,5 +9,5 @@
         android:icon="@drawable/icons8_search_80"/>
     <item
         android:id="@+id/sample_menu"
-        android:title="Sample" />
+        android:title="Scan" />
 </menu>

@@ -13,5 +13,5 @@ data class Song(
     var playlistID: Int,
     val filePath: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int
+    val song_id: Int
 )
