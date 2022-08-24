@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
 import com.example.music.models.Playlist
+import com.example.music.ui.adapters.PlaylistAdapter
+import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.viewModels.PlaylistViewModel
 import com.example.music.viewModels.SongInPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
 
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
+
     private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this) }
     private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext()) }
 
@@ -89,7 +92,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         _binding = null
     }
 
-    override fun onClick(action: String, playlist: Playlist) {
+    override fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist) {
         if (action == "Rename"){
             createDialogForRenamePlaylist(playlist)
         }
@@ -98,7 +101,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
         }
     }
 
-    override fun onPlaylistToSongClick(playlist: Playlist) {
+    override fun callBackFromPlaylistToSongClick(playlist: Playlist) {
         //change adapter and load
         binding.playlistRecyclerView.apply {
             adapter = songInPlaylistAdapter

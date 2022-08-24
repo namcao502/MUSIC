@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -41,7 +41,7 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_song_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.onClick(menuItem.title.toString(), songList[position])
+                        itemClickListener.callBackFromMenuSongClick(menuItem.title.toString(), songList[position])
                         true
                     }
                     // Showing the popup menu
@@ -73,7 +73,7 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
     }
 
     interface ItemSongClickListener {
-        fun onClick(action: String, song: Song)
+        fun callBackFromMenuSongClick(action: String, song: Song)
     }
 
 }

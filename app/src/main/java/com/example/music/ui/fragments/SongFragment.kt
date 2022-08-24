@@ -24,6 +24,8 @@ import com.example.music.databinding.FragmentSongBinding
 import com.example.music.models.Playlist
 import com.example.music.models.Song
 import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.ui.adapters.DialogPlaylistAdapter
+import com.example.music.ui.adapters.SongAdapter
 import com.example.music.viewModels.PlaylistViewModel
 import com.example.music.viewModels.ScanSongInStorage
 import com.example.music.viewModels.SongInPlaylistViewModel
@@ -100,8 +102,8 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         _binding = null
     }
 
-    //popup menu when click on a song
-    override fun onClick(action: String, song: Song) {
+    //popup menu when click on a menu song
+    override fun callBackFromMenuSongClick(action: String, song: Song) {
         if (action == "Play"){
         }
         if (action == "Add to playlist"){

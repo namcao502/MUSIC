@@ -1,17 +1,16 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.Playlist
 
-class PlaylistAdapter(private val context: Context, private val itemClickListener: ItemPlaylistClickListener): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+class DialogPlaylistAdapter(private val context: Context, private val itemClickListener: ItemClickListener): RecyclerView.Adapter<DialogPlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -32,8 +31,9 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
+
             itemView.setOnClickListener {
-                itemClickListener.onPlaylistToSongClick(playlist[position])
+                itemClickListener.onItemPlaylistClick(playlist[position])
             }
 
             binding.menuBtn.setOnClickListener {
@@ -41,7 +41,7 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.onClick(menuItem.title.toString(), playlist[position])
+                        itemClickListener.onMenuClick(menuItem.title.toString(), playlist[position])
                         true
                     }
                     // Showing the popup menu
@@ -64,9 +64,9 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
         notifyDataSetChanged()
     }
 
-    interface ItemPlaylistClickListener {
-        fun onClick(action: String, playlist: Playlist)
-        fun onPlaylistToSongClick(playlist: Playlist)
+    interface ItemClickListener {
+        fun onMenuClick(action: String, playlist: Playlist)
+        fun onItemPlaylistClick(playlist: Playlist)
     }
 
 }

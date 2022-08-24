@@ -1,17 +1,16 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.Playlist
 
-class DialogPlaylistAdapter(private val context: Context, private val itemClickListener: ItemClickListener): RecyclerView.Adapter<DialogPlaylistAdapter.ViewHolder>() {
+class PlaylistAdapter(private val context: Context, private val itemClickListener: ItemPlaylistClickListener): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -32,9 +31,8 @@ class DialogPlaylistAdapter(private val context: Context, private val itemClickL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
-
             itemView.setOnClickListener {
-                itemClickListener.onItemPlaylistClick(playlist[position])
+                itemClickListener.callBackFromPlaylistToSongClick(playlist[position])
             }
 
             binding.menuBtn.setOnClickListener {
@@ -42,7 +40,7 @@ class DialogPlaylistAdapter(private val context: Context, private val itemClickL
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.onMenuClick(menuItem.title.toString(), playlist[position])
+                        itemClickListener.callBackFromMenuPlaylistClick(menuItem.title.toString(), playlist[position])
                         true
                     }
                     // Showing the popup menu
@@ -65,9 +63,9 @@ class DialogPlaylistAdapter(private val context: Context, private val itemClickL
         notifyDataSetChanged()
     }
 
-    interface ItemClickListener {
-        fun onMenuClick(action: String, playlist: Playlist)
-        fun onItemPlaylistClick(playlist: Playlist)
+    interface ItemPlaylistClickListener {
+        fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist)
+        fun callBackFromPlaylistToSongClick(playlist: Playlist)
     }
 
 }

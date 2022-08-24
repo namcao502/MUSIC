@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -9,7 +9,7 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifeCycle: Lifecycle, f
     : FragmentStateAdapter(fragmentManager,lifeCycle) {
 
 
-    private var fragments:MutableList<Fragment> = fragmentsTemp
+    private var fragments: MutableList<Fragment> = fragmentsTemp
 
     override fun getItemCount(): Int {
         return fragments.size

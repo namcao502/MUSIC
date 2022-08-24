@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
