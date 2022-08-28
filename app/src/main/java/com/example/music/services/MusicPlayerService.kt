@@ -9,20 +9,17 @@ import androidx.core.app.NotificationCompat
 import com.example.music.MainApplication.Companion.CHANNEL_ID_1
 import com.example.music.R
 import com.example.music.models.Song
+import com.example.music.ui.activities.SongPlayerActivity
 import java.io.IOException
 import java.util.*
 
 class MusicPlayerService: Service() {
 
-    private var mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer? = null
 
     private val myBinder = MyBinder()
 
-    private var listSong: List<Song>? = null
-
-    private var songPosition = -1
-
-    var playState = "Go"
+    private var song: Song? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -47,126 +44,58 @@ class MusicPlayerService: Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
         //get data from intent
-        listSong = intent.getSerializableExtra("songService") as List<Song>
-        songPosition = intent.getIntExtra("songPositionService", 0)
-        playState = intent.getStringExtra("playState") as String
+        song = intent.getSerializableExtra("songService") as Song
         //create new media player
-        createMediaPlayer()
+        createMediaPlayer(song!!)
 
         return START_NOT_STICKY
     }
 
-
-    private fun createMediaPlayer(){
+    fun createMediaPlayer(song: Song){
         mediaPlayer = MediaPlayer()
         with(mediaPlayer!!) {
-            setDataSource(listSong!![songPosition].filePath)
+            setDataSource(song.filePath)
             prepare()
-            setOnPreparedListener {
-                start()
-            }
         }
-        sendNotification(songPosition)
+        sendNotification(song)
     }
 
-    private fun sendNotification(songPosition: Int) {
+    private fun sendNotification(song: Song) {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID_1)
-            .setContentTitle("MUSIC")
-            .setContentText(listSong!![songPosition].name)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle(song.name)
+            .setContentText(song.artists)
+            .setSmallIcon(R.drawable.icons8_musical_notes_48)
             .build()
         startForeground(1, notification)
-    }
-
-    fun resume() {
-        mediaPlayer!!.start()
     }
 
     fun pause() {
         mediaPlayer!!.pause()
     }
 
-    fun previous() {
-        songPosition -= 1
-        val maxLength: Int = listSong!!.size
-        if (songPosition < 0) {
-            songPosition = maxLength - 1
-        }
-        if (playState == "Shuffle") {
-            createRandomTrackPosition()
-        } else {
-            if (playState == "Loop") {
-                songPosition += 1
-                mediaPlayer!!.reset()
-            }
-        }
-        if (mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-            try {
-                createMediaPlayer()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        } else {
-            try {
-                createMediaPlayer()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+    fun reset(){
+        mediaPlayer!!.reset()
     }
 
-    fun next() {
-        songPosition += 1
-        val maxLength: Int = listSong!!.size
-        if (songPosition > maxLength - 1) {
-            songPosition = 0
-        }
-        if (playState == "Shuffle") {
-            createRandomTrackPosition()
-        } else {
-            if (playState == "Loop") {
-                songPosition -= 1
-                mediaPlayer!!.reset()
-            }
-        }
-        if (mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.release()
-            try {
-                createMediaPlayer()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        } else {
-            try {
-                createMediaPlayer()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+    fun stop(){
+        mediaPlayer!!.stop()
     }
 
-    private fun createRandomTrackPosition() {
-        val limit = listSong!!.size
-        val random = Random()
-        val randomNumber = random.nextInt(limit)
-        songPosition = randomNumber
+    fun start(){
+        mediaPlayer!!.start()
     }
 
-    fun getCurrentPosition(): Int{
-        return mediaPlayer!!.currentPosition
+    fun release(){
+        mediaPlayer!!.release()
+    }
+
+    fun getCurrentDuration(): Int {
+        return mediaPlayer?.currentPosition ?: 0
     }
 
     fun getDuration(): Int{
         return mediaPlayer!!.duration
-    }
-
-    fun getCurrentSong(): Song{
-        return listSong!![songPosition]
     }
 
     fun seekTo(position: Int){
@@ -176,4 +105,5 @@ class MusicPlayerService: Service() {
     fun isPlaying(): Boolean{
         return mediaPlayer!!.isPlaying
     }
+
 }

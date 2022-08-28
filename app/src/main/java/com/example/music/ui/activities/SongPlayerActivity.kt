@@ -15,8 +15,9 @@ import com.example.music.R
 import com.example.music.databinding.ActivitySongPlayerBinding
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
-import java.io.Serializable
+import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
@@ -24,7 +25,7 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
     private lateinit var binding: ActivitySongPlayerBinding
 
     var songList: List<Song>? = null
-    var songPosition = 0
+    var songPosition = -1
 
     var audioManager: AudioManager? = null
 
@@ -68,22 +69,15 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
                 }
             }
         }
-
-//        binding.addToPlaylistBtn.setOnClickListener(View.OnClickListener { view: View? ->
-//            val dialog = Dialog(this)
-//            dialog.setContentView(R.layout.activity_simple_player_add_to_playlist_dialog)
-//            val metrics = resources.displayMetrics
-//            val width = metrics.widthPixels
-//            val height = metrics.heightPixels
-//            dialog.window!!.setLayout(6 * width / 7, 4 * height / 5)
-//            dialog.show()
-//        })
-//        imageViewDownload.setOnClickListener(View.OnClickListener { view: View? -> DowloadMusicFile() })
-
         binding.nextBtn.setOnClickListener{ next() }
         binding.previousBtn.setOnClickListener{ previous() }
-        binding.playPauseBtn.setOnClickListener{ playAndPause() }
-
+        binding.playPauseBtn.setOnClickListener{
+            if (musicPlayerService!!.isPlaying()) {
+                pause()
+            } else {
+                play()
+            }
+        }
         binding.songSb.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {}
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -106,88 +100,105 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        mediaPlayer!!.setOnCompletionListener {
-//            musicPlayerService!!.createMediaPlayer()
-//            songPosition += 1
-//            val maxLength: Int = songList!!.size
-//            if (songPosition > maxLength - 1) {
-//                songPosition = 0
-//            }
-//            if (musicPlayerService!!.isPlaying()) {
-//                musicPlayerService!!.stop()
-//                musicPlayerService!!.release()
-//                try {
-//                    createMediaPlayer()
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                }
-//                musicPlayerService!!.start()
-//                binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
-//            } else {
-//                try {
-//                    createMediaPlayer()
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                }
-//            }
-//            setTime()
-//            updateProgress()
-//        }
+//        setCompleteListener()
     }
 
     private fun previous() {
-        musicPlayerService!!.previous()
+        songPosition -= 1
+        val maxLength: Int = songList!!.size
+        if (songPosition < 0) {
+            songPosition = maxLength - 1
+        }
+        if (playState == "Shuffle") {
+            createRandomTrackPosition()
+        } else {
+            if (playState == "Loop") {
+                songPosition += 1
+                musicPlayerService!!.reset()
+            }
+        }
+        if (musicPlayerService!!.isPlaying()) {
+            musicPlayerService!!.stop()
+            musicPlayerService!!.release()
+            try {
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            musicPlayerService!!.start()
+            binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        } else {
+            try {
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
         setTime()
         loadUI()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
     }
 
     private fun next() {
-        musicPlayerService!!.next()
+        songPosition += 1
+        val maxLength: Int = songList!!.size
+        if (songPosition > maxLength - 1) {
+            songPosition = 0
+        }
+        if (playState == "Shuffle") {
+            createRandomTrackPosition()
+        } else {
+            if (playState == "Loop") {
+                songPosition -= 1
+                musicPlayerService!!.reset()
+            }
+        }
+        if (musicPlayerService!!.isPlaying()) {
+            musicPlayerService!!.stop()
+            musicPlayerService!!.release()
+            try {
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            musicPlayerService!!.start()
+            binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        } else {
+            try {
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
         setTime()
         loadUI()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
     }
 
-    private fun playAndPause() {
-        if (musicPlayerService!!.isPlaying()){
-            musicPlayerService!!.pause()
-            binding.playPauseBtn.setImageResource(R.drawable.icons8_play_64)
-        }
-        else {
-            musicPlayerService!!.resume()
-            binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
-        }
+    private fun createRandomTrackPosition() {
+        val limit: Int = songList!!.size
+        val random = Random()
+        val randomNumber = random.nextInt(limit)
+        songPosition = randomNumber
+    }
+
+    private fun play(){
+        musicPlayerService!!.start()
+        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
         setTime()
-        loadUI()
+        updateProgress()
+    }
+
+    private fun pause(){
+        musicPlayerService!!.pause()
+        binding.playPauseBtn.setImageResource(R.drawable.icons8_play_64)
+        setTime()
+        updateProgress()
     }
 
     private fun initState() {
-
         val intent = Intent(this, MusicPlayerService::class.java)
-        intent.putExtra("songService", songList as Serializable)
-        intent.putExtra("songPositionService", songPosition)
-        intent.putExtra("playState", playState)
+        intent.putExtra("songService", songList!![songPosition])
         startService(intent)
         bindService(intent, this, BIND_AUTO_CREATE)
-
-//        mediaPlayer!!.setOnCompletionListener { mediaPlayer: MediaPlayer ->
-//            if (playState == "Loop") mediaPlayer.reset() else {
-//                if (playState == "Shuffle") {
-//                    createRandomTrackPosition()
-//                    try {
-//                        createMediaPlayer()
-//                    } catch (e: IOException) {
-//                        e.printStackTrace()
-//                    }
-//                } else {
-//                    if (playState == "Go") {
-//                        next()
-//                    }
-//                }
-//            }
-//        }
-//        rotatingImageAnimation!!.start()
     }
 
     private fun setTime() {
@@ -198,8 +209,8 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
     }
 
     private fun loadUI(){
-        binding.titleTxt.text = musicPlayerService!!.getCurrentSong().name
-        binding.artistTxt.text = musicPlayerService!!.getCurrentSong().artists
+        binding.titleTxt.text = songList!![songPosition].name
+        binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
         updateProgress()
     }
@@ -207,23 +218,47 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
     private fun updateProgress() {
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
-            override fun run() {
-                val currentPosition = musicPlayerService!!.getCurrentPosition()
+            override fun run(){
+                val currentPosition = musicPlayerService!!.getCurrentDuration()
                 val sdf = SimpleDateFormat("mm:ss")
                 binding.startTxt.text = sdf.format(currentPosition)
                 binding.songSb.progress = currentPosition
-
-                handler.postDelayed(this, 100)
+                handler.postDelayed(this, 1000)
             }
-        }, 100)
+        }, 1000)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(this, MusicPlayerService::class.java))
-        if (isServiceConnected){
-            unbindService(this)
-            isServiceConnected = false
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        stopService(Intent(this, MusicPlayerService::class.java))
+//        if (isServiceConnected){
+//            unbindService(this)
+//            isServiceConnected = false
+//        }
+//    }
+
+    private fun setCompleteListener(){
+        musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
+            if (playState == "Loop"){
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                musicPlayerService!!.start()
+            }
+            else {
+                if (playState == "Shuffle") {
+                    createRandomTrackPosition()
+                    try {
+                        musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                        musicPlayerService!!.start()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    if (playState == "Go") {
+                        next()
+                        musicPlayerService!!.start()
+                    }
+                }
+            }
         }
     }
 
@@ -233,6 +268,8 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
         isServiceConnected = true
         setTime()
         loadUI()
+        musicPlayerService!!.start()
+        setCompleteListener()
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
