@@ -2,6 +2,7 @@ package com.example.music.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "song")
 data class Song(
@@ -13,4 +14,4 @@ data class Song(
     val filePath: String,
     @PrimaryKey
     val song_id: Int
-)
+): Serializable

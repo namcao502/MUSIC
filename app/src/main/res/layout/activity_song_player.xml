@@ -1,159 +1,222 @@
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:background="@drawable/background_img"-->
-<!--    android:orientation="vertical"-->
-<!--    android:weightSum="10"-->
-<!--    tools:context=".PlayerActivity">-->
+<?xml version="1.0" encoding="utf-8"?>
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="7"-->
-<!--        android:gravity="center"-->
-<!--        android:orientation="vertical">-->
-<!--        <TextView-->
-<!--            android:id="@+id/txtsn"-->
-<!--            android:layout_margin="20dp"-->
-<!--            android:ellipsize="marquee"-->
-<!--            android:marqueeRepeatLimit="marquee_forever"-->
-<!--            android:padding="10dp"-->
-<!--            android:singleLine="true"-->
-<!--            android:text="Song name"-->
-<!--            android:textColor="#FFF"-->
-<!--            android:textSize="22sp"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textStyle="italic"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
+<androidx.core.widget.NestedScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<!--        </TextView>-->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-<!--        <ImageView-->
-<!--            android:id="@+id/imageview"-->
-<!--            android:layout_marginBottom="8dp"-->
-<!--            android:layout_width="250dp"-->
-<!--            android:layout_height="250dp"-->
-<!--            android:src="@drawable/muzix">-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-<!--        </ImageView>-->
+            <ImageView
+                android:id="@+id/download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_download_64"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/play_state_btn"
+                app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
-<!--        <RelativeLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            >-->
-<!--            <SeekBar-->
-<!--                android:id="@+id/seekbar"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:layout_margin="20dp"-->
-<!--                android:layout_marginBottom="40dp"-->
-<!--                android:layout_width="250dp"-->
-<!--                android:layout_height="wrap_content">-->
+            <ImageView
+                android:id="@+id/play_state_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_arrow_64"
+                app:layout_constraintEnd_toStartOf="@+id/download_btn"
+                app:layout_constraintHorizontal_bias="0.429"
+                app:layout_constraintStart_toEndOf="@+id/add_to_playlist_btn"
+                app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
-<!--            </SeekBar>-->
-<!--            <TextView-->
-<!--                android:id="@+id/txtsstart"-->
-<!--                android:layout_toLeftOf="@+id/seekbar"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:layout_alignParentLeft="false"-->
-<!--                android:layout_marginLeft="20dp"-->
-<!--                android:text="0:10"-->
-<!--                android:textColor="#FFF"-->
-<!--                android:textSize="14sp"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content">-->
+            <ImageView
+                android:id="@+id/add_to_playlist_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_no_love_64"
+                app:layout_constraintEnd_toStartOf="@+id/play_state_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
-<!--            </TextView>-->
-<!--            <TextView-->
-<!--                android:id="@+id/txtsstop"-->
-<!--                android:layout_toRightOf="@+id/seekbar"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:layout_alignParentRight="false"-->
-<!--                android:layout_marginRight="20dp"-->
-<!--                android:text="4:10"-->
-<!--                android:textColor="#FFF"-->
-<!--                android:textSize="14sp"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content">-->
+            <ImageView
+                android:id="@+id/imageViewMax"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="32dp"
+                android:src="@drawable/icons8_audio_64"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/volume_sb"
+                app:layout_constraintTop_toBottomOf="@+id/play_pause_btn" />
 
-<!--            </TextView>-->
-<!--        </RelativeLayout>-->
-<!--    </LinearLayout>-->
+            <SeekBar
+                android:id="@+id/volume_sb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toStartOf="@+id/imageViewMax"
+                app:layout_constraintStart_toEndOf="@+id/imageViewMin"
+                app:layout_constraintTop_toBottomOf="@+id/play_pause_btn" />
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="3">-->
-<!--        <RelativeLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent">-->
-<!--            <Button-->
-<!--                android:id="@+id/playbtn"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:background="@drawable/ic_pause"-->
-<!--                android:layout_width="70dp"-->
-<!--                android:layout_height="70dp">-->
+            <TextView
+                android:textAlignment="center"
+                android:id="@+id/title_txt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:clickable="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="Title"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/song_img">
 
-<!--            </Button>-->
+            </TextView>
 
-<!--            <Button-->
-<!--                android:id="@+id/btnnext"-->
-<!--                android:layout_toRightOf="@+id/playbtn"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:background="@drawable/ic_next"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_height="50dp">-->
+            <ImageView
+                android:id="@+id/play_pause_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_pause_64"
+                app:layout_constraintEnd_toStartOf="@+id/next_btn"
+                app:layout_constraintStart_toEndOf="@+id/previous_btn"
+                app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
-<!--            </Button>-->
+            <SeekBar
+                android:id="@+id/song_sb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/start_txt" />
 
-<!--            <Button-->
-<!--                android:id="@+id/btnprev"-->
-<!--                android:layout_toLeftOf="@+id/playbtn"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:background="@drawable/ic_prev"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_height="50dp">-->
+            <TextView
+                android:id="@+id/artist_txt"
 
-<!--            </Button>-->
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:clickable="true"
 
-<!--            <Button-->
-<!--                android:id="@+id/btnff"-->
-<!--                android:layout_toRightOf="@id/btnnext"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginLeft="15dp"-->
-<!--                android:background="@drawable/ic_fast_forward"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp">-->
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="Artist"
 
-<!--            </Button>-->
-<!--            <Button-->
-<!--                android:id="@+id/btnfr"-->
-<!--                android:layout_toLeftOf="@id/btnprev"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginRight="15dp"-->
-<!--                android:background="@drawable/ic_fast_rewind"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp">-->
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_txt">
 
-<!--            </Button>-->
 
-<!--            <com.gauravk.audiovisualizer.visualizer.BarVisualizer-->
-<!--                xmlns:custom="http://schemas.android.com/apk/res-auto"-->
-<!--                android:id="@+id/blast"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="70dp"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                custom:avDensity="0.5"-->
-<!--                custom:avType="outline"-->
-<!--                custom:avWidth="4dp"-->
-<!--                custom:avColor="#FF362E"-->
-<!--                custom:avSpeed="normal"/>-->
+            </TextView>
 
-<!--        </RelativeLayout>-->
-<!--    </LinearLayout>-->
+            <TextView
+                android:id="@+id/start_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="00:00"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_to_playlist_btn" />
 
-<!--</LinearLayout>-->
+            <ImageView
+                android:id="@+id/next_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_next_64"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/play_pause_btn"
+                app:layout_constraintTop_toBottomOf="@+id/song_sb" />
+
+            <ImageView
+                android:id="@+id/previous_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/icons8_previous_64"
+                app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/song_sb" />
+
+            <ImageView
+                android:id="@+id/imageViewMin"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/icons8_mute_64"
+                app:layout_constraintEnd_toStartOf="@+id/volume_sb"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/play_pause_btn" />
+
+            <TextView
+                android:id="@+id/end_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="00:00"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/download_btn" />
+
+            <!--            <ImageView-->
+            <!--                android:id="@+id/imageViewPlayer"-->
+            <!--                android:layout_width="350dp"-->
+            <!--                android:layout_height="350dp"-->
+            <!--                android:src="@drawable/circle_bg"-->
+            <!--                android:scaleType="centerCrop"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintHorizontal_bias="0.475"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/song_img"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/music_default"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.475"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
+

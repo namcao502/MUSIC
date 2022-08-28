@@ -18,6 +18,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -30,7 +32,7 @@
         android:theme="@style/Theme.MUSIC"
         tools:targetApi="31">
         <activity
-            android:name=".SongPlayerActivity"
+            android:name=".ui.activities.SongPlayerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.MainActivity"
@@ -41,6 +43,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".services.MusicPlayerService" />
     </application>
 
 </manifest>

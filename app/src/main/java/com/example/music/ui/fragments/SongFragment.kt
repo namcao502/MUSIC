@@ -3,6 +3,7 @@ package com.example.music.ui.fragments
 import android.Manifest
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
@@ -24,6 +25,8 @@ import com.example.music.databinding.FragmentSongBinding
 import com.example.music.models.Playlist
 import com.example.music.models.Song
 import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.services.MusicPlayerService
+import com.example.music.ui.activities.SongPlayerActivity
 import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.SongAdapter
 import com.example.music.viewModels.PlaylistViewModel
@@ -32,6 +35,7 @@ import com.example.music.viewModels.SongInPlaylistViewModel
 import com.example.music.viewModels.SongViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.Serializable
 
 @AndroidEntryPoint
 class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlaylistAdapter.ItemClickListener {
@@ -113,6 +117,13 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
         if (action == "Delete"){
             createDialogForDeleteSong(song)
         }
+    }
+
+    override fun callBackFromSongClick(songList: List<Song>, position: Int) {
+        val intent = Intent(requireContext(), SongPlayerActivity::class.java)
+        intent.putExtra("songList", songList as Serializable)
+        intent.putExtra("songPosition", position)
+        requireContext().startActivity(intent)
     }
 
     override fun onItemPlaylistClick(playlist: Playlist) {

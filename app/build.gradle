@@ -77,6 +77,12 @@ dependencies {
     // Dagger - Hilt
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
-    //audio visualizer
-    implementation 'com.gauravk.audiovisualizer:audiovisualizer:0.9.2'
+//    //audio visualizer
+//    implementation 'com.gauravk.audiovisualizer:audiovisualizer:0.9.2'
+
+    //circle imageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //glide for loading image
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
 }

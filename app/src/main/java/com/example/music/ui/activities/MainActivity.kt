@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             tab.text = tabLayoutTitles[position]
         }.attach()
 
-        requestRead()
+        //requestRead()
 
     }
 
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 //        return false
 //    }
 
-    fun requestRead() {
+    private fun requestRead() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED

@@ -34,6 +34,8 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
         with(holder){
             itemView.setOnClickListener {
                 Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
+                //click on a song
+                itemClickListener.callBackFromSongClick(songList, position)
             }
 
             binding.menuBtn.setOnClickListener {
@@ -67,13 +69,14 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(listSong: List<Song>){
-        this.songList = listSong
+    fun setData(songList: List<Song>){
+        this.songList = songList
         notifyDataSetChanged()
     }
 
     interface ItemSongClickListener {
         fun callBackFromMenuSongClick(action: String, song: Song)
+        fun callBackFromSongClick(songList: List<Song>, position: Int)
     }
 
 }
