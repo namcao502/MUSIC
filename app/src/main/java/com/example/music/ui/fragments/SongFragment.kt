@@ -38,7 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
 
 @AndroidEntryPoint
-class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlaylistAdapter.ItemClickListener {
+class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fragment(), SongAdapter.ItemSongClickListener, DialogPlaylistAdapter.ItemClickListener {
 
     private val songViewModel: SongViewModel by viewModels()
     private val playlistViewModel: PlaylistViewModel by viewModels()
@@ -120,10 +120,11 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
     }
 
     override fun callBackFromSongClick(songList: List<Song>, position: Int) {
-        val intent = Intent(requireContext(), SongPlayerActivity::class.java)
-        intent.putExtra("songList", songList as Serializable)
-        intent.putExtra("songPosition", position)
-        requireContext().startActivity(intent)
+//        val intent = Intent(requireContext(), SongPlayerActivity::class.java)
+//        intent.putExtra("songList", songList as Serializable)
+//        intent.putExtra("songPosition", position)
+//        requireContext().startActivity(intent)
+        songFromAdapterClick.callBackFromSongFragment(songList, position)
     }
 
     override fun onItemPlaylistClick(playlist: Playlist) {
@@ -313,6 +314,10 @@ class SongFragment : Fragment(), SongAdapter.ItemSongClickListener, DialogPlayli
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    interface SongFromAdapterClick{
+        fun callBackFromSongFragment(songs: List<Song>, position: Int)
     }
 
 }

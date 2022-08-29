@@ -9,9 +9,6 @@ import androidx.core.app.NotificationCompat
 import com.example.music.MainApplication.Companion.CHANNEL_ID_1
 import com.example.music.R
 import com.example.music.models.Song
-import com.example.music.ui.activities.SongPlayerActivity
-import java.io.IOException
-import java.util.*
 
 class MusicPlayerService: Service() {
 

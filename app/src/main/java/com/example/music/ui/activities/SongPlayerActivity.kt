@@ -12,6 +12,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.R
+import com.example.music.databinding.ActivitySongPlayer2Binding
 import com.example.music.databinding.ActivitySongPlayerBinding
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
@@ -38,6 +39,7 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivitySongPlayerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -205,7 +207,6 @@ class SongPlayerActivity : AppCompatActivity(), ServiceConnection {
         val sdf = SimpleDateFormat("mm:ss")
         binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
         binding.songSb.max = musicPlayerService!!.getDuration()
-
     }
 
     private fun loadUI(){
