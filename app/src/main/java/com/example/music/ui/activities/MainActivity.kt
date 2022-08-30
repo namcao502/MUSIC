@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
 
     var isServiceConnected = false
 
+    var iBinder: MusicPlayerService.MyBinder? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,14 +82,39 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             tab.text = tabLayoutTitles[position]
         }.attach()
 
-
         BottomSheetBehavior.from(binding.bottomSheet).apply {
             peekHeight = 200
             this.state = BottomSheetBehavior.STATE_COLLAPSED
+
+            setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED){
+                        showMiniMenu(true)
+                        this@MainActivity
+                    }
+                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                        showMiniMenu(false)
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                }
+
+            })
         }
 
         //requestRead()
 
+    }
+
+    private fun showMiniMenu(check: Boolean){
+        if (check){
+            binding.miniPlayerLayout.visibility = View.VISIBLE
+        }
+        else {
+            binding.miniPlayerLayout.visibility = View.GONE
+        }
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -125,11 +152,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == permission) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFile()
@@ -143,6 +166,30 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
     }
 
     private fun listener() {
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
+
+
+        binding.miniPlayerLayout.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.miniNextBtn.setOnClickListener {
+            next()
+        }
+
+        binding.miniPreviousBtn.setOnClickListener {
+            previous()
+        }
+
+        binding.miniPlayPauseBtn.setOnClickListener {
+            if (musicPlayerService!!.isPlaying()) {
+                pause()
+            } else {
+                play()
+            }
+        }
+
         binding.playStateBtn.setOnClickListener{
             if (playState == "Loop") {
                 playState = "Shuffle"
@@ -217,6 +264,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             }
             musicPlayerService!!.start()
             binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         } else {
             try {
                 musicPlayerService!!.createMediaPlayer(songList!![songPosition])
@@ -252,6 +300,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             }
             musicPlayerService!!.start()
             binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         } else {
             try {
                 musicPlayerService!!.createMediaPlayer(songList!![songPosition])
@@ -273,6 +322,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
     private fun play(){
         musicPlayerService!!.start()
         binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         updateProgress()
     }
@@ -280,6 +330,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
     private fun pause(){
         musicPlayerService!!.pause()
         binding.playPauseBtn.setImageResource(R.drawable.icons8_play_64)
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
         setTime()
         updateProgress()
     }
@@ -301,6 +352,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
         binding.titleTxt.text = songList!![songPosition].name
         binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.miniSongTitle.text = songList!![songPosition].name
         updateProgress()
     }
 
@@ -353,24 +405,28 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
 
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
         val myBinder = p1 as MusicPlayerService.MyBinder
+        iBinder = myBinder
         musicPlayerService = myBinder.getService()
         isServiceConnected = true
         setTime()
         loadUI()
         musicPlayerService!!.start()
         setCompleteListener()
+        listener()
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
-//        MusicPlayerService = null
+        musicPlayerService = null
         isServiceConnected = false
     }
 
     override fun callBackFromSongFragment(songs: List<Song>, position: Int) {
         songList = songs
         songPosition = position
-        initState()
-        listener()
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+        if (!isServiceConnected)
+            initState()
+
     }
 
 }

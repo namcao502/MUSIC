@@ -55,7 +55,7 @@ class MusicPlayerService: Service() {
             setDataSource(song.filePath)
             prepare()
         }
-        sendNotification(song)
+//        sendNotification(song)
     }
 
     private fun sendNotification(song: Song) {
