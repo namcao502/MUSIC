@@ -424,8 +424,18 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
         songList = songs
         songPosition = position
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        if (!isServiceConnected)
+        if (!isServiceConnected){
             initState()
+        }
+        else{
+            musicPlayerService!!.stop()
+            musicPlayerService!!.release()
+            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            musicPlayerService!!.start()
+            setTime()
+            loadUI()
+            setCompleteListener()
+        }
 
     }
 
