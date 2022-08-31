@@ -29,7 +29,7 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
 
-    private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this) }
+    private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this, viewLifecycleOwner, songInPlaylistViewModel) }
     private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext()) }
 
     private var _binding: FragmentPlaylistBinding? = null

@@ -5,12 +5,19 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.Playlist
+import com.example.music.viewModels.SongInPlaylistViewModel
+import java.text.SimpleDateFormat
 
-class PlaylistAdapter(private val context: Context, private val itemClickListener: ItemPlaylistClickListener): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+class PlaylistAdapter(
+    private val context: Context,
+    private val itemClickListener: ItemPlaylistClickListener,
+    private val lifecycle: LifecycleOwner,
+    private val songInPlaylistViewModel: SongInPlaylistViewModel): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -31,6 +38,7 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
+
             itemView.setOnClickListener {
                 itemClickListener.callBackFromPlaylistToSongClick(playlist[position])
             }
@@ -49,9 +57,16 @@ class PlaylistAdapter(private val context: Context, private val itemClickListene
             }
 
             with(playlist[position]){
+                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
+                    val countSong = it.listSong.size.toString()
+                    var countDuration = 0
+                    for (x in it.listSong){
+                        countDuration += x.duration
+                    }
+                    binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
+                    binding.countSongTxt.text = countSong.plus(" songs")
+                })
                 binding.titleTxt.text = this.name
-                binding.countSongTxt.text = ""
-                binding.countLengthTxt.text = ""
             }
         }
 

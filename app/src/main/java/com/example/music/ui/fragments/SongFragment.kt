@@ -44,7 +44,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fra
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
     private val songAdapter: SongAdapter by lazy { SongAdapter(requireContext(), this) }
-    private val dialogPlaylistAdapter: DialogPlaylistAdapter by lazy { DialogPlaylistAdapter(requireContext(), this) }
+    private val dialogPlaylistAdapter: DialogPlaylistAdapter by lazy { DialogPlaylistAdapter(requireContext(), this, viewLifecycleOwner, songInPlaylistViewModel) }
 
     private var _binding: FragmentSongBinding? = null
     // This property is only valid between onCreateView and

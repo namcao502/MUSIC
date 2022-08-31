@@ -3,6 +3,9 @@ package com.example.music.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.music.models.Playlist
+import com.example.music.models.PlaylistWithSongs
+import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.models.SongWithPlaylists
 
 @Dao
 interface PlaylistDao {
@@ -18,4 +21,5 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlist ORDER BY name ASC")
     fun readAllPlaylists(): LiveData<List<Playlist>>
+
 }
