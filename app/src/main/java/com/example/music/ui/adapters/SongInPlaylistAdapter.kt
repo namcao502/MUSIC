@@ -11,7 +11,7 @@ import com.example.music.R
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.models.Song
 
-class SongInPlaylistAdapter(private val context: Context): RecyclerView.Adapter<SongInPlaylistAdapter.ViewHolder>() {
+class SongInPlaylistAdapter(private val context: Context, private val itemClickListener: ItemSongInPlaylistClickListener): RecyclerView.Adapter<SongInPlaylistAdapter.ViewHolder>() {
 
     var songList = emptyList<Song>()
 
@@ -33,7 +33,9 @@ class SongInPlaylistAdapter(private val context: Context): RecyclerView.Adapter<
 
         with(holder){
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
+                itemClickListener.callBackFromSongInPlaylist(songList, position)
+
             }
 
             binding.menuBtn.setOnClickListener {
@@ -71,5 +73,9 @@ class SongInPlaylistAdapter(private val context: Context): RecyclerView.Adapter<
     fun setData(listSong: List<Song>){
         this.songList = listSong
         notifyDataSetChanged()
+    }
+
+    interface ItemSongInPlaylistClickListener{
+        fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
     }
 }

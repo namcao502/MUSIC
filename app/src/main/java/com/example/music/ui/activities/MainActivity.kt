@@ -23,6 +23,7 @@ import com.example.music.databinding.ActivityMainBinding
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
 import com.example.music.ui.adapters.SongAdapter
+import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.ui.fragments.PlaylistFragment
 import com.example.music.ui.fragments.SongFragment
 import com.example.music.ui.adapters.ViewPagerAdapter
@@ -37,7 +38,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFromAdapterClick {
+class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFromAdapterClick, SongInPlaylistAdapter.ItemSongInPlaylistClickListener {
 
     private val songViewModel: SongViewModel by viewModels()
 
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
     private lateinit var binding: ActivityMainBinding
 
     private var songFragment: SongFragment = SongFragment(this)
-    private var playlistFragment: PlaylistFragment = PlaylistFragment()
+    private var playlistFragment: PlaylistFragment = PlaylistFragment(this)
     private  var fragmentList: MutableList<Fragment> = mutableListOf(songFragment, playlistFragment)
 
     private lateinit var viewPagerChart: ViewPagerAdapter
@@ -169,11 +170,6 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
-
-        binding.miniPlayerLayout.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
         binding.miniNextBtn.setOnClickListener {
             next()
         }
@@ -188,6 +184,10 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             } else {
                 play()
             }
+        }
+
+        binding.miniPlayerLayout.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         binding.playStateBtn.setOnClickListener{
@@ -435,8 +435,27 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             setTime()
             loadUI()
             setCompleteListener()
+            listener()
         }
+    }
 
+    override fun callBackFromSongInPlaylist(songs: List<Song>, position: Int) {
+        songList = songs
+        songPosition = position
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+        if (!isServiceConnected){
+            initState()
+        }
+        else{
+            musicPlayerService!!.stop()
+            musicPlayerService!!.release()
+            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            musicPlayerService!!.start()
+            setTime()
+            loadUI()
+            setCompleteListener()
+            listener()
+        }
     }
 
 }

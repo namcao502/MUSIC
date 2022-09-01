@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
 import com.example.music.models.Playlist
+import com.example.music.models.Song
 import com.example.music.ui.adapters.PlaylistAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.viewModels.PlaylistViewModel
@@ -24,13 +25,13 @@ import com.example.music.viewModels.SongInPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
+class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.ItemSongInPlaylistClickListener) : Fragment(), PlaylistAdapter.ItemPlaylistClickListener, SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
 
     private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this, viewLifecycleOwner, songInPlaylistViewModel) }
-    private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext()) }
+    private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext(), this) }
 
     private var _binding: FragmentPlaylistBinding? = null
     // This property is only valid between onCreateView and
@@ -210,6 +211,10 @@ class PlaylistFragment : Fragment(), PlaylistAdapter.ItemPlaylistClickListener{
                 })
         // Create the AlertDialog object and return it
         builder.create().show()
+    }
+
+    override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
+        songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
     }
 
 }
