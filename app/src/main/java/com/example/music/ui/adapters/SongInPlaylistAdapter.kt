@@ -41,10 +41,9 @@ class SongInPlaylistAdapter(private val context: Context, private val itemClickL
             binding.menuBtn.setOnClickListener {
 
                 PopupMenu(context, binding.menuBtn).apply {
-                    menuInflater.inflate(R.menu.row_song_menu, this.menu)
+                    menuInflater.inflate(R.menu.row_song_in_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        //đổi popup menu
-//                        itemClickListener.onClick(menuItem.title.toString(), songList[position])
+                        itemClickListener.callBackFromMenuSongInPlaylist(menuItem.title.toString(), songList, position)
                         true
                     }
                     // Showing the popup menu
@@ -77,5 +76,6 @@ class SongInPlaylistAdapter(private val context: Context, private val itemClickL
 
     interface ItemSongInPlaylistClickListener{
         fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
     }
 }

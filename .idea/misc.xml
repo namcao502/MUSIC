@@ -22,6 +22,8 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_menu.xml" value="0.20512820512820512" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_playlist_menu.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_song_menu.xml" value="0.25" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_playlist_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_in_playlist_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_menu.xml" value="0.24895833333333334" />
       </map>
     </option>

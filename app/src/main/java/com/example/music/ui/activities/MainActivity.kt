@@ -38,7 +38,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFromAdapterClick, SongInPlaylistAdapter.ItemSongInPlaylistClickListener {
+class MainActivity :
+    AppCompatActivity(),
+    ServiceConnection,
+    SongFragment.SongFromAdapterClick,
+    SongInPlaylistAdapter.ItemSongInPlaylistClickListener {
 
     private val songViewModel: SongViewModel by viewModels()
 
@@ -248,10 +252,12 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
         }
         if (playState == "Shuffle") {
             createRandomTrackPosition()
+            musicPlayerService!!.start()
         } else {
             if (playState == "Loop") {
                 songPosition += 1
                 musicPlayerService!!.reset()
+                musicPlayerService!!.start()
             }
         }
         if (musicPlayerService!!.isPlaying()) {
@@ -284,10 +290,12 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
         }
         if (playState == "Shuffle") {
             createRandomTrackPosition()
+            musicPlayerService!!.start()
         } else {
             if (playState == "Loop") {
                 songPosition -= 1
                 musicPlayerService!!.reset()
+                musicPlayerService!!.start()
             }
         }
         if (musicPlayerService!!.isPlaying()) {
@@ -456,6 +464,14 @@ class MainActivity : AppCompatActivity(), ServiceConnection, SongFragment.SongFr
             setCompleteListener()
             listener()
         }
+    }
+
+    override fun callBackFromMenuSongInPlaylist(
+        action: String,
+        songList: List<Song>,
+        position: Int
+    ) {
+        TODO("Not yet implemented")
     }
 
 }

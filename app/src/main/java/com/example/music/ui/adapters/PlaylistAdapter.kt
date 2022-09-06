@@ -57,6 +57,7 @@ class PlaylistAdapter(
             }
 
             with(playlist[position]){
+                songInPlaylistViewModel.getPlaylistId(this.playlist_id)
                 songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
                     val countSong = it.listSong.size.toString()
                     var countDuration = 0

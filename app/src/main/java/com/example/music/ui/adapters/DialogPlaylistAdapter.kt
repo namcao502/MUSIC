@@ -46,7 +46,6 @@ class DialogPlaylistAdapter(
             }
 
             binding.menuBtn.setOnClickListener {
-
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->

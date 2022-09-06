@@ -18,6 +18,7 @@ import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
 import com.example.music.models.Playlist
 import com.example.music.models.Song
+import com.example.music.models.SongPlaylistCrossRef
 import com.example.music.ui.adapters.PlaylistAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.viewModels.PlaylistViewModel
@@ -25,7 +26,10 @@ import com.example.music.viewModels.SongInPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.ItemSongInPlaylistClickListener) : Fragment(), PlaylistAdapter.ItemPlaylistClickListener, SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.ItemSongInPlaylistClickListener) :
+    Fragment(),
+    PlaylistAdapter.ItemPlaylistClickListener,
+    SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
@@ -215,6 +219,16 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
 
     override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
         songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
+    }
+
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
+        if (action == "Play"){
+            songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
+        }
+        if (action == "Delete from playlist"){
+            val songInPlaylistCrossRef = SongPlaylistCrossRef(songList[position].song_id, songInPlaylistViewModel.playlistId)
+            songInPlaylistViewModel.deleteSongPlaylistCrossRef(songInPlaylistCrossRef)
+        }
     }
 
 }

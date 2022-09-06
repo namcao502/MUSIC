@@ -10,6 +10,9 @@ interface SongInPlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSongPlaylistCrossRef(crossRef: SongPlaylistCrossRef)
 
+    @Delete
+    suspend fun deleteSongInPlaylistCrossRef(crossRef: SongPlaylistCrossRef)
+
     @Transaction
     @Query("SELECT * FROM playlist WHERE playlist_id = :playlistId")
     fun getSongsOfPlaylist(playlistId: Int): LiveData<PlaylistWithSongs>
