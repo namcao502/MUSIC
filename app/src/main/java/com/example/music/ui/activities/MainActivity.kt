@@ -59,24 +59,14 @@ class MainActivity :
 
     var audioManager: AudioManager? = null
 
-    var playState = "Go"
+    private var playState = "Go"
 
     var musicPlayerService: MusicPlayerService? = null
 
     var isServiceConnected = false
 
-    var iBinder: MusicPlayerService.MyBinder? = null
+    private var iBinder: MusicPlayerService.MyBinder? = null
 
-    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.extras!!.getInt("action_music")) {
-                MusicPlayerService.ACTION_PREVIOUS -> previous()
-                MusicPlayerService.ACTION_PLAY -> play()
-                MusicPlayerService.ACTION_PAUSE -> pause()
-                MusicPlayerService.ACTION_NEXT -> next()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +105,7 @@ class MainActivity :
 
             })
         }
+
 
         //requestRead()
 
@@ -367,12 +358,6 @@ class MainActivity :
         updateProgress()
     }
 
-    private fun handleAction(action: Int){
-        when(action){
-            MusicPlayerService.ACTION_PAUSE -> pause()
-            MusicPlayerService.ACTION_PLAY -> play()
-        }
-    }
 
     private fun updateProgress() {
         val handler = Handler(Looper.getMainLooper())
@@ -431,12 +416,29 @@ class MainActivity :
         musicPlayerService!!.start()
         setCompleteListener()
         listener()
+
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
         musicPlayerService = null
         isServiceConnected = false
+    }
+
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.extras!!.getInt("action_music")) {
+                MusicPlayerService.ACTION_PREVIOUS -> previous()
+                MusicPlayerService.ACTION_PAUSE -> {
+                    if (musicPlayerService!!.isPlaying()) {
+                        pause()
+                    } else {
+                        play()
+                    }
+                }
+                MusicPlayerService.ACTION_NEXT -> next()
+            }
+        }
     }
 
     override fun callBackFromSongFragment(songs: List<Song>, position: Int) {

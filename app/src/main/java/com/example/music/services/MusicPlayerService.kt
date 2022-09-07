@@ -21,7 +21,6 @@ class MusicPlayerService: Service() {
         const val CHANNEL_ID_2 = "channel_2"
         const val ACTION_PREVIOUS = 500
         const val ACTION_NEXT = 501
-        const val ACTION_PLAY = 502
         const val ACTION_PAUSE = 503
     }
 
@@ -89,20 +88,19 @@ class MusicPlayerService: Service() {
             .setContentTitle(song.name)
             .setContentText(song.artists)
             .setSmallIcon(R.drawable.icons8_musical_notes_48)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2)
                 .setMediaSession(mediaSessionCompat.sessionToken))
 
         if (isPlaying()){
-            notification
-                .addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
+            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
                 .addAction(R.drawable.ic_baseline_pause_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
                 .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
         }
         else {
-            notification
-                .addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Play", pendingIntent(this, ACTION_PLAY))
+            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
+                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
                 .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
         }
 
@@ -119,10 +117,12 @@ class MusicPlayerService: Service() {
 
     fun pause() {
         mediaPlayer!!.pause()
+        sendNotification(song!!)
     }
 
     fun reset(){
         mediaPlayer!!.reset()
+        sendNotification(song!!)
     }
 
     fun stop(){
@@ -131,6 +131,7 @@ class MusicPlayerService: Service() {
 
     fun start(){
         mediaPlayer!!.start()
+        sendNotification(song!!)
     }
 
     fun release(){
