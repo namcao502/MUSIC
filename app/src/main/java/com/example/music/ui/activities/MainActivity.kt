@@ -1,9 +1,7 @@
 package com.example.music.ui.activities
 
 import android.Manifest
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
@@ -22,11 +20,10 @@ import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
-import com.example.music.ui.adapters.SongAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
+import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.PlaylistFragment
 import com.example.music.ui.fragments.SongFragment
-import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.viewModels.ScanSongInStorage
 import com.example.music.viewModels.SongViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -35,7 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class MainActivity :
@@ -56,7 +52,7 @@ class MainActivity :
 
     private lateinit var viewPagerChart: ViewPagerAdapter
 
-    private val tabLayoutTitles:ArrayList<String> = arrayListOf("Song","Playlist")
+    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song","Playlist")
 
     var songList: List<Song>? = null
     var songPosition = -1
@@ -70,6 +66,17 @@ class MainActivity :
     var isServiceConnected = false
 
     var iBinder: MusicPlayerService.MyBinder? = null
+
+    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.extras!!.getInt("action_music")) {
+                MusicPlayerService.ACTION_PREVIOUS -> previous()
+                MusicPlayerService.ACTION_PLAY -> play()
+                MusicPlayerService.ACTION_PAUSE -> pause()
+                MusicPlayerService.ACTION_NEXT -> next()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -252,12 +259,10 @@ class MainActivity :
         }
         if (playState == "Shuffle") {
             createRandomTrackPosition()
-            musicPlayerService!!.start()
         } else {
             if (playState == "Loop") {
                 songPosition += 1
                 musicPlayerService!!.reset()
-                musicPlayerService!!.start()
             }
         }
         if (musicPlayerService!!.isPlaying()) {
@@ -268,9 +273,7 @@ class MainActivity :
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            musicPlayerService!!.start()
-            binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+
         } else {
             try {
                 musicPlayerService!!.createMediaPlayer(songList!![songPosition])
@@ -278,6 +281,8 @@ class MainActivity :
                 e.printStackTrace()
             }
         }
+        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
     }
@@ -290,12 +295,10 @@ class MainActivity :
         }
         if (playState == "Shuffle") {
             createRandomTrackPosition()
-            musicPlayerService!!.start()
         } else {
             if (playState == "Loop") {
                 songPosition -= 1
                 musicPlayerService!!.reset()
-                musicPlayerService!!.start()
             }
         }
         if (musicPlayerService!!.isPlaying()) {
@@ -306,9 +309,7 @@ class MainActivity :
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            musicPlayerService!!.start()
-            binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+
         } else {
             try {
                 musicPlayerService!!.createMediaPlayer(songList!![songPosition])
@@ -316,6 +317,8 @@ class MainActivity :
                 e.printStackTrace()
             }
         }
+        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
     }
@@ -362,6 +365,13 @@ class MainActivity :
         binding.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         updateProgress()
+    }
+
+    private fun handleAction(action: Int){
+        when(action){
+            MusicPlayerService.ACTION_PAUSE -> pause()
+            MusicPlayerService.ACTION_PLAY -> play()
+        }
     }
 
     private fun updateProgress() {
@@ -421,6 +431,7 @@ class MainActivity :
         musicPlayerService!!.start()
         setCompleteListener()
         listener()
+        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
@@ -445,6 +456,7 @@ class MainActivity :
             setCompleteListener()
             listener()
         }
+        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
     override fun callBackFromSongInPlaylist(songs: List<Song>, position: Int) {

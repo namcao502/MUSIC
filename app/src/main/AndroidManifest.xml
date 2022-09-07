@@ -45,6 +45,7 @@
         </activity>
 
         <service android:name=".services.MusicPlayerService" />
+        <receiver android:name=".services.MusicPlayerReceiver"/>
     </application>
 
 </manifest>
