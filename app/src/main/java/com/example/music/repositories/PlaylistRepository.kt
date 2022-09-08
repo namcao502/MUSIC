@@ -1,10 +1,8 @@
 package com.example.music.repositories
 
 import androidx.lifecycle.LiveData
-import com.example.music.data.PlaylistDao
+import com.example.music.data.local.PlaylistDao
 import com.example.music.models.Playlist
-import com.example.music.models.PlaylistWithSongs
-import com.example.music.models.SongPlaylistCrossRef
 import javax.inject.Inject
 
 class PlaylistRepository @Inject constructor(private val playlistDao: PlaylistDao) {

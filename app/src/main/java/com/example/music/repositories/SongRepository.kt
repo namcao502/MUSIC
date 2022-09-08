@@ -1,7 +1,7 @@
 package com.example.music.repositories
 
 import androidx.lifecycle.LiveData
-import com.example.music.data.SongDao
+import com.example.music.data.local.SongDao
 import com.example.music.models.Song
 import javax.inject.Inject
 

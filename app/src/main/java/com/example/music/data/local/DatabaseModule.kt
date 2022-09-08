@@ -1,4 +1,4 @@
-package com.example.music.data
+package com.example.music.data.local
 
 import android.content.Context
 import androidx.room.Room

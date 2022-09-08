@@ -1,7 +1,7 @@
 package com.example.music.repositories
 
 import androidx.lifecycle.LiveData
-import com.example.music.data.SongInPlaylistDao
+import com.example.music.data.local.SongInPlaylistDao
 import com.example.music.models.PlaylistWithSongs
 import com.example.music.models.SongPlaylistCrossRef
 import javax.inject.Inject

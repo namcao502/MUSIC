@@ -18,7 +18,6 @@ class MusicPlayerService: Service() {
 
     companion object {
         const val CHANNEL_ID_1 = "channel_1"
-        const val CHANNEL_ID_2 = "channel_2"
         const val ACTION_PREVIOUS = 500
         const val ACTION_NEXT = 501
         const val ACTION_PAUSE = 503

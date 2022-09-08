@@ -1,4 +1,4 @@
-package com.example.music.data
+package com.example.music.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
