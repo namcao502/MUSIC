@@ -2,10 +2,14 @@ package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
@@ -17,7 +21,8 @@ class PlaylistAdapter(
     private val context: Context,
     private val itemClickListener: ItemPlaylistClickListener,
     private val lifecycle: LifecycleOwner,
-    private val songInPlaylistViewModel: SongInPlaylistViewModel): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+    private val songInPlaylistViewModel: SongInPlaylistViewModel,
+    private val songInPlaylistAdapter: SongInPlaylistAdapter): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -40,11 +45,15 @@ class PlaylistAdapter(
         with(holder){
 
             itemView.setOnClickListener {
-                itemClickListener.callBackFromPlaylistToSongClick(playlist[position])
+                if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
+                    binding.songInPlaylistRecyclerView.visibility = View.GONE
+                }
+                else {
+                    binding.songInPlaylistRecyclerView.visibility = View.VISIBLE
+                }
             }
 
             binding.menuBtn.setOnClickListener {
-
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
@@ -56,16 +65,27 @@ class PlaylistAdapter(
                 }
             }
 
+            binding.songInPlaylistRecyclerView.apply {
+                adapter = songInPlaylistAdapter
+                layoutManager = LinearLayoutManager(context)
+            }
+
             with(playlist[position]){
+                //load count length and count song
                 songInPlaylistViewModel.getPlaylistId(this.playlist_id)
                 songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
-                    val countSong = it.listSong.size.toString()
-                    var countDuration = 0
-                    for (x in it.listSong){
-                        countDuration += x.duration
+                    if (it != null){
+                        songInPlaylistAdapter.setData(it.listSong)
+                        val countSong = it.listSong.size.toString()
+                        var countDuration = 0
+                        for (x in it.listSong){
+                            countDuration += x.duration
+                        }
+                        binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
+                        binding.countSongTxt.text = countSong.plus(" songs")
+
+                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
                     }
-                    binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
-                    binding.countSongTxt.text = countSong.plus(" songs")
                 })
                 binding.titleTxt.text = this.name
             }
@@ -81,7 +101,6 @@ class PlaylistAdapter(
 
     interface ItemPlaylistClickListener {
         fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist)
-        fun callBackFromPlaylistToSongClick(playlist: Playlist)
     }
 
 }

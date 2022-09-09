@@ -33,7 +33,7 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
 
         with(holder){
             itemView.setOnClickListener {
-                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
                 //click on a song
                 itemClickListener.callBackFromSongClick(songList, position)
             }

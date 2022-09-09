@@ -34,8 +34,13 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
     private val playlistViewModel: PlaylistViewModel by viewModels()
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
 
-    private val playlistAdapter: PlaylistAdapter by lazy { PlaylistAdapter(requireContext(), this, viewLifecycleOwner, songInPlaylistViewModel) }
-    private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy { SongInPlaylistAdapter(requireContext(), this) }
+    private val songInPlaylistAdapter: SongInPlaylistAdapter by lazy {
+        SongInPlaylistAdapter(requireContext(), this)
+    }
+    private val playlistAdapter: PlaylistAdapter by lazy {
+        PlaylistAdapter(requireContext(),
+            this, viewLifecycleOwner, songInPlaylistViewModel, songInPlaylistAdapter)
+    }
 
     private var _binding: FragmentPlaylistBinding? = null
     // This property is only valid between onCreateView and
@@ -103,37 +108,6 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
         }
         if (action == "Delete"){
             createDialogForDeletePlaylist(playlist)
-        }
-    }
-
-    override fun callBackFromPlaylistToSongClick(playlist: Playlist) {
-        //change adapter and load
-        binding.playlistRecyclerView.apply {
-            adapter = songInPlaylistAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
-
-        binding.addBtn.visibility = View.GONE
-
-        songInPlaylistViewModel.getSongsOfPlaylist(playlist.playlist_id).observe(viewLifecycleOwner, Observer {
-            songInPlaylistAdapter.setData(it.listSong)
-        })
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            binding.addBtn.visibility = View.VISIBLE
-            // Handle the back button event
-            binding.playlistRecyclerView.apply {
-                adapter = playlistAdapter
-                layoutManager = LinearLayoutManager(requireContext())
-            }
-
-            playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner, Observer {
-                playlistAdapter.setData(it)
-            })
-
-            binding.addBtn.setOnClickListener {
-                createDialogForAddPlaylist()
-            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.music.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
+import com.example.music.ui.activities.MainActivity
 import com.example.music.viewModels.FirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ class HomeFragment : Fragment() {
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding
-    private val firebaseViewModel : FirebaseViewModel by activityViewModels()
+    private val firebaseViewModel: FirebaseViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +34,11 @@ class HomeFragment : Fragment() {
         getUser()
         registerObserver()
         listenToChannels()
+
+        binding?.offlineButton?.setOnClickListener {
+            startActivity(Intent(requireContext(), MainActivity::class.java))
+        }
+
         return binding?.root
     }
 
@@ -56,15 +63,17 @@ class HomeFragment : Fragment() {
         firebaseViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding?.apply {
-                    welcomeTxt.text = "welcome ${it.email}"
-                    signinButton.text = "sign out"
+                    //login success
+                    welcomeTxt.text = "Welcome ${it.email}"
+                    signinButton.text = "Sign out"
                     signinButton.setOnClickListener {
                         firebaseViewModel.signOut()
                     }
+
                 }
             } ?: binding?.apply {
                 welcomeTxt.isVisible = false
-                signinButton.text = "sign in"
+                signinButton.text = "Sign in for online"
                 signinButton.setOnClickListener {
                     findNavController().navigate(R.id.action_homeFragment_to_signInFragment)
                 }

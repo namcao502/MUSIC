@@ -363,23 +363,28 @@ class MainActivity :
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run(){
-                val currentPosition = musicPlayerService!!.getCurrentDuration()
-                val sdf = SimpleDateFormat("mm:ss")
-                binding.startTxt.text = sdf.format(currentPosition)
-                binding.songSb.progress = currentPosition
-                handler.postDelayed(this, 1000)
+                if (musicPlayerService == null){
+                    return
+                }
+                else {
+                    val currentPosition = musicPlayerService!!.getCurrentDuration()
+                    val sdf = SimpleDateFormat("mm:ss")
+                    binding.startTxt.text = sdf.format(currentPosition)
+                    binding.songSb.progress = currentPosition
+                    handler.postDelayed(this, 1000)
+                }
             }
         }, 1000)
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        stopService(Intent(this, MusicPlayerService::class.java))
-//        if (isServiceConnected){
-//            unbindService(this)
-//            isServiceConnected = false
-//        }
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, MusicPlayerService::class.java))
+        if (isServiceConnected){
+            unbindService(this)
+            isServiceConnected = false
+        }
+    }
 
     private fun setCompleteListener(){
         musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
@@ -461,8 +466,8 @@ class MainActivity :
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
-    override fun callBackFromSongInPlaylist(songs: List<Song>, position: Int) {
-        songList = songs
+    override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
+        this.songList = songList
         songPosition = position
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         if (!isServiceConnected){
@@ -471,7 +476,7 @@ class MainActivity :
         else{
             musicPlayerService!!.stop()
             musicPlayerService!!.release()
-            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            musicPlayerService!!.createMediaPlayer(this.songList!![songPosition])
             musicPlayerService!!.start()
             setTime()
             loadUI()

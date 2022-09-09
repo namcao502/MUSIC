@@ -20,10 +20,12 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
+
     private val viewModel : FirebaseViewModel by activityViewModels()
     private var _binding : FragmentSigninBinding? = null
     private val binding get() = _binding
     private val TAG = "SignInFragment"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +34,7 @@ class SignInFragment : Fragment() {
         _binding = FragmentSigninBinding.inflate(inflater , container , false)
         listenToChannels()
         registerObservers()
+
         binding?.apply {
             signInButton.setOnClickListener {
                 progressBarSignin.isVisible = true
@@ -47,6 +50,8 @@ class SignInFragment : Fragment() {
             forgotPassTxt.setOnClickListener {
                 findNavController().navigate(R.id.action_signInFragment_to_resetPasswordFragment)
             }
+
+
         }
         return binding?.root
     }
