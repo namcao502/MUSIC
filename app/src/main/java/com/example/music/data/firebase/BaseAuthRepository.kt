@@ -1,4 +1,4 @@
-package com.example.music.data.cloud
+package com.example.music.data.firebase
 
 import com.google.firebase.auth.FirebaseUser
 

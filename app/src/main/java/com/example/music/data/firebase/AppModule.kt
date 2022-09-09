@@ -1,9 +1,5 @@
-package com.example.music.data.cloud
+package com.example.music.data.firebase
 
-import com.example.music.data.cloud.AuthRepository
-import com.example.music.data.cloud.BaseAuthRepository
-import com.example.music.data.cloud.BaseAuthenticator
-import com.example.music.data.cloud.FirebaseAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -4,11 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/gradient_background.xml" value="0.2345" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_error.xml" value="0.1805" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_account.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player2.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_password_reset.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_playlist.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signin.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signup.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/menu_playlist_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/nemu_playlist_dialog.xml" value="0.25" />
