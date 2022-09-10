@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.Playlist
+import com.example.music.models.Song
 import com.example.music.viewModels.SongInPlaylistViewModel
 import java.text.SimpleDateFormat
 
@@ -21,8 +22,8 @@ class PlaylistAdapter(
     private val context: Context,
     private val itemClickListener: ItemPlaylistClickListener,
     private val lifecycle: LifecycleOwner,
-    private val songInPlaylistViewModel: SongInPlaylistViewModel,
-    private val songInPlaylistAdapter: SongInPlaylistAdapter): RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
+    private val songInPlaylistViewModel: SongInPlaylistViewModel)
+    : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
 
@@ -41,6 +42,23 @@ class PlaylistAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val songInPlaylistAdapter: SongInPlaylistAdapter by lazy {
+            SongInPlaylistAdapter(context, object : SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+                override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun callBackFromMenuSongInPlaylist(
+                    action: String,
+                    songList: List<Song>,
+                    position: Int
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        }
 
         with(holder){
 
@@ -65,12 +83,13 @@ class PlaylistAdapter(
                 }
             }
 
-            binding.songInPlaylistRecyclerView.apply {
-                adapter = songInPlaylistAdapter
-                layoutManager = LinearLayoutManager(context)
-            }
-
             with(playlist[position]){
+
+                binding.songInPlaylistRecyclerView.apply {
+                    adapter = songInPlaylistAdapter
+                    layoutManager = LinearLayoutManager(context)
+                }
+
                 //load count length and count song
                 songInPlaylistViewModel.getPlaylistId(this.playlist_id)
                 songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
