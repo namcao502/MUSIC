@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 
 class PlaylistAdapter(
     private val context: Context,
-    private val itemClickListener: ItemPlaylistClickListener,
+    private val itemPlaylistClickListener: ItemPlaylistClickListener,
     private val lifecycle: LifecycleOwner,
     private val songInPlaylistViewModel: SongInPlaylistViewModel)
     : RecyclerView.Adapter<PlaylistAdapter.ViewHolder>() {
@@ -45,16 +45,13 @@ class PlaylistAdapter(
 
         val songInPlaylistAdapter: SongInPlaylistAdapter by lazy {
             SongInPlaylistAdapter(context, object : SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+
                 override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
-                    TODO("Not yet implemented")
+                    itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
                 }
 
-                override fun callBackFromMenuSongInPlaylist(
-                    action: String,
-                    songList: List<Song>,
-                    position: Int
-                ) {
-                    TODO("Not yet implemented")
+                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
+                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position)
                 }
 
             })
@@ -63,6 +60,8 @@ class PlaylistAdapter(
         with(holder){
 
             itemView.setOnClickListener {
+                songInPlaylistViewModel.getPlaylistId(playlist[position].playlist_id)
+
                 if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
                     binding.songInPlaylistRecyclerView.visibility = View.GONE
                 }
@@ -75,7 +74,7 @@ class PlaylistAdapter(
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.callBackFromMenuPlaylistClick(menuItem.title.toString(), playlist[position])
+                        itemPlaylistClickListener.callBackFromMenuPlaylistClick(menuItem.title.toString(), playlist[position])
                         true
                     }
                     // Showing the popup menu
@@ -91,7 +90,7 @@ class PlaylistAdapter(
                 }
 
                 //load count length and count song
-                songInPlaylistViewModel.getPlaylistId(this.playlist_id)
+
                 songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
                     if (it != null){
                         songInPlaylistAdapter.setData(it.listSong)
@@ -120,6 +119,7 @@ class PlaylistAdapter(
 
     interface ItemPlaylistClickListener {
         fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist)
+        fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
     }
-
 }
