@@ -1,5 +1,6 @@
 package com.example.music.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +14,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
+import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.databinding.FragmentSigninBinding
+import com.example.music.ui.activities.OnlineMainActivity
 import com.example.music.viewModels.FirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -52,6 +55,8 @@ class SignInFragment : Fragment() {
             }
 
 
+            userEmailEtv.setText("nam@gmail.com")
+            userPasswordEtv.setText("nam502")
         }
         return binding?.root
     }

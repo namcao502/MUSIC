@@ -53,7 +53,7 @@ class FirebaseViewModel @Inject constructor(
     }
 
     //validate all fields before performing any sign up operations
-    fun signUpUser(email : String , password: String , confirmPass : String)= viewModelScope.launch {
+    fun signUpUser(email: String, password: String, confirmPass: String) = viewModelScope.launch {
         when{
             email.isEmpty() -> {
                 eventsChannel.send(AllEvents.ErrorCode(1))
@@ -71,7 +71,7 @@ class FirebaseViewModel @Inject constructor(
     }
 
 
-    private fun actualSignInUser(email:String, password: String) = viewModelScope.launch {
+    private fun actualSignInUser(email: String, password: String) = viewModelScope.launch {
         try {
             val user = repository.signInWithEmailPassword(email, password)
             user?.let {

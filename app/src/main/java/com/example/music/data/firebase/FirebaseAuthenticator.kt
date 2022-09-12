@@ -5,15 +5,15 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class FirebaseAuthenticator : BaseAuthenticator {
+class FirebaseAuthenticator: BaseAuthenticator {
 
     override suspend fun signUpWithEmailPassword(email: String, password: String): FirebaseUser? {
-        Firebase.auth.createUserWithEmailAndPassword(email,password).await()
+        Firebase.auth.createUserWithEmailAndPassword(email, password).await()
         return Firebase.auth.currentUser
     }
 
     override suspend fun signInWithEmailPassword(email: String, password: String): FirebaseUser? {
-        Firebase.auth.signInWithEmailAndPassword(email , password).await()
+        Firebase.auth.signInWithEmailAndPassword(email, password).await()
         return Firebase.auth.currentUser
     }
 

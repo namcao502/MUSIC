@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/online_songs"
+        android:title="Songs"
+        android:icon="@drawable/ic_baseline_library_music_24"/>
+
+    <item
+        android:id="@+id/online_playlist"
+        android:title="Playlist"
+        android:icon="@drawable/ic_baseline_queue_music_24"/>
+
+    <item
+        android:id="@+id/online_album"
+        android:title="Album"
+        android:icon="@drawable/ic_baseline_album_24"/>
+
+    <item
+        android:id="@+id/online_genre"
+        android:title="Genre"
+        android:icon="@drawable/ic_baseline_dashboard_24"/>
+
+    <item
+        android:id="@+id/online_artist"
+        android:title="Artist"
+        android:icon="@drawable/ic_baseline_people_24"/>
+
+</menu>

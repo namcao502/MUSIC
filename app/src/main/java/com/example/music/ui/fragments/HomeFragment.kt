@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.ui.activities.MainActivity
+import com.example.music.ui.activities.OnlineMainActivity
 import com.example.music.viewModels.FirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -69,7 +70,7 @@ class HomeFragment : Fragment() {
                     signinButton.setOnClickListener {
                         firebaseViewModel.signOut()
                     }
-
+                    startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
                 }
             } ?: binding?.apply {
                 welcomeTxt.isVisible = false

@@ -85,6 +85,7 @@ class MainActivity :
         }.attach()
 
         BottomSheetBehavior.from(binding.bottomSheet).apply {
+
             peekHeight = 200
             this.state = BottomSheetBehavior.STATE_COLLAPSED
 
@@ -355,6 +356,7 @@ class MainActivity :
         binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
+        binding.miniSongArtist.text = songList!![songPosition].artists
         updateProgress()
     }
 
@@ -452,6 +454,7 @@ class MainActivity :
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         if (!isServiceConnected){
             initState()
+            binding.bottomSheet.visibility = View.VISIBLE
         }
         else{
             musicPlayerService!!.stop()
@@ -472,6 +475,7 @@ class MainActivity :
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         if (!isServiceConnected){
             initState()
+            binding.bottomSheet.visibility = View.VISIBLE
         }
         else{
             musicPlayerService!!.stop()

@@ -103,15 +103,16 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fra
     }
 
     //popup menu when click on a menu song
-    override fun callBackFromMenuSongClick(action: String, song: Song) {
+    override fun callBackFromMenuSongClick(action: String, songList: List<Song>, position: Int) {
         if (action == "Play"){
+            songFromAdapterClick.callBackFromSongFragment(songList, position)
         }
         if (action == "Add to playlist"){
             createDialogForAddToPlaylist()
-            currentSong = song
+            currentSong = songList[position]
         }
         if (action == "Delete"){
-            createDialogForDeleteSong(song)
+            createDialogForDeleteSong(songList[position])
         }
     }
 
@@ -159,9 +160,16 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fra
 
         addBtn.setOnClickListener {
             createDialogForAddPlaylist()
+            dialog.cancel()
         }
-
         dialog.show()
+
+        if (dialog.isShowing){
+            addBtn.visibility = View.VISIBLE
+        }
+        else {
+            addBtn.visibility = View.GONE
+        }
     }
 
     private fun createDialogForDeleteSong(song: Song){

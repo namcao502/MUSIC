@@ -9,8 +9,8 @@
 <!--        android:icon="@drawable/icons8_search_80"/>-->
 
     <item
-        android:id="@+id/sample_menu"
-        android:title="Sample 1 menu" />
+        android:id="@+id/add_new_playlist_menu"
+        android:title="Add new playlist" />
 
     <item
         android:id="@+id/sample1_menu"

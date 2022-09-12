@@ -7,6 +7,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_error.xml" value="0.1805" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_account.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_online_main.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player2.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
@@ -28,6 +29,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_menu.xml" value="0.20512820512820512" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_playlist_menu.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/main_song_menu.xml" value="0.25" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/online_bottom_nav.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_playlist_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_in_playlist_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_menu.xml" value="0.24895833333333334" />

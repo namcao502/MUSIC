@@ -102,7 +102,7 @@ class PlaylistAdapter(
                         binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
                         binding.countSongTxt.text = countSong.plus(" songs")
 
-                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
+//                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
                     }
                 })
                 binding.titleTxt.text = this.name

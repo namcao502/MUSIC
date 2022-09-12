@@ -65,9 +65,9 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
-                    R.id.sample_menu -> {
+                    R.id.add_new_playlist_menu -> {
                         // clearCompletedTasks()
-                        Toast.makeText(requireContext(), "From playlist", Toast.LENGTH_SHORT).show()
+                        createDialogForAddPlaylist()
                         true
                     }
                     else -> false
@@ -89,9 +89,9 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
             playlistAdapter.setData(it)
         })
 
-        binding.addBtn.setOnClickListener {
-            createDialogForAddPlaylist()
-        }
+//        binding.addBtn.setOnClickListener {
+//            createDialogForAddPlaylist()
+//        }
     }
 
     override fun onDestroyView() {
