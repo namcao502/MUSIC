@@ -53,6 +53,8 @@
 
         <service android:name=".services.MusicPlayerService" />
 
+        <service android:name=".services.OnlineMusicPlayerService"/>
+
         <receiver android:name=".services.MusicPlayerReceiver" />
     </application>
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
@@ -275,8 +276,9 @@ class OnlineMainActivity : AppCompatActivity(), ServiceConnection, OnlineSongFra
     }
 
     private fun initState() {
-        val intent = Intent(this, MusicPlayerService::class.java)
+        val intent = Intent(this, OnlineMusicPlayerService::class.java)
         intent.putExtra("songService", songList!![songPosition])
+        Log.i("TAG502", "initState: ${songList!![songPosition]}")
         startService(intent)
         bindService(intent, this, BIND_AUTO_CREATE)
     }
@@ -316,7 +318,7 @@ class OnlineMainActivity : AppCompatActivity(), ServiceConnection, OnlineSongFra
 
     override fun onDestroy() {
         super.onDestroy()
-        stopService(Intent(this, MusicPlayerService::class.java))
+        stopService(Intent(this, OnlineMusicPlayerService::class.java))
         if (isServiceConnected){
             unbindService(this)
             isServiceConnected = false
@@ -370,15 +372,15 @@ class OnlineMainActivity : AppCompatActivity(), ServiceConnection, OnlineSongFra
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.extras!!.getInt("action_music")) {
-                MusicPlayerService.ACTION_PREVIOUS -> previous()
-                MusicPlayerService.ACTION_PAUSE -> {
+                OnlineMusicPlayerService.ACTION_PREVIOUS -> previous()
+                OnlineMusicPlayerService.ACTION_PAUSE -> {
                     if (musicPlayerService!!.isPlaying()) {
                         pause()
                     } else {
                         play()
                     }
                 }
-                MusicPlayerService.ACTION_NEXT -> next()
+                OnlineMusicPlayerService.ACTION_NEXT -> next()
             }
         }
     }

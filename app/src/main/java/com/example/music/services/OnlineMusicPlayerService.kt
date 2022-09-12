@@ -4,11 +4,14 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.music.R
 import com.example.music.models.OnlineSong
@@ -18,10 +21,10 @@ import com.example.music.ui.activities.MainActivity
 class OnlineMusicPlayerService: Service() {
 
     companion object {
-        const val CHANNEL_ID_1 = "channel_1"
-        const val ACTION_PREVIOUS = 500
-        const val ACTION_NEXT = 501
-        const val ACTION_PAUSE = 503
+        const val CHANNEL_ID_1 = "channel_2"
+        const val ACTION_PREVIOUS = 400
+        const val ACTION_NEXT = 401
+        const val ACTION_PAUSE = 403
     }
 
     var mediaPlayer: MediaPlayer? = null
@@ -67,6 +70,13 @@ class OnlineMusicPlayerService: Service() {
     fun createMediaPlayer(song: OnlineSong){
         mediaPlayer = MediaPlayer()
         with(mediaPlayer!!) {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            Log.i("TAG502", "createMediaPlayer: ${song.filePath}")
             setDataSource(song.filePath)
             prepare()
             start()

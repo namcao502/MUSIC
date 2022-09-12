@@ -57,7 +57,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
         firebaseViewModel.getAllSongs()
         firebaseViewModel.song.observe(viewLifecycleOwner, Observer {
-
+            onlineSongAdapter.setData(it)
         })
     }
 

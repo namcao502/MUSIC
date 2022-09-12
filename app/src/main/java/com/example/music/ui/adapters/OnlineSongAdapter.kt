@@ -36,6 +36,7 @@ class OnlineSongAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
+
             itemView.setOnClickListener {
 //                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
                 //click on a song
@@ -43,7 +44,6 @@ class OnlineSongAdapter(
             }
 
             binding.menuBtn.setOnClickListener {
-
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_song_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
