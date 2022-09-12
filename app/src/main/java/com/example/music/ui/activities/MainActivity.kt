@@ -48,11 +48,11 @@ class MainActivity :
 
     private var songFragment: SongFragment = SongFragment(this)
     private var playlistFragment: PlaylistFragment = PlaylistFragment(this)
-    private  var fragmentList: MutableList<Fragment> = mutableListOf(songFragment, playlistFragment)
+    private var fragmentList: MutableList<Fragment> = mutableListOf(songFragment, playlistFragment)
 
     private lateinit var viewPagerChart: ViewPagerAdapter
 
-    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song","Playlist")
+    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song", "Playlist")
 
     var songList: List<Song>? = null
     var songPosition = -1
@@ -106,9 +106,6 @@ class MainActivity :
 
             })
         }
-
-
-        //requestRead()
 
     }
 
@@ -360,7 +357,6 @@ class MainActivity :
         updateProgress()
     }
 
-
     private fun updateProgress() {
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
@@ -489,12 +485,8 @@ class MainActivity :
         }
     }
 
-    override fun callBackFromMenuSongInPlaylist(
-        action: String,
-        songList: List<Song>,
-        position: Int
-    ) {
-        TODO("Not yet implemented")
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
+
     }
 
 }

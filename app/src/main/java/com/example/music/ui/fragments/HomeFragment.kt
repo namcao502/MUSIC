@@ -15,7 +15,7 @@ import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.ui.activities.MainActivity
 import com.example.music.ui.activities.OnlineMainActivity
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -24,7 +24,7 @@ class HomeFragment : Fragment() {
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding
-    private val firebaseViewModel: FirebaseViewModel by activityViewModels()
+    private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,14 +44,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun getUser() {
-        firebaseViewModel.getCurrentUser()
+        firebaseAuthViewModel.getCurrentUser()
     }
 
     private fun listenToChannels() {
         viewLifecycleOwner.lifecycleScope.launch {
-           firebaseViewModel.allEventsFlow.collect { event ->
+           firebaseAuthViewModel.allEventsFlow.collect { event ->
                when(event){
-                   is FirebaseViewModel.AllEvents.Message ->{
+                   is FirebaseAuthViewModel.AllEvents.Message ->{
                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                    }
                    else -> {}
@@ -61,14 +61,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun registerObserver() {
-        firebaseViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding?.apply {
                     //login success
                     welcomeTxt.text = "Welcome ${it.email}"
                     signinButton.text = "Sign out"
                     signinButton.setOnClickListener {
-                        firebaseViewModel.signOut()
+                        firebaseAuthViewModel.signOut()
                     }
                     startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
                 }

@@ -10,7 +10,7 @@ interface BaseAuthenticator {
     //in the future because all authentication classes you will use will inherit behaviour from this base class.
     //Also in testing it will make it easy to swap your actual sdks with fake ones
 
-    suspend fun signUpWithEmailPassword(email:String , password:String) : FirebaseUser?
+    suspend fun signUpWithEmailPassword(email:String , password:String): FirebaseUser?
 
     suspend fun signInWithEmailPassword(email: String , password: String): FirebaseUser?
 

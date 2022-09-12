@@ -34,7 +34,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fragment(), SongAdapter.ItemSongClickListener, DialogPlaylistAdapter.ItemClickListener {
+class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
+    : Fragment(), SongAdapter.ItemSongClickListener, DialogPlaylistAdapter.ItemClickListener {
 
     private val songViewModel: SongViewModel by viewModels()
     private val playlistViewModel: PlaylistViewModel by viewModels()
@@ -200,7 +201,6 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fra
         }
     }
 
-
     private fun createDialogForAddPlaylist(){
 
         val builder = AlertDialog.Builder(requireContext())
@@ -303,11 +303,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick) : Fra
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == permission) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFile()

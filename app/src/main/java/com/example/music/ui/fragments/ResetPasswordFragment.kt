@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentPasswordResetBinding
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -22,7 +22,7 @@ class ResetPasswordFragment : Fragment() {
 
     private var _binding : FragmentPasswordResetBinding? = null
     private val binding get() = _binding
-    private val viewModel : FirebaseViewModel by activityViewModels()
+    private val viewModel : FirebaseAuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,17 +39,17 @@ class ResetPasswordFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.allEventsFlow.collect { event ->
                 when(event){
-                    is FirebaseViewModel.AllEvents.Message -> {
+                    is FirebaseAuthViewModel.AllEvents.Message -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                         findNavController().navigate(R.id.action_resetPasswordFragment_to_signInFragment)
                     }
-                    is FirebaseViewModel.AllEvents.Error -> {
+                    is FirebaseAuthViewModel.AllEvents.Error -> {
                         binding?.apply {
                             resetPassProgressBar.isInvisible = true
                             errorText.text = event.error
                         }
                     }
-                    is FirebaseViewModel.AllEvents.ErrorCode -> {
+                    is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if(event.code == 1)
                             binding?.apply {
                                 userEmailEtvl.error = "email should not be empty!"

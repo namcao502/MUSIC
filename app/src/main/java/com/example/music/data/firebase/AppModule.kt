@@ -1,5 +1,6 @@
 package com.example.music.data.firebase
 
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,7 +10,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     /**All of our application dependencies shall be provided here*/
 
     //this means that anytime we need an authenticator Dagger will provide a Firebase authenticator.
@@ -28,4 +28,17 @@ object AppModule {
     fun provideRepository(authenticator : BaseAuthenticator) : BaseAuthRepository {
         return AuthRepository(authenticator)
     }
+
+    @Singleton
+    @Provides
+    fun provideFirestoreInstance(): FirebaseFirestore{
+        return FirebaseFirestore.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseRepository(database: FirebaseFirestore): FirebaseRepository{
+        return FirebaseRepository(database)
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.example.music.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,17 +13,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
-import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.databinding.FragmentSigninBinding
-import com.example.music.ui.activities.OnlineMainActivity
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
 
-    private val viewModel : FirebaseViewModel by activityViewModels()
+    private val viewModel : FirebaseAuthViewModel by activityViewModels()
     private var _binding : FragmentSigninBinding? = null
     private val binding get() = _binding
     private val TAG = "SignInFragment"
@@ -73,16 +70,16 @@ class SignInFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.allEventsFlow.collect { event ->
                 when(event){
-                    is FirebaseViewModel.AllEvents.Error -> {
+                    is FirebaseAuthViewModel.AllEvents.Error -> {
                         binding?.apply {
                             errorTxt.text =  event.error
                             progressBarSignin.isInvisible = true
                         }
                     }
-                    is FirebaseViewModel.AllEvents.Message -> {
+                    is FirebaseAuthViewModel.AllEvents.Message -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
-                    is FirebaseViewModel.AllEvents.ErrorCode -> {
+                    is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if (event.code == 1)
                             binding?.apply {
                                 userEmailEtvl.error = "email should not be empty"
