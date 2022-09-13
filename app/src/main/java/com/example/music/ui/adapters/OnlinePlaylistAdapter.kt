@@ -86,7 +86,7 @@ class OnlinePlaylistAdapter(
                 }
                 binding.titleTxt.text = this.name
 
-//                firebaseViewModel.getAllSongInPlaylist(this)
+                firebaseViewModel.getAllSongInPlaylist(this)
                 firebaseViewModel.songInPlaylist.observe(lifecycle, Observer {
                     if (it != null){
                         onlineSongInPlaylistAdapter.setData(it)

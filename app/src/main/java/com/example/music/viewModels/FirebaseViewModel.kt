@@ -89,24 +89,20 @@ class FirebaseViewModel @Inject constructor(): ViewModel(){
 
     fun getAllSongInPlaylist(playlist: OnlinePlaylist){
         viewModelScope.launch(Dispatchers.IO) {
-            playlist.songs?.let {
+            playlist.songs?.let { it2 ->
                 FirebaseFirestore.getInstance()
                     .collection("OnlineSong")
-                    .whereIn("id", it)
-                    .addSnapshotListener { value, error ->
-
-                        if (error != null) {
-                            return@addSnapshotListener
-                        }
-
-                        val songs: ArrayList<OnlineSong> = ArrayList()
-                        if (value != null) {
-                            for (document in value){
+                    .whereIn("id", it2)
+                    .get()
+                    .addOnCompleteListener {
+                        if (it.isSuccessful){
+                            val songs: ArrayList<OnlineSong> = ArrayList()
+                            for (document in it.result){
                                 val song = document.toObject(OnlineSong::class.java)
                                 songs.add(song)
                             }
+                            _songInPlaylist.value = songs
                         }
-                        _songInPlaylist.value = songs
                     }
             }
         }
