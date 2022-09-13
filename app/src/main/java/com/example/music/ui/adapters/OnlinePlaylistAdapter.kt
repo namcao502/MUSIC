@@ -2,27 +2,24 @@ package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.OnlinePlaylist
-import com.example.music.models.Playlist
-import com.example.music.models.Song
-import com.example.music.viewModels.SongInPlaylistViewModel
-import java.text.SimpleDateFormat
+import com.example.music.models.OnlineSong
+import com.example.music.viewModels.FirebaseViewModel
 
 class OnlinePlaylistAdapter(
     private val context: Context,
     private val itemPlaylistClickListener: ItemPlaylistClickListener,
-    private val lifecycle: LifecycleOwner)
+    private val lifecycle: LifecycleOwner,
+    private val firebaseViewModel: FirebaseViewModel)
     : RecyclerView.Adapter<OnlinePlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<OnlinePlaylist>()
@@ -46,14 +43,13 @@ class OnlinePlaylistAdapter(
         val onlineSongInPlaylistAdapter: OnlineSongInPlaylistAdapter by lazy {
             OnlineSongInPlaylistAdapter(context, object : OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
-                override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
-//                    itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
+                override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
+                    itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
                 }
 
-                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
-//                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position)
+                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
+                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@OnlinePlaylistAdapter.playlist[position])
                 }
-
             })
         }
 
@@ -90,6 +86,13 @@ class OnlinePlaylistAdapter(
                 }
                 binding.titleTxt.text = this.name
 
+//                firebaseViewModel.getAllSongInPlaylist(this)
+                firebaseViewModel.songInPlaylist.observe(lifecycle, Observer {
+                    if (it != null){
+                        onlineSongInPlaylistAdapter.setData(it)
+                    }
+                })
+
                 //load count length and count song
 //                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
 //                    if (it != null){
@@ -118,7 +121,7 @@ class OnlinePlaylistAdapter(
 
     interface ItemPlaylistClickListener {
         fun callBackFromMenuPlaylistClick(action: String, playlist: OnlinePlaylist)
-//        fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
-//        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
+        fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist)
     }
 }

@@ -70,6 +70,10 @@ class HomeFragment : Fragment() {
                     signinButton.setOnClickListener {
                         firebaseAuthViewModel.signOut()
                     }
+                    onlineButton.visibility = View.VISIBLE
+                    onlineButton.setOnClickListener {
+                        startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
+                    }
                     startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
                 }
             } ?: binding?.apply {
@@ -78,6 +82,7 @@ class HomeFragment : Fragment() {
                 signinButton.setOnClickListener {
                     findNavController().navigate(R.id.action_homeFragment_to_signInFragment)
                 }
+                onlineButton.visibility = View.GONE
             }
         }
     }

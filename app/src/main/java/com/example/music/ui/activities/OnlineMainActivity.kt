@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
 import com.example.music.databinding.ActivityOnlineMainBinding
+import com.example.music.models.OnlinePlaylist
 import com.example.music.models.OnlineSong
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
 import com.example.music.services.OnlineMusicPlayerService
+import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.OnlinePlaylistFragment
 import com.example.music.ui.fragments.OnlineSongFragment
@@ -31,14 +33,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class OnlineMainActivity : AppCompatActivity(), ServiceConnection, OnlineSongFragment.SongFromAdapterClick {
+class OnlineMainActivity
+    : AppCompatActivity(),
+    ServiceConnection,
+    OnlineSongFragment.SongFromAdapterClick,
+    OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
     private lateinit var binding: ActivityOnlineMainBinding
 
     private lateinit var viewPagerChart: ViewPagerAdapter
 
     private var songFragment: OnlineSongFragment = OnlineSongFragment(this)
-    private var playlistFragment: OnlinePlaylistFragment = OnlinePlaylistFragment()
+    private var playlistFragment: OnlinePlaylistFragment = OnlinePlaylistFragment(this)
     private var fragmentList: MutableList<Fragment> = mutableListOf(songFragment, playlistFragment)
 
     private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song", "Playlist")
@@ -406,28 +412,33 @@ class OnlineMainActivity : AppCompatActivity(), ServiceConnection, OnlineSongFra
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
-//    override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
-//        this.songList = songList
-//        songPosition = position
-//        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-//        if (!isServiceConnected){
-//            initState()
-//            binding.bottomSheet.visibility = View.VISIBLE
-//        }
-//        else{
-//            musicPlayerService!!.stop()
-//            musicPlayerService!!.release()
-//            musicPlayerService!!.createMediaPlayer(this.songList!![songPosition])
-//            musicPlayerService!!.start()
-//            setTime()
-//            loadUI()
-//            setCompleteListener()
-//            listener()
-//        }
-//    }
+    override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
+        this.songList = songList
+        songPosition = position
+        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+        if (!isServiceConnected){
+            initState()
+            binding.bottomSheet.visibility = View.VISIBLE
+        }
+        else{
+            musicPlayerService!!.stop()
+            musicPlayerService!!.release()
+            musicPlayerService!!.createMediaPlayer(this.songList!![songPosition])
+            musicPlayerService!!.start()
+            setTime()
+            loadUI()
+            setCompleteListener()
+            listener()
+        }
+    }
 
-//    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
-//
-//    }
+    override fun callBackFromMenuSongInPlaylist(
+        action: String,
+        songList: List<OnlineSong>,
+        position: Int,
+        playlist: OnlinePlaylist
+    ) {
+        TODO("Not yet implemented")
+    }
 
 }

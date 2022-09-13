@@ -16,19 +16,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.models.OnlinePlaylist
+import com.example.music.models.OnlineSong
+import com.example.music.models.Song
+import com.example.music.models.SongPlaylistCrossRef
 import com.example.music.ui.adapters.OnlinePlaylistAdapter
+import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
+import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.viewModels.FirebaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OnlinePlaylistFragment : Fragment(), OnlinePlaylistAdapter.ItemPlaylistClickListener {
+class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener)
+    : Fragment(),
+    OnlinePlaylistAdapter.ItemPlaylistClickListener,
+    OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private val onlinePlaylistAdapter: OnlinePlaylistAdapter by lazy {
-        OnlinePlaylistAdapter(requireContext(),
-            this, viewLifecycleOwner)
+        OnlinePlaylistAdapter(requireContext(), this, viewLifecycleOwner, firebaseViewModel)
     }
 
     private var _binding: FragmentOnlinePlaylistBinding? = null
@@ -186,6 +193,21 @@ class OnlinePlaylistFragment : Fragment(), OnlinePlaylistAdapter.ItemPlaylistCli
         }
         if (action == "Delete"){
             createDialogForDeletePlaylist(playlist)
+        }
+    }
+
+    override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
+        songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
+    }
+
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
+        if (action == "Play"){
+            songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
+        }
+        if (action == "Delete from playlist"){
+            FirebaseAuth.getInstance().currentUser?.let {
+                firebaseViewModel.deleteSongInPlaylist(songList[position], playlist, it)
+            }
         }
     }
 }
