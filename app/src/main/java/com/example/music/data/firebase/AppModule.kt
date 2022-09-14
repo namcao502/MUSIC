@@ -35,4 +35,10 @@ object AppModule {
         return FirebaseFirestore.getInstance()
     }
 
+    @Singleton
+    @Provides
+    fun provideFirebaseRepository(database: FirebaseFirestore): FirebaseRepository{
+        return FirebaseRepositoryImp(database)
+    }
+
 }

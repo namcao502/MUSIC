@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
+import com.example.music.UiState
 import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.models.OnlinePlaylist
 import com.example.music.models.OnlineSong
@@ -87,9 +88,26 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
         FirebaseAuth.getInstance().currentUser?.let {
             firebaseViewModel.getAllPlaylistOfUser(it)
         }
-        firebaseViewModel.playlist.observe(viewLifecycleOwner, Observer {
-            onlinePlaylistAdapter.setData(it)
-        })
+        firebaseViewModel.playlist.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    onlinePlaylistAdapter.setData(it.data)
+                }
+            }
+        }
+
+//        FirebaseAuth.getInstance().currentUser?.let {
+//            firebaseViewModel.getAllPlaylistOfUser(it)
+//        }
+//        firebaseViewModel.playlist.observe(viewLifecycleOwner, Observer {
+//            onlinePlaylistAdapter.setData(it)
+//        })
 
 //        binding.addBtn.setOnClickListener {
 //            createDialogForAddPlaylist()

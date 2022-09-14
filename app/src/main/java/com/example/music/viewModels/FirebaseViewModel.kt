@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.music.UiState
+import com.example.music.data.firebase.FirebaseRepository
 import com.example.music.models.OnlinePlaylist
 import com.example.music.models.OnlineSong
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
@@ -20,16 +22,16 @@ import kotlin.collections.ArrayList
 
 
 @HiltViewModel
-class FirebaseViewModel @Inject constructor(): ViewModel(){
+class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository): ViewModel(){
 
-    private val _songs = MutableLiveData<List<OnlineSong>>()
-    val song: LiveData<List<OnlineSong>> get() = _songs
+    private val _songs = MutableLiveData<UiState<List<OnlineSong>>>()
+    val song: LiveData<UiState<List<OnlineSong>>> get() = _songs
 
     private val _songInPlaylist = MutableLiveData<List<OnlineSong>>()
     val songInPlaylist: LiveData<List<OnlineSong>> get() = _songInPlaylist
 
-    private val _playlist = MutableLiveData<List<OnlinePlaylist>>()
-    val playlist: LiveData<List<OnlinePlaylist>> get() = _playlist
+    private val _playlist = MutableLiveData<UiState<List<OnlinePlaylist>>>()
+    val playlist: LiveData<UiState<List<OnlinePlaylist>>> get() = _playlist
 
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
         viewModelScope.launch(Dispatchers.IO) {
@@ -66,24 +68,9 @@ class FirebaseViewModel @Inject constructor(): ViewModel(){
     }
 
     fun getAllSongs() {
-        viewModelScope.launch(Dispatchers.IO) {
-            FirebaseFirestore.getInstance()
-                .collection("OnlineSong")
-                .addSnapshotListener { value, error ->
-
-                    if (error != null) {
-                        return@addSnapshotListener
-                    }
-
-                    val songs: ArrayList<OnlineSong> = ArrayList()
-                    if (value != null) {
-                        for (document in value){
-                            val song = document.toObject(OnlineSong::class.java)
-                            songs.add(song)
-                        }
-                    }
-                    _songs.value = songs
-                }
+        _songs.value = UiState.Loading
+        repository.getAllSongs {
+            _songs.value = it
         }
     }
 
@@ -109,26 +96,9 @@ class FirebaseViewModel @Inject constructor(): ViewModel(){
     }
 
     fun getAllPlaylistOfUser(user: FirebaseUser){
-        viewModelScope.launch(Dispatchers.IO) {
-            FirebaseFirestore.getInstance()
-                .collection("Playlist")
-                .document(user.uid)
-                .collection("User")
-                .addSnapshotListener { value, error ->
-
-                    if (error != null) {
-                        return@addSnapshotListener
-                    }
-
-                    val playlist: ArrayList<OnlinePlaylist> = ArrayList()
-                    if (value != null) {
-                        for (document in value){
-                            val tempPlaylist = document.toObject(OnlinePlaylist::class.java)
-                            playlist.add(tempPlaylist)
-                        }
-                    }
-                    _playlist.value = playlist
-                 }
+        _playlist.value = UiState.Loading
+        repository.getAllPlaylistOfUser(user){
+            _playlist.value = it
         }
     }
 

@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
+import com.example.music.UiState
 import com.example.music.databinding.FragmentOnlineSongBinding
 import com.example.music.databinding.FragmentSongBinding
 import com.example.music.models.*
@@ -65,9 +66,19 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
 
         firebaseViewModel.getAllSongs()
-        firebaseViewModel.song.observe(viewLifecycleOwner, Observer {
-            onlineSongAdapter.setData(it)
-        })
+        firebaseViewModel.song.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    onlineSongAdapter.setData(it.data)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -106,12 +117,31 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         recyclerView.adapter = onlineSongInPlaylistAdapter
         recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
+//        FirebaseAuth.getInstance().currentUser?.let {
+//            firebaseViewModel.getAllPlaylistOfUser(it)
+//        }
+//        firebaseViewModel.playlist.observe(viewLifecycleOwner, Observer {
+//            onlineSongInPlaylistAdapter.setData(it)
+//        })
+
         FirebaseAuth.getInstance().currentUser?.let {
             firebaseViewModel.getAllPlaylistOfUser(it)
         }
-        firebaseViewModel.playlist.observe(viewLifecycleOwner, Observer {
-            onlineSongInPlaylistAdapter.setData(it)
-        })
+        firebaseViewModel.playlist.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    onlineSongInPlaylistAdapter.setData(it.data)
+                }
+            }
+        }
+
+
 
         val addBtn = dialog.findViewById<FloatingActionButton>(R.id.add_btn)
 
