@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "playlist")
 data class Playlist(
     @PrimaryKey(autoGenerate = true)
-    val playlist_id: Int,
-    val name: String
+    val playlist_id: Int? = 0,
+    val name: String? = ""
 )

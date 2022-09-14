@@ -129,8 +129,12 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         //add song to selected playlist
         val songSelected = currentSong
 
-        val songPlaylistCrossRef = SongPlaylistCrossRef(songSelected.song_id, playlist.playlist_id)
-        songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
+        val songPlaylistCrossRef = playlist.playlist_id?.let {
+                SongPlaylistCrossRef(songSelected.song_id, it)
+            }
+        if (songPlaylistCrossRef != null) {
+            songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
+        }
 
         Toast.makeText(requireContext(), "Song ${songSelected.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
     }

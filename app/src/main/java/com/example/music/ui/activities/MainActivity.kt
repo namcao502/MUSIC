@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
+import com.example.music.models.Playlist
 import com.example.music.models.Song
 import com.example.music.services.MusicPlayerService
 import com.example.music.ui.adapters.SongInPlaylistAdapter
@@ -30,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -361,15 +363,21 @@ class MainActivity :
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run(){
-                if (musicPlayerService == null){
-                    return
-                }
-                else {
+//                if (musicPlayerService == null){
+//                    handler.removeCallbacksAndMessages(null)
+//                }
+//                else {
+//
+//                }
+                try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
                     handler.postDelayed(this, 1000)
+                }
+                catch (error: IllegalStateException){
+                    handler.removeCallbacksAndMessages(null)
                 }
             }
         }, 1000)
@@ -485,7 +493,7 @@ class MainActivity :
         }
     }
 
-    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
 
     }
 

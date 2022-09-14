@@ -50,8 +50,8 @@ class PlaylistAdapter(
                     itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
                 }
 
-                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
-                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position)
+                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, pl: Playlist) {
+                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, playlist[position])
                 }
 
             })
@@ -60,7 +60,10 @@ class PlaylistAdapter(
         with(holder){
 
             itemView.setOnClickListener {
-                songInPlaylistViewModel.getPlaylistId(playlist[position].playlist_id)
+
+//                playlist[position].playlist_id?.let { it1 ->
+//                    songInPlaylistViewModel.getPlaylistId(it1)
+//                }
 
                 if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
                     binding.songInPlaylistRecyclerView.visibility = View.GONE
@@ -91,20 +94,22 @@ class PlaylistAdapter(
 
                 //load count length and count song
 
-                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
-                    if (it != null){
-                        songInPlaylistAdapter.setData(it.listSong)
-                        val countSong = it.listSong.size.toString()
-                        var countDuration = 0
-                        for (x in it.listSong){
-                            countDuration += x.duration
-                        }
-                        binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
-                        binding.countSongTxt.text = countSong.plus(" songs")
+                this.playlist_id?.let { it2 ->
+                    songInPlaylistViewModel.getSongsOfPlaylist(it2).observe(lifecycle, Observer {
+                        if (it != null){
+                            songInPlaylistAdapter.setData(it.listSong)
+                            val countSong = it.listSong.size.toString()
+                            var countDuration = 0
+                            for (x in it.listSong){
+                                countDuration += x.duration
+                            }
+                            binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
+                            binding.countSongTxt.text = countSong.plus(" songs")
 
-//                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
-                    }
-                })
+            //                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
+                        }
+                    })
+                }
                 binding.titleTxt.text = this.name
             }
         }
@@ -120,6 +125,6 @@ class PlaylistAdapter(
     interface ItemPlaylistClickListener {
         fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist)
         fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
-        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist)
     }
 }

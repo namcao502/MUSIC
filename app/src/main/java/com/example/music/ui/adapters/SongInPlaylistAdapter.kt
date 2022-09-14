@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.SongRowItemBinding
+import com.example.music.models.Playlist
 import com.example.music.models.Song
 
 class SongInPlaylistAdapter(
@@ -46,7 +47,7 @@ class SongInPlaylistAdapter(
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_song_in_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.callBackFromMenuSongInPlaylist(menuItem.title.toString(), songList, position)
+                        itemClickListener.callBackFromMenuSongInPlaylist(menuItem.title.toString(), songList, position, Playlist())
                         true
                     }
                     // Showing the popup menu
@@ -79,6 +80,6 @@ class SongInPlaylistAdapter(
 
     interface ItemSongInPlaylistClickListener{
         fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
-        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist)
     }
 }

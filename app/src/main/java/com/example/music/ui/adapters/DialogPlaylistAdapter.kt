@@ -59,17 +59,19 @@ class DialogPlaylistAdapter(
 
             with(playlist[position]){
                 binding.titleTxt.text = this.name
-                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
-                    if (it != null){
-                        val countSong = it.listSong.size.toString()
-                        var countDuration = 0
-                        for (x in it.listSong){
-                            countDuration += x.duration
+                this.playlist_id?.let { it2 ->
+                    songInPlaylistViewModel.getSongsOfPlaylist(it2).observe(lifecycle, Observer {
+                        if (it != null){
+                            val countSong = it.listSong.size.toString()
+                            var countDuration = 0
+                            for (x in it.listSong){
+                                countDuration += x.duration
+                            }
+                            binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
+                            binding.countSongTxt.text = countSong.plus(" songs")
                         }
-                        binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
-                        binding.countSongTxt.text = countSong.plus(" songs")
-                    }
-                })
+                    })
+                }
             }
         }
 

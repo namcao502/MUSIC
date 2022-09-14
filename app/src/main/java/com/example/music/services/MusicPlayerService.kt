@@ -1,14 +1,18 @@
 package com.example.music.services
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.music.R
 import com.example.music.models.Song
@@ -75,6 +79,15 @@ class MusicPlayerService: Service() {
 
     private fun sendNotification(song: Song) {
 
+        val channelId =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(CHANNEL_ID_1, "My Background Service")
+            } else {
+                // If earlier version channel ID is not used
+                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                ""
+            }
+
         val mediaSessionCompat = MediaSessionCompat(this, "tag")
 
         // Create an explicit intent for an Activity in your app
@@ -83,7 +96,7 @@ class MusicPlayerService: Service() {
 //        }
 //        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID_1)
+        val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(song.name)
             .setContentText(song.artists)
             .setSmallIcon(R.drawable.icons8_musical_notes_48)
@@ -151,6 +164,16 @@ class MusicPlayerService: Service() {
 
     fun isPlaying(): Boolean{
         return mediaPlayer!!.isPlaying
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String{
+        val chan = NotificationChannel(channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE)
+
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
     }
 
 }
