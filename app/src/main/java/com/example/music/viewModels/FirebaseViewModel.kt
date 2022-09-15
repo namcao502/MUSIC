@@ -27,8 +27,12 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _songs = MutableLiveData<UiState<List<OnlineSong>>>()
     val song: LiveData<UiState<List<OnlineSong>>> get() = _songs
 
-    private val _songInPlaylist = MutableLiveData<List<OnlineSong>>()
-    val songInPlaylist: LiveData<List<OnlineSong>> get() = _songInPlaylist
+//    private val _songInPlaylist = MutableLiveData<UiState<List<OnlineSong>>>()
+    private var _songInPlaylist: List<MutableLiveData<UiState<List<OnlineSong>>>>
+    = List(10, init= {i:Int -> MutableLiveData<UiState<List<OnlineSong>>>()})
+
+    var songInPlaylist: List<LiveData<UiState<List<OnlineSong>>>> = _songInPlaylist
+//    val songInPlaylist: LiveData<UiState<List<OnlineSong>>> get() = _songInPlaylist
 
     private val _playlist = MutableLiveData<UiState<List<OnlinePlaylist>>>()
     val playlist: LiveData<UiState<List<OnlinePlaylist>>> get() = _playlist
@@ -74,24 +78,19 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         }
     }
 
-    fun getAllSongInPlaylist(playlist: OnlinePlaylist){
-        viewModelScope.launch(Dispatchers.IO) {
-            playlist.songs?.let { it2 ->
-                FirebaseFirestore.getInstance()
-                    .collection("OnlineSong")
-                    .whereIn("id", it2)
-                    .get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful){
-                            val songs: ArrayList<OnlineSong> = ArrayList()
-                            for (document in it.result){
-                                val song = document.toObject(OnlineSong::class.java)
-                                songs.add(song)
-                            }
-                            _songInPlaylist.value = songs
-                        }
-                    }
-            }
+    fun getAllSongInPlaylist(playlist: OnlinePlaylist, position: Int){
+        _songInPlaylist[position].value = UiState.Loading
+        repository.getAllSongInPlaylist(playlist){
+//            when(it){
+//                is UiState.Success -> {
+//                    val length = it.data.size
+//                    for (x in 0 until length){
+//                        _songInPlaylist[position].value = it
+//                    }
+//                }
+//                else -> {}
+//            }
+            _songInPlaylist[position].value = it
         }
     }
 

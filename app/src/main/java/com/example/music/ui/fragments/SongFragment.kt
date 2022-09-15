@@ -129,9 +129,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         //add song to selected playlist
         val songSelected = currentSong
 
-        val songPlaylistCrossRef = playlist.playlist_id?.let {
-                SongPlaylistCrossRef(songSelected.song_id, it)
-            }
+        val songPlaylistCrossRef = SongPlaylistCrossRef(songSelected.song_id, playlist.playlist_id)
         if (songPlaylistCrossRef != null) {
             songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
         }

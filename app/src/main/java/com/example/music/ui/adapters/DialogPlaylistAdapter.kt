@@ -59,7 +59,7 @@ class DialogPlaylistAdapter(
 
             with(playlist[position]){
                 binding.titleTxt.text = this.name
-                this.playlist_id?.let { it2 ->
+                this.playlist_id.let { it2 ->
                     songInPlaylistViewModel.getSongsOfPlaylist(it2).observe(lifecycle, Observer {
                         if (it != null){
                             val countSong = it.listSong.size.toString()

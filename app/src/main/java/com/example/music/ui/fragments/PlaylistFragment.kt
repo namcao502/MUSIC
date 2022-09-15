@@ -192,15 +192,13 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
         songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
     }
 
-    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
         if (action == "Play"){
             songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
         }
         if (action == "Delete from playlist"){
-            val songInPlaylistCrossRef = playlist.playlist_id?.let {
-                SongPlaylistCrossRef(songList[position].song_id, it)
-            }
-            songInPlaylistCrossRef?.let {
+            val songInPlaylistCrossRef = SongPlaylistCrossRef(songList[position].song_id, songInPlaylistViewModel.playlistId)
+            songInPlaylistCrossRef.let {
                 songInPlaylistViewModel.deleteSongPlaylistCrossRef(it)
             }
         }

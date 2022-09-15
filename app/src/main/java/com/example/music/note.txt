@@ -1,14 +1,3 @@
 
-load tất cả danh sách phát
-
-ở fragment danh sách phát
-tuỳ chọn thêm danh sách phát mới, thêm bài hát mới vào danh sách, đổi tên danh sách, xoá danh sách
-
-khi bấm vào 1 ds phát thì đổi adapter và sau khi ấn trên thanh menu thì đổi lại thành adapter cũ
-(đổi option menu khi bấm và ngược lại)
-
-ở fragment bài hát
-tuỳ chọn thêm bài hát vào danh sách phát
-
-tạo trình phát nhạc dưới nền
+lỗi load tất cả bài hát của 1 danh sách phát
 

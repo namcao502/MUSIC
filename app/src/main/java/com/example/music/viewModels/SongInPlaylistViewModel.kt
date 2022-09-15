@@ -3,6 +3,7 @@ package com.example.music.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.music.models.Playlist
 import com.example.music.models.PlaylistWithSongs
 import com.example.music.models.SongPlaylistCrossRef
 import com.example.music.repositories.SongInPlaylistRepository
@@ -13,6 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SongInPlaylistViewModel @Inject constructor(private val repository: SongInPlaylistRepository): ViewModel() {
+
+    var playlistId = -1
 
     fun addSongPlaylistCrossRef(songPlaylistCrossRef: SongPlaylistCrossRef){
         viewModelScope.launch(Dispatchers.IO) {
@@ -28,6 +31,10 @@ class SongInPlaylistViewModel @Inject constructor(private val repository: SongIn
 
     fun getSongsOfPlaylist(playlistId: Int): LiveData<PlaylistWithSongs> {
         return repository.getSongsOfPlaylist(playlistId)
+    }
+
+    fun getPlaylistId(playlistId: Int) {
+        this.playlistId = playlistId
     }
 
 }

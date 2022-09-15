@@ -44,7 +44,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         OnlineSongAdapter(requireContext(), this)
     }
 
-    private val onlineSongInPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
+    private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(requireContext(), this, viewLifecycleOwner, firebaseViewModel)
     }
 
@@ -114,7 +114,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         dialog.window!!.attributes = lp
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
-        recyclerView.adapter = onlineSongInPlaylistAdapter
+        recyclerView.adapter = onlineDialogPlaylistAdapter
         recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
 //        FirebaseAuth.getInstance().currentUser?.let {
@@ -136,7 +136,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
                 }
                 is UiState.Success -> {
-                    onlineSongInPlaylistAdapter.setData(it.data)
+                    onlineDialogPlaylistAdapter.setData(it.data)
                 }
             }
         }

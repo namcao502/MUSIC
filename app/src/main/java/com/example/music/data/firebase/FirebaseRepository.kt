@@ -3,6 +3,7 @@ package com.example.music.data.firebase
 import com.example.music.UiState
 import com.example.music.models.OnlinePlaylist
 import com.example.music.models.OnlineSong
+import com.example.music.models.Playlist
 import com.google.firebase.auth.FirebaseUser
 
 interface FirebaseRepository {
@@ -13,7 +14,7 @@ interface FirebaseRepository {
 
     fun getAllSongs(result: (UiState<List<OnlineSong>>) -> Unit)
 
-    fun getAllSongInPlaylist(playlist: OnlinePlaylist)
+    fun getAllSongInPlaylist(playlist: OnlinePlaylist, result: (UiState<List<OnlineSong>>) -> Unit)
 
     fun getAllPlaylistOfUser(user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit)
 

@@ -2,6 +2,7 @@ package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
+import com.example.music.UiState
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.models.OnlinePlaylist
 import com.example.music.models.OnlineSong
@@ -40,23 +42,9 @@ class OnlinePlaylistAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val onlineSongInPlaylistAdapter: OnlineSongInPlaylistAdapter by lazy {
-            OnlineSongInPlaylistAdapter(context, object : OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
-
-                override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
-                    itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
-                }
-
-                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
-                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@OnlinePlaylistAdapter.playlist[position])
-                }
-            })
-        }
-
         with(holder){
 
             itemView.setOnClickListener {
-//                songInPlaylistViewModel.getPlaylistId(playlist[position].id)
 
                 if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
                     binding.songInPlaylistRecyclerView.visibility = View.GONE
@@ -80,16 +68,44 @@ class OnlinePlaylistAdapter(
 
             with(playlist[position]){
 
+                val onlineSongInPlaylistAdapter: OnlineSongInPlaylistAdapter by lazy {
+                    OnlineSongInPlaylistAdapter(context, object : OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+
+                        override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
+                            itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
+                        }
+
+                        override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
+                            itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@OnlinePlaylistAdapter.playlist[position])
+                        }
+                    })
+                }
+
                 binding.songInPlaylistRecyclerView.apply {
                     adapter = onlineSongInPlaylistAdapter
                     layoutManager = LinearLayoutManager(context)
                 }
                 binding.titleTxt.text = this.name
 
-                firebaseViewModel.getAllSongInPlaylist(this)
-                firebaseViewModel.songInPlaylist.observe(lifecycle, Observer {
-                    if (it != null){
-                        onlineSongInPlaylistAdapter.setData(it)
+//                firebaseViewModel.getAllSongInPlaylist(this)
+//                firebaseViewModel.songInPlaylist.observe(lifecycle, Observer {
+//                    if (it != null){
+//                        onlineSongInPlaylistAdapter.setData(it)
+//                    }
+//                })
+
+                firebaseViewModel.getAllSongInPlaylist(playlist[position], position)
+                firebaseViewModel.songInPlaylist[position].observe(lifecycle, Observer {
+                    when(it){
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            onlineSongInPlaylistAdapter.setData(it.data)
+                        }
                     }
                 })
 

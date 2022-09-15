@@ -493,7 +493,7 @@ class MainActivity :
         }
     }
 
-    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
 
     }
 

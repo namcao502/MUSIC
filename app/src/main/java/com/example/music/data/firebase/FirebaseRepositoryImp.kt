@@ -35,8 +35,30 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore): FirebaseRepository
             }
     }
 
-    override fun getAllSongInPlaylist(playlist: OnlinePlaylist) {
-        TODO("Not yet implemented")
+    override fun getAllSongInPlaylist(playlist: OnlinePlaylist, result: (UiState<List<OnlineSong>>) -> Unit) {
+
+        if (playlist.songs!!.isEmpty()){
+            return
+        }
+        else {
+            FirebaseFirestore.getInstance()
+                .collection("OnlineSong")
+                .whereIn("id", playlist.songs)
+                .get()
+                .addOnSuccessListener {
+                    val songs: ArrayList<OnlineSong> = ArrayList()
+                    for (document in it){
+                        val song = document.toObject(OnlineSong::class.java)
+                        songs.add(song)
+                    }
+                    result.invoke(
+                        UiState.Success(songs)
+                    )
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
     }
 
     override fun getAllPlaylistOfUser(user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit) {
