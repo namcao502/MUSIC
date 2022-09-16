@@ -37,37 +37,32 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _playlist = MutableLiveData<UiState<List<OnlinePlaylist>>>()
     val playlist: LiveData<UiState<List<OnlinePlaylist>>> get() = _playlist
 
+    private val _addPlaylist = MutableLiveData<UiState<String>>()
+    val addPlaylist: LiveData<UiState<String>> get() = _addPlaylist
+
+    private val _deletePlaylist = MutableLiveData<UiState<String>>()
+    val deletePlaylist: LiveData<UiState<String>> get() = _deletePlaylist
+
+    private val _updatePlaylist = MutableLiveData<UiState<String>>()
+    val updatePlaylist: LiveData<UiState<String>> get() = _updatePlaylist
+
+    private val _deleteSongInPlaylist = MutableLiveData<UiState<String>>()
+    val deleteSongInPlaylist: LiveData<UiState<String>> get() = _deleteSongInPlaylist
+
+    private val _addSongInPlaylist = MutableLiveData<UiState<String>>()
+    val addSongInPlaylist: LiveData<UiState<String>> get() = _addSongInPlaylist
+
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
-        viewModelScope.launch(Dispatchers.IO) {
-
-            val tempSongs = playlist.songs as ArrayList
-            tempSongs.remove(song.id)
-
-            playlist.id?.let {
-                FirebaseFirestore.getInstance()
-                    .collection("Playlist")
-                    .document(user.uid)
-                    .collection("User")
-                    .document(it).update("songs", tempSongs)
-            }
+        _deleteSongInPlaylist.value = UiState.Loading
+        repository.deleteSongInPlaylist(song, playlist, user){
+            _deleteSongInPlaylist.value = it
         }
     }
 
     fun addSongToPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
-
-        val tempSongs = playlist.songs as ArrayList
-        song.id?.let {
-            tempSongs.add(it)
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            playlist.id?.let {
-                FirebaseFirestore.getInstance()
-                    .collection("Playlist")
-                    .document(user.uid)
-                    .collection("User")
-                    .document(it).update("songs", tempSongs)
-            }
+        _addSongInPlaylist.value = UiState.Loading
+        repository.addSongToPlaylist(song, playlist, user){
+            _addSongInPlaylist.value = it
         }
     }
 
@@ -102,42 +97,23 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     }
 
     fun addPlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val doc: DocumentReference = FirebaseFirestore.getInstance()
-                    .collection("Playlist")
-                    .document(user.uid)
-                    .collection("User").document()
-            val tempPlaylist = playlist
-            tempPlaylist.id = doc.id
-
-            doc.set(tempPlaylist)
-                .addOnCompleteListener {
-                    return@addOnCompleteListener
-                }
+        _addPlaylist.value = UiState.Loading
+        repository.addPlaylistForUser(playlist, user){
+            _addPlaylist.value = it
         }
     }
 
     fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser) {
-        viewModelScope.launch(Dispatchers.IO) {
-            playlist.id?.let {
-                FirebaseFirestore.getInstance()
-                    .collection("Playlist")
-                    .document(user.uid)
-                    .collection("User")
-                    .document(it).update("name", playlist.name)
-            }
+        _updatePlaylist.value = UiState.Loading
+        repository.updatePlaylistForUser(playlist, user){
+            _updatePlaylist.value = it
         }
     }
 
     fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser) {
-        viewModelScope.launch(Dispatchers.IO) {
-            playlist.id?.let {
-                FirebaseFirestore.getInstance()
-                    .collection("Playlist")
-                    .document(user.uid)
-                    .collection("User")
-                    .document(it).delete()
-            }
+        _deletePlaylist.value = UiState.Loading
+        repository.deletePlaylistForUser(playlist, user){
+            _deletePlaylist.value = it
         }
     }
 }

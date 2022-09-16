@@ -200,8 +200,21 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
         FirebaseAuth.getInstance().currentUser?.let {
             firebaseViewModel.addSongToPlaylist(songSelected, playlist, it)
-            Toast.makeText(requireContext(), "Song ${songSelected.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
         }
+
+        firebaseViewModel.addSongInPlaylist.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    Toast.makeText(requireContext(), "Song ${songSelected.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     private fun createDialogForRenamePlaylist(playlist: OnlinePlaylist){
@@ -228,6 +241,19 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                         FirebaseAuth.getInstance().currentUser?.let {
                             firebaseViewModel.updatePlaylistForUser(playlist, it)
                         }
+                        firebaseViewModel.updatePlaylist.observe(viewLifecycleOwner, Observer {
+                            when (it) {
+                                is UiState.Loading -> {
+
+                                }
+                                is UiState.Failure -> {
+
+                                }
+                                is UiState.Success -> {
+                                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        })
                     }
                 })
             .setNegativeButton("Cancel",
@@ -246,9 +272,23 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             .setTitle("")
             .setPositiveButton("Delete",
                 DialogInterface.OnClickListener { dialog, id ->
+
                     FirebaseAuth.getInstance().currentUser?.let {
                         firebaseViewModel.deletePlaylistForUser(playlist, it)
                     }
+                    firebaseViewModel.deletePlaylist.observe(viewLifecycleOwner, Observer {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    })
                 })
             .setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, id ->
@@ -280,6 +320,19 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                         FirebaseAuth.getInstance().currentUser?.let {
                             firebaseViewModel.addPlaylistForUser(playlist, it)
                         }
+                        firebaseViewModel.addPlaylist.observe(viewLifecycleOwner, Observer {
+                            when (it) {
+                                is UiState.Loading -> {
+
+                                }
+                                is UiState.Failure -> {
+
+                                }
+                                is UiState.Success -> {
+                                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        })
                     }
                 })
             .setNegativeButton("Cancel",

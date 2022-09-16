@@ -8,9 +8,9 @@ import com.google.firebase.auth.FirebaseUser
 
 interface FirebaseRepository {
 
-    fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser)
+    fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
-    fun addSongToPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser)
+    fun addSongToPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
     fun getAllSongs(result: (UiState<List<OnlineSong>>) -> Unit)
 
@@ -18,10 +18,10 @@ interface FirebaseRepository {
 
     fun getAllPlaylistOfUser(user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit)
 
-    fun addPlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser)
+    fun addPlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
-    fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser)
+    fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
-    fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser)
+    fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
 }
