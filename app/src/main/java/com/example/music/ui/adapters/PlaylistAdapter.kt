@@ -43,25 +43,11 @@ class PlaylistAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val songInPlaylistAdapter: SongInPlaylistAdapter by lazy {
-            SongInPlaylistAdapter(context, object : SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
-
-                override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
-                    itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
-                }
-
-                override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int) {
-                    itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position)
-                }
-
-            })
-        }
-
         with(holder){
 
             itemView.setOnClickListener {
 
-                songInPlaylistViewModel.getPlaylistId(playlist[position].playlist_id)
+//                songInPlaylistViewModel.getPlaylistId(playlist[position].playlist_id)
 
                 if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
                     binding.songInPlaylistRecyclerView.visibility = View.GONE
@@ -84,6 +70,20 @@ class PlaylistAdapter(
             }
 
             with(playlist[position]){
+
+                val songInPlaylistAdapter: SongInPlaylistAdapter by lazy {
+                    SongInPlaylistAdapter(context, object : SongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+
+                        override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
+                            itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
+                        }
+
+                        override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
+                            itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@with)
+                        }
+
+                    })
+                }
 
                 binding.songInPlaylistRecyclerView.apply {
                     adapter = songInPlaylistAdapter
@@ -122,6 +122,6 @@ class PlaylistAdapter(
     interface ItemPlaylistClickListener {
         fun callBackFromMenuPlaylistClick(action: String, playlist: Playlist)
         fun callBackFromSongInPlaylist(songList: List<Song>, position: Int)
-        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int)
+        fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist)
     }
 }

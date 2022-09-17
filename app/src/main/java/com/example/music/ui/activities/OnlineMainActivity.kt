@@ -29,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -308,15 +309,15 @@ class OnlineMainActivity
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run(){
-                if (musicPlayerService == null){
-                    return
-                }
-                else {
+                try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
                     handler.postDelayed(this, 1000)
+                }
+                catch (error: IllegalStateException){
+                    handler.removeCallbacksAndMessages(null)
                 }
             }
         }, 1000)
@@ -324,7 +325,9 @@ class OnlineMainActivity
 
     override fun onDestroy() {
         super.onDestroy()
-        musicPlayerService!!.pause()
+        if (musicPlayerService != null){
+            musicPlayerService!!.pause()
+        }
         stopService(Intent(this, OnlineMusicPlayerService::class.java))
         if (isServiceConnected){
             unbindService(this)
