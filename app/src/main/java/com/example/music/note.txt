@@ -1,3 +1,5 @@
 
-lỗi load tất cả bài hát của 1 danh sách phát
+làm thêm các màn hình album, artist, genre, user(thông tin cá nhân)
+
+crud cho từng thằng trên
 

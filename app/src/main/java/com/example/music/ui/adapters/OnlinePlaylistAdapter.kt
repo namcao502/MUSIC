@@ -76,7 +76,7 @@ class OnlinePlaylistAdapter(
                         }
 
                         override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
-                            itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@OnlinePlaylistAdapter.playlist[position])
+                            itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@with)
                         }
                     })
                 }

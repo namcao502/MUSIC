@@ -79,12 +79,6 @@ class OnlineSongInPlaylistAdapter(
         notifyDataSetChanged()
     }
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    fun updateData(listSong: List<OnlineSong>){
-//        this.songList = listSong
-//        notifyDataSetChanged()
-//    }
-
     interface ItemSongInPlaylistClickListener{
         fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int)
         fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist)

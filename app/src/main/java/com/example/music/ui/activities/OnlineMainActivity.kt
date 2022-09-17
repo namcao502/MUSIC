@@ -324,6 +324,7 @@ class OnlineMainActivity
 
     override fun onDestroy() {
         super.onDestroy()
+        musicPlayerService!!.pause()
         stopService(Intent(this, OnlineMusicPlayerService::class.java))
         if (isServiceConnected){
             unbindService(this)
