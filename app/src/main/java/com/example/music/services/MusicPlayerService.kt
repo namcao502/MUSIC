@@ -29,7 +29,8 @@ class MusicPlayerService: Service() {
 
     var mediaPlayer: MediaPlayer? = null
     private val myBinder = MyBinder()
-    private var song: Song? = null
+    private var initialSong: Song? = null
+    private var currentSong: Song? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -57,10 +58,10 @@ class MusicPlayerService: Service() {
         //get data from intent
         val bundle: Bundle? = intent.extras
         if (bundle?.get("songService") != null){
-            song = bundle.get("songService") as Song
-            if (song != null){
+            initialSong = bundle.get("songService") as Song
+            if (initialSong != null){
                 //create new media player
-                createMediaPlayer(song!!)
+                createMediaPlayer(initialSong!!)
             }
         }
 
@@ -68,13 +69,14 @@ class MusicPlayerService: Service() {
     }
 
     fun createMediaPlayer(song: Song){
+        currentSong = song
         mediaPlayer = MediaPlayer()
         with(mediaPlayer!!) {
             setDataSource(song.filePath)
             prepare()
             start()
         }
-        sendNotification(song)
+        sendNotification(currentSong!!)
     }
 
     private fun sendNotification(song: Song) {
@@ -129,12 +131,12 @@ class MusicPlayerService: Service() {
 
     fun pause() {
         mediaPlayer!!.pause()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun reset(){
         mediaPlayer!!.reset()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun stop(){
@@ -143,7 +145,7 @@ class MusicPlayerService: Service() {
 
     fun start(){
         mediaPlayer!!.start()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun release(){
@@ -168,11 +170,11 @@ class MusicPlayerService: Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String): String{
-        val chan = NotificationChannel(channelId,
-            channelName, NotificationManager.IMPORTANCE_NONE)
+
+        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE)
 
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(chan)
+        service.createNotificationChannel(channel)
         return channelId
     }
 

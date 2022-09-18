@@ -33,7 +33,8 @@ class OnlineMusicPlayerService: Service() {
 
     var mediaPlayer: MediaPlayer? = null
     private val myBinder = MyBinder()
-    private var song: OnlineSong? = null
+    private var initialSong: OnlineSong? = null
+    private var currentSong: OnlineSong? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -61,10 +62,10 @@ class OnlineMusicPlayerService: Service() {
         //get data from intent
         val bundle: Bundle? = intent.extras
         if (bundle?.get("songService") != null){
-            song = bundle.get("songService") as OnlineSong
-            if (song != null){
+            initialSong = bundle.get("songService") as OnlineSong
+            if (initialSong != null){
                 //create new media player
-                createMediaPlayer(song!!)
+                createMediaPlayer(initialSong!!)
             }
         }
 
@@ -72,6 +73,7 @@ class OnlineMusicPlayerService: Service() {
     }
 
     fun createMediaPlayer(song: OnlineSong){
+        currentSong = song
         mediaPlayer = MediaPlayer()
         with(mediaPlayer!!) {
             setAudioAttributes(
@@ -85,7 +87,7 @@ class OnlineMusicPlayerService: Service() {
             prepare()
             start()
         }
-        sendNotification(song)
+        sendNotification(currentSong!!)
     }
 
     private fun sendNotification(song: OnlineSong) {
@@ -140,12 +142,12 @@ class OnlineMusicPlayerService: Service() {
 
     fun pause() {
         mediaPlayer!!.pause()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun reset(){
         mediaPlayer!!.reset()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun stop(){
@@ -154,7 +156,7 @@ class OnlineMusicPlayerService: Service() {
 
     fun start(){
         mediaPlayer!!.start()
-        sendNotification(song!!)
+        sendNotification(currentSong!!)
     }
 
     fun release(){
