@@ -46,7 +46,6 @@ class PlaylistAdapter(
         with(holder){
 
             itemView.setOnClickListener {
-
 //                songInPlaylistViewModel.getPlaylistId(playlist[position].playlist_id)
 
                 if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
@@ -92,8 +91,8 @@ class PlaylistAdapter(
 
                 //load count length and count song
 
-                this.playlist_id.let { it2 ->
-                    songInPlaylistViewModel.getSongsOfPlaylist(it2).observe(lifecycle, Observer {
+                this.playlist_id.let { playlistID ->
+                    songInPlaylistViewModel.getSongsOfPlaylist(playlistID).observe(lifecycle, Observer {
                         if (it != null){
                             songInPlaylistAdapter.setData(it.listSong)
                             val countSong = it.listSong.size.toString()

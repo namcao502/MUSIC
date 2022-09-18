@@ -9,7 +9,11 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
@@ -95,7 +99,7 @@ class OnlineMainActivity
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
+                    showMiniMenu(false)
                 }
 
             })
@@ -140,15 +144,18 @@ class OnlineMainActivity
         binding.playStateBtn.setOnClickListener{
             if (playState == "Loop") {
                 playState = "Shuffle"
-                binding.playStateBtn.setImageResource(R.drawable.icons8_shuffle_64)
+                binding.playStateBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
+                Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
             } else {
                 if (playState == "Shuffle") {
                     playState = "Go"
-                    binding.playStateBtn.setImageResource(R.drawable.icons8_arrow_64)
+                    binding.playStateBtn.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
+                    Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
                 } else {
                     if (playState == "Go") {
                         playState = "Loop"
-                        binding.playStateBtn.setImageResource(R.drawable.icons8_repeat_64)
+                        binding.playStateBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
+                        Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -217,7 +224,7 @@ class OnlineMainActivity
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -253,7 +260,7 @@ class OnlineMainActivity
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -268,7 +275,7 @@ class OnlineMainActivity
 
     private fun play(){
         musicPlayerService!!.start()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         updateProgress()
@@ -276,7 +283,7 @@ class OnlineMainActivity
 
     private fun pause(){
         musicPlayerService!!.pause()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_play_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
         setTime()
         updateProgress()
@@ -294,6 +301,7 @@ class OnlineMainActivity
         val sdf = SimpleDateFormat("mm:ss")
         binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
         binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.miniSb.max = musicPlayerService!!.getDuration()
     }
 
     private fun loadUI(){
@@ -301,6 +309,7 @@ class OnlineMainActivity
 //        binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
+        binding.miniSb.max = musicPlayerService!!.getDuration()
 //        binding.miniSongArtist.text = songList!![songPosition].artists
         updateProgress()
     }
@@ -314,6 +323,7 @@ class OnlineMainActivity
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
+                    binding.miniSb.max = currentPosition
                     handler.postDelayed(this, 1000)
                 }
                 catch (error: IllegalStateException){

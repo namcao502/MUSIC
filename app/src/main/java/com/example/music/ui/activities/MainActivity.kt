@@ -31,9 +31,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class MainActivity :
@@ -91,7 +91,7 @@ class MainActivity :
             peekHeight = 200
             this.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED){
                         showMiniMenu(true)
@@ -103,7 +103,7 @@ class MainActivity :
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
+                    showMiniMenu(false)
                 }
 
             })
@@ -195,15 +195,18 @@ class MainActivity :
         binding.playStateBtn.setOnClickListener{
             if (playState == "Loop") {
                 playState = "Shuffle"
-                binding.playStateBtn.setImageResource(R.drawable.icons8_shuffle_64)
+                binding.playStateBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
+                Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
             } else {
                 if (playState == "Shuffle") {
                     playState = "Go"
-                    binding.playStateBtn.setImageResource(R.drawable.icons8_arrow_64)
+                    binding.playStateBtn.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
+                    Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
                 } else {
                     if (playState == "Go") {
                         playState = "Loop"
-                        binding.playStateBtn.setImageResource(R.drawable.icons8_repeat_64)
+                        binding.playStateBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
+                        Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -225,6 +228,7 @@ class MainActivity :
                 updateProgress()
             }
         })
+
         try {
             audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
             binding.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
@@ -272,7 +276,7 @@ class MainActivity :
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -308,7 +312,7 @@ class MainActivity :
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -323,7 +327,7 @@ class MainActivity :
 
     private fun play(){
         musicPlayerService!!.start()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_pause_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         updateProgress()
@@ -331,7 +335,7 @@ class MainActivity :
 
     private fun pause(){
         musicPlayerService!!.pause()
-        binding.playPauseBtn.setImageResource(R.drawable.icons8_play_64)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
         setTime()
         updateProgress()
@@ -348,12 +352,14 @@ class MainActivity :
         val sdf = SimpleDateFormat("mm:ss")
         binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
         binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.miniSb.max = musicPlayerService!!.getDuration()
     }
 
     private fun loadUI(){
         binding.titleTxt.text = songList!![songPosition].name
         binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.miniSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniSongArtist.text = songList!![songPosition].artists
         updateProgress()
@@ -374,6 +380,7 @@ class MainActivity :
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
+                    binding.miniSb.progress = currentPosition
                     handler.postDelayed(this, 1000)
                 }
                 catch (error: IllegalStateException){

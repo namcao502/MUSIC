@@ -9,6 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:padding="5dp"
+        android:background="#1e1f34"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,7 +20,9 @@
             android:layout_marginEnd="8dp"
             android:singleLine="true"
             android:text="Author"
+            android:textColor="@color/white"
             android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/length_txt"
             app:layout_constraintStart_toStartOf="@+id/title_txt"
             app:layout_constraintTop_toBottomOf="@+id/title_txt" />
@@ -34,27 +37,30 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Title"
+            android:textColor="@color/white"
             android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/author_txt"
             app:layout_constraintEnd_toStartOf="@+id/menu_btn"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icons8_musical_notes_48" />
+            app:srcCompat="@drawable/ic_baseline_music_note_24" />
 
         <ImageButton
+            android:background="#1e1f34"
             android:id="@+id/menu_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/title_txt"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_menu_24" />
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
         <TextView
             android:id="@+id/length_txt"
@@ -66,7 +72,9 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Length"
+            android:textColor="@color/white"
             android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/menu_btn"
             app:layout_constraintStart_toEndOf="@+id/author_txt"
             app:layout_constraintTop_toBottomOf="@+id/title_txt" />

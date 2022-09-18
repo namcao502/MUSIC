@@ -101,7 +101,7 @@ class MusicPlayerService: Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(song.name)
             .setContentText(song.artists)
-            .setSmallIcon(R.drawable.icons8_musical_notes_48)
+            .setSmallIcon(R.drawable.ic_baseline_music_note_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2)

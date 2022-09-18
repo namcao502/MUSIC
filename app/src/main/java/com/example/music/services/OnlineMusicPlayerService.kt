@@ -112,7 +112,7 @@ class OnlineMusicPlayerService: Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(song.name)
 //            .setContentText(song.artists)
-            .setSmallIcon(R.drawable.icons8_musical_notes_48)
+            .setSmallIcon(R.drawable.ic_baseline_music_note_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2)
@@ -181,11 +181,11 @@ class OnlineMusicPlayerService: Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String): String{
-        val chan = NotificationChannel(channelId,
+        val channel = NotificationChannel(channelId,
             channelName, NotificationManager.IMPORTANCE_NONE)
 
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(chan)
+        service.createNotificationChannel(channel)
         return channelId
     }
 
