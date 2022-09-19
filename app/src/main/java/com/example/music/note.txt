@@ -3,3 +3,5 @@ làm thêm các màn hình album, artist, genre, user(thông tin cá nhân)
 
 crud cho từng thằng trên
 
+đi cào data về làm db
+
