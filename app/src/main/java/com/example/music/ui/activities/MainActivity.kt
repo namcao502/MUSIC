@@ -423,7 +423,9 @@ class MainActivity :
 
     override fun onDestroy() {
         super.onDestroy()
-        musicPlayerService!!.pause()
+        if (musicPlayerService != null){
+            musicPlayerService!!.pause()
+        }
         stopService(Intent(this, MusicPlayerService::class.java))
         if (isServiceConnected){
             unbindService(this)

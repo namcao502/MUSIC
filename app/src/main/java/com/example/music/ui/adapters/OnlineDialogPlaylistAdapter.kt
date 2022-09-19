@@ -18,9 +18,7 @@ import java.text.SimpleDateFormat
 
 class OnlineDialogPlaylistAdapter(
     private val context: Context,
-    private val itemClickListener: ItemClickListener,
-    private val lifecycle: LifecycleOwner,
-    private val firebaseViewModel: FirebaseViewModel
+    private val itemClickListener: ItemClickListener
     ): RecyclerView.Adapter<OnlineDialogPlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<OnlinePlaylist>()

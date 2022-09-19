@@ -118,10 +118,6 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     override fun callBackFromSongClick(songList: List<Song>, position: Int) {
-//        val intent = Intent(requireContext(), SongPlayerActivity::class.java)
-//        intent.putExtra("songList", songList as Serializable)
-//        intent.putExtra("songPosition", position)
-//        requireContext().startActivity(intent)
         songFromAdapterClick.callBackFromSongFragment(songList, position)
     }
 

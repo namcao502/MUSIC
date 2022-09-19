@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="300dp"
-    android:minHeight="400dp"
+    android:minHeight="300dp"
+    android:background="@color/main_color"
     tools:context=".ui.fragments.OnlinePlaylistFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,6 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_btn"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
