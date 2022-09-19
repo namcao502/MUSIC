@@ -1,32 +1,40 @@
 package com.example.music.ui.activities
 
-import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.*
-import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.Gravity
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
 import com.example.music.models.Playlist
 import com.example.music.models.Song
+import com.example.music.models.SongPlaylistCrossRef
 import com.example.music.services.MusicPlayerService
+import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.PlaylistFragment
 import com.example.music.ui.fragments.SongFragment
-import com.example.music.viewModels.ScanSongInStorage
-import com.example.music.viewModels.SongViewModel
+import com.example.music.viewModels.PlaylistViewModel
+import com.example.music.viewModels.SongInPlaylistViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,11 +48,8 @@ class MainActivity :
     AppCompatActivity(),
     ServiceConnection,
     SongFragment.SongFromAdapterClick,
-    SongInPlaylistAdapter.ItemSongInPlaylistClickListener {
-
-    private val songViewModel: SongViewModel by viewModels()
-
-    private val permission = 502
+    SongInPlaylistAdapter.ItemSongInPlaylistClickListener,
+    DialogPlaylistAdapter.ItemClickListener{
 
     private lateinit var binding: ActivityMainBinding
 
@@ -68,6 +73,12 @@ class MainActivity :
     var isServiceConnected = false
 
     private var iBinder: MusicPlayerService.MyBinder? = null
+
+    private val playlistViewModel: PlaylistViewModel by viewModels()
+    private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
+
+    private val dialogPlaylistAdapter: DialogPlaylistAdapter by lazy {
+        DialogPlaylistAdapter(this, this, this, songInPlaylistViewModel) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +106,6 @@ class MainActivity :
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_COLLAPSED){
                         showMiniMenu(true)
-                        this@MainActivity
                     }
                     if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                         showMiniMenu(false)
@@ -120,55 +130,31 @@ class MainActivity :
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.main_menu, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when(item.itemId){
-//            R.id.scan_menu -> requestRead()
-//        }
-//        return false
-//    }
-
-    private fun requestRead() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                permission)
-        } else {
-            readFile()
-        }
-    }
-
-    private fun readFile(){
-        val context = this.applicationContext
-        val listSong = ScanSongInStorage(context).getAllSongs()
-        songViewModel.deleteAllSongs()
-        for (song in listSong){
-            songViewModel.addSong(song)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == permission) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readFile()
-            } else {
-                // Permission Denied
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-            return
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     private fun listener() {
+
+        binding.addToPlaylistBtn.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.fragment_playlist)
+
+            //set size for dialog
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.gravity = Gravity.CENTER
+            dialog.window!!.attributes = lp
+
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+            recyclerView.adapter = dialogPlaylistAdapter
+            recyclerView.layoutManager = LinearLayoutManager(dialog.context)
+
+            playlistViewModel.readAllPlaylists().observe(this) {
+                dialogPlaylistAdapter.setData(it)
+            }
+            dialog.show()
+        }
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
@@ -232,7 +218,17 @@ class MainActivity :
         try {
             audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
             binding.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-            binding.volumeSb.progress = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
+            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(object : Runnable{
+                override fun run() {
+                    binding.volumeSb.progress = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
+                    handler.postDelayed(this, 500)
+                }
+
+            }, 500)
+
+
             binding.volumeSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStopTrackingTouch(arg0: SeekBar) {}
                 override fun onStartTrackingTouch(arg0: SeekBar) {}
@@ -243,7 +239,28 @@ class MainActivity :
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        setCompleteListener()
+
+        musicPlayerService!!.mediaPlayer?.setOnCompletionListener {
+            if (playState == "Shuffle") {
+                createRandomTrackPosition()
+            } else {
+                if (playState == "Loop") {
+                    musicPlayerService!!.reset()
+                } else {
+                    songPosition++
+                }
+            }
+            try {
+                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            musicPlayerService!!.start()
+            binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            setTime()
+            loadUI()
+            updateProgress()
+        }
     }
 
     private fun previous() {
@@ -348,44 +365,58 @@ class MainActivity :
         bindService(intent, this, BIND_AUTO_CREATE)
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun setTime() {
         val sdf = SimpleDateFormat("mm:ss")
         binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
         binding.songSb.max = musicPlayerService!!.getDuration()
-        binding.miniSb.max = musicPlayerService!!.getDuration()
+        binding.miniPb.max = musicPlayerService!!.getDuration()
     }
 
     private fun loadUI(){
         binding.titleTxt.text = songList!![songPosition].name
         binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
-        binding.miniSb.max = musicPlayerService!!.getDuration()
+        binding.miniPb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniSongArtist.text = songList!![songPosition].artists
         updateProgress()
     }
 
     private fun updateProgress() {
+
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
+            @SuppressLint("SimpleDateFormat")
             override fun run(){
-//                if (musicPlayerService == null){
-//                    handler.removeCallbacksAndMessages(null)
-//                }
-//                else {
-//
-//                }
-                try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
-                    binding.miniSb.progress = currentPosition
+                    binding.miniPb.progress = currentPosition
+
+                    if (currentPosition == musicPlayerService!!.getDuration()) {
+                        if (playState == "Shuffle") {
+                            createRandomTrackPosition()
+                        } else {
+                            if (playState == "Loop") {
+                                musicPlayerService!!.reset()
+                            } else {
+                                songPosition++
+                            }
+                        }
+                        try {
+                            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                        musicPlayerService!!.start()
+                        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                        setTime()
+                        loadUI()
+                        updateProgress()
+                    }
                     handler.postDelayed(this, 1000)
-                }
-                catch (error: IllegalStateException){
-                    handler.removeCallbacksAndMessages(null)
-                }
             }
         }, 1000)
     }
@@ -400,31 +431,6 @@ class MainActivity :
         }
     }
 
-    private fun setCompleteListener(){
-        musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
-            if (playState == "Loop"){
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                musicPlayerService!!.start()
-            }
-            else {
-                if (playState == "Shuffle") {
-                    createRandomTrackPosition()
-                    try {
-                        musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                        musicPlayerService!!.start()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                } else {
-                    if (playState == "Go") {
-                        next()
-                        musicPlayerService!!.start()
-                    }
-                }
-            }
-        }
-    }
-
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
         val myBinder = p1 as MusicPlayerService.MyBinder
         iBinder = myBinder
@@ -433,7 +439,6 @@ class MainActivity :
         setTime()
         loadUI()
         musicPlayerService!!.start()
-        setCompleteListener()
         listener()
 
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
@@ -475,7 +480,6 @@ class MainActivity :
             musicPlayerService!!.start()
             setTime()
             loadUI()
-            setCompleteListener()
             listener()
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
@@ -496,13 +500,78 @@ class MainActivity :
             musicPlayerService!!.start()
             setTime()
             loadUI()
-            setCompleteListener()
             listener()
         }
     }
 
     override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
 
+    }
+
+    override fun onMenuClick(action: String, playlist: Playlist) {
+        if (action == "Rename"){
+            createDialogForRenamePlaylist(playlist)
+        }
+        if (action == "Delete"){
+            createDialogForDeletePlaylist(playlist)
+        }
+    }
+
+    private fun createDialogForRenamePlaylist(playlist: Playlist){
+
+        val builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
+
+        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(playlist.name)
+
+        builder.setMessage("Rename")
+            .setTitle("")
+            .setView(view)
+            .setPositiveButton("Rename",
+                DialogInterface.OnClickListener { dialog, id ->
+
+                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                    if (title.isEmpty()){
+                        Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
+                        playlistViewModel.updatePlaylist(updatedPlaylist)
+                    }
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // User cancelled the dialog
+                })
+        // Create the AlertDialog object and return it
+        builder.create().show()
+    }
+
+    private fun createDialogForDeletePlaylist(playlist: Playlist){
+
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Delete ${playlist.name} playlist?")
+            .setTitle("")
+            .setPositiveButton("Delete",
+                DialogInterface.OnClickListener { dialog, id ->
+                    playlistViewModel.deletePlaylist(playlist)
+                })
+            .setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, id ->
+                    // User cancelled the dialog
+                })
+        // Create the AlertDialog object and return it
+
+        builder.create().show()
+    }
+
+    override fun onItemPlaylistClick(playlist: Playlist) {
+        val currentSong = songList!![songPosition]
+        val songPlaylistCrossRef = SongPlaylistCrossRef(currentSong.song_id, playlist.playlist_id)
+        songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
+        Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
     }
 
 }

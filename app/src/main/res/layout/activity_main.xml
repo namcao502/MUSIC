@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
+            app:tabMode="fixed"
             android:background="@color/main_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +52,6 @@
             app:layout_constraintTop_toBottomOf="@+id/mini_player_layout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-
             android:id="@+id/mini_player_layout"
             android:layout_width="match_parent"
             android:layout_height="75dp"
@@ -60,15 +60,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <SeekBar
-                android:id="@+id/mini_sb"
+            <ProgressBar
+                android:max="100"
+                android:indeterminate="false"
+                android:indeterminateTintMode="src_atop"
+                android:indeterminateTint="#e88275"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:id="@+id/mini_pb"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </SeekBar>
+            </ProgressBar>
 
             <ImageView
                 android:id="@+id/mini_previous_btn"
