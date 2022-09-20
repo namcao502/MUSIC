@@ -3,8 +3,8 @@ package com.example.music.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.music.models.Song
-import com.example.music.repositories.SongRepository
+import com.example.music.data.models.offline.Song
+import com.example.music.repositories.offline.SongRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -18,30 +18,21 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.databinding.ActivityMainBinding
 import com.example.music.databinding.ActivityOnlineMainBinding
-import com.example.music.models.OnlinePlaylist
-import com.example.music.models.OnlineSong
-import com.example.music.models.Song
-import com.example.music.services.MusicPlayerService
+import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.OnlineSong
 import com.example.music.services.OnlineMusicPlayerService
-import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.OnlinePlaylistFragment
 import com.example.music.ui.fragments.OnlineSongFragment
-import com.example.music.ui.fragments.PlaylistFragment
-import com.example.music.ui.fragments.SongFragment
 import com.example.music.viewModels.FirebaseViewModel
-import com.example.music.viewModels.PlaylistViewModel
-import com.example.music.viewModels.SongInPlaylistViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -449,6 +440,23 @@ class OnlineMainActivity
         listener()
 
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+
+//        firebaseViewModel.getAllPlaylistOfSong(songList!![songPosition],
+//            Firebase.auth.currentUser!!)
+//        firebaseViewModel.playlist.observe(this){
+//            when (it) {
+//                is UiState.Loading -> {
+//
+//                }
+//                is UiState.Failure -> {
+//
+//                }
+//                is UiState.Success -> {
+//                    Log.i("TAG502", "onServiceConnected: ${it.data}")
+//                }
+//            }
+//        }
+
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {

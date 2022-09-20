@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.FragmentSongBinding
-import com.example.music.models.Playlist
-import com.example.music.models.Song
-import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.data.models.offline.Playlist
+import com.example.music.data.models.offline.Song
+import com.example.music.data.models.offline.SongPlaylistCrossRef
 import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.SongAdapter
 import com.example.music.viewModels.PlaylistViewModel

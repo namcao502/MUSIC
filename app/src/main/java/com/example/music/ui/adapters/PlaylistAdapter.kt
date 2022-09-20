@@ -2,19 +2,17 @@ package com.example.music.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
-import com.example.music.models.Playlist
-import com.example.music.models.Song
+import com.example.music.data.models.offline.Playlist
+import com.example.music.data.models.offline.Song
 import com.example.music.viewModels.SongInPlaylistViewModel
 import java.text.SimpleDateFormat
 

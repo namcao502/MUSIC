@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.UiState
 import com.example.music.databinding.FragmentOnlineSongBinding
-import com.example.music.models.OnlinePlaylist
-import com.example.music.models.OnlineSong
+import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.OnlineSong
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongAdapter
 import com.example.music.viewModels.FirebaseViewModel

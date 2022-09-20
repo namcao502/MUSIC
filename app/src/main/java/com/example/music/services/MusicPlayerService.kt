@@ -15,8 +15,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.music.R
-import com.example.music.models.Song
-import com.example.music.ui.activities.MainActivity
+import com.example.music.data.models.offline.Song
 
 class MusicPlayerService: Service() {
 

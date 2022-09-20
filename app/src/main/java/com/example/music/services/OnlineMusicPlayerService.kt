@@ -7,7 +7,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
@@ -18,9 +17,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.music.R
-import com.example.music.models.OnlineSong
-import com.example.music.models.Song
-import com.example.music.ui.activities.MainActivity
+import com.example.music.data.models.online.OnlineSong
 
 class OnlineMusicPlayerService: Service() {
 

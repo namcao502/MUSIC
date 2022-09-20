@@ -5,7 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.example.music.models.Song
+import com.example.music.data.models.offline.Song
 import java.util.concurrent.TimeUnit
 
 class ScanSongInStorage(context: Context) {

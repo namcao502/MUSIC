@@ -15,12 +15,19 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.14" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/rounded_button.xml" value="0.14" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_account.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_online_main.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player2.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_test.xml" value="0.16210739614994935" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_account_crud.xml" value="0.24818840579710144" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_album_crud.xml" value="0.24818840579710144" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_artist_crud.xml" value="0.25" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_comment_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_home_crud.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_online_playlist.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_online_song.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_password_reset.xml" value="0.25416666666666665" />
@@ -28,11 +35,13 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signin.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signup.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song_crud.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/menu_playlist_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/nemu_playlist_dialog.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/nemu_song_dialog.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/playlist_row_item.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/row_item.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/song_crud_dialog.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/song_row_item.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/test.xml" value="0.33" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/add_playlist.xml" value="0.24895833333333334" />

@@ -6,7 +6,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -16,9 +15,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
-import com.example.music.models.Playlist
-import com.example.music.models.Song
-import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.data.models.offline.Playlist
+import com.example.music.data.models.offline.Song
+import com.example.music.data.models.offline.SongPlaylistCrossRef
 import com.example.music.ui.adapters.PlaylistAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.viewModels.PlaylistViewModel

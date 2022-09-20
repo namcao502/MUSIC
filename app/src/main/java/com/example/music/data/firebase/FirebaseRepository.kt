@@ -1,9 +1,10 @@
 package com.example.music.data.firebase
 
+import android.net.Uri
 import com.example.music.UiState
-import com.example.music.models.OnlinePlaylist
-import com.example.music.models.OnlineSong
-import com.example.music.models.Playlist
+import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.OnlineSong
 import com.google.firebase.auth.FirebaseUser
 
 interface FirebaseRepository {
@@ -23,5 +24,13 @@ interface FirebaseRepository {
     fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
     fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
+
+    fun getAllPlaylistOfSong(song: OnlineSong, user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit)
+
+    fun addArtist(artist: OnlineArtist, result: (UiState<String>) -> Unit)
+
+    fun addSong(song: OnlineSong, result: (UiState<String>) -> Unit)
+
+    suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 
 }

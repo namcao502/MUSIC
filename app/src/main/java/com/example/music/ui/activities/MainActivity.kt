@@ -18,15 +18,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
-import com.example.music.models.Playlist
-import com.example.music.models.Song
-import com.example.music.models.SongPlaylistCrossRef
+import com.example.music.data.models.offline.Playlist
+import com.example.music.data.models.offline.Song
+import com.example.music.data.models.offline.SongPlaylistCrossRef
 import com.example.music.services.MusicPlayerService
 import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.SongInPlaylistAdapter
@@ -444,6 +443,7 @@ class MainActivity :
         listener()
 
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {

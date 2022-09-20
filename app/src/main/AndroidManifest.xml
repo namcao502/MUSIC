@@ -30,30 +30,36 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MUSIC"
         tools:targetApi="31">
-
         <activity
-            android:name=".ui.activities.OnlineMainActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.activities.AccountActivity"
+            android:name=".ui.activities.CRUDActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
+        </activity>
+        <activity
+            android:name=".ui.activities.OnlineMainActivity"
+            android:exported="true" >
+
+        </activity>
+        <activity
+            android:name=".ui.activities.AccountActivity"
+            android:exported="true">
+
+        </activity>
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true">
 
+
+
         </activity>
 
         <service android:name=".services.MusicPlayerService" />
-
-        <service android:name=".services.OnlineMusicPlayerService"/>
+        <service android:name=".services.OnlineMusicPlayerService" />
 
         <receiver android:name=".services.MusicPlayerReceiver" />
     </application>

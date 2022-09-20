@@ -1,24 +1,19 @@
 package com.example.music.viewModels
 
-import android.widget.Toast
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.music.UiState
 import com.example.music.data.firebase.FirebaseRepository
-import com.example.music.models.OnlinePlaylist
-import com.example.music.models.OnlineSong
-import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
+import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.OnlineSong
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 @HiltViewModel
@@ -29,7 +24,7 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
 
 //    private val _songInPlaylist = MutableLiveData<UiState<List<OnlineSong>>>()
     private var _songInPlaylist: List<MutableLiveData<UiState<List<OnlineSong>>>>
-    = List(10, init= {i:Int -> MutableLiveData<UiState<List<OnlineSong>>>()})
+    = List(10, init= {i: Int -> MutableLiveData<UiState<List<OnlineSong>>>()})
 
     var songInPlaylist: List<LiveData<UiState<List<OnlineSong>>>> = _songInPlaylist
 //    val songInPlaylist: LiveData<UiState<List<OnlineSong>>> get() = _songInPlaylist
@@ -51,6 +46,15 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
 
     private val _addSongInPlaylist = MutableLiveData<UiState<String>>()
     val addSongInPlaylist: LiveData<UiState<String>> get() = _addSongInPlaylist
+
+    private val _addArtists = MutableLiveData<UiState<String>>()
+    val addArtists: LiveData<UiState<String>> get() = _addArtists
+
+    private val _addSong = MutableLiveData<UiState<String>>()
+    val addSong: LiveData<UiState<String>> get() = _addSong
+
+    private val _uploadSong = MutableLiveData<UiState<Uri>>()
+    val uploadSong: LiveData<UiState<Uri>> get() = _uploadSong
 
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
         _deleteSongInPlaylist.value = UiState.Loading
@@ -116,4 +120,33 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
             _deletePlaylist.value = it
         }
     }
+
+    fun getAllPlaylistOfSong(song: OnlineSong, user: FirebaseUser){
+        _playlist.value = UiState.Loading
+        repository.getAllPlaylistOfSong(song, user){
+            _playlist.value = it
+        }
+    }
+
+    fun addArtist(artist: OnlineArtist){
+        _addArtists.value = UiState.Loading
+        repository.addArtist(artist){
+            _addArtists.value = it
+        }
+    }
+
+    fun addSong(song: OnlineSong){
+        _addSong.value = UiState.Loading
+        repository.addSong(song){
+            _addSong.value = it
+        }
+    }
+
+    fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
+        result.invoke(UiState.Loading)
+        viewModelScope.launch {
+            repository.uploadSingleSongFile(fileName, fileUri, result)
+        }
+    }
+
 }

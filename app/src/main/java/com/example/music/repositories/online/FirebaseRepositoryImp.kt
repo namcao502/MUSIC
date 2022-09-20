@@ -1,0 +1,240 @@
+package com.example.music.repositories.online
+
+import android.net.Uri
+import com.example.music.UiState
+import com.example.music.data.firebase.FirebaseRepository
+import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.OnlineSong
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+
+class FirebaseRepositoryImp(val database: FirebaseFirestore,
+                            private val storage: StorageReference): FirebaseRepository {
+
+    override fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
+
+        val tempSongs = playlist.songs as ArrayList
+        tempSongs.remove(song.id)
+
+        playlist.id?.let { playlistID ->
+            database
+                .collection("Playlist")
+                .document(user.uid)
+                .collection("User")
+                .document(playlistID).update("songs", tempSongs)
+                .addOnSuccessListener {
+                    result.invoke(UiState.Success("${song.name} in ${playlist.name} deleted!"))
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
+    }
+
+    override fun addSongToPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
+
+        val tempSongs = playlist.songs as ArrayList
+        song.id?.let {
+            tempSongs.add(it)
+        }
+
+        playlist.id?.let { playlistID ->
+            database
+                .collection("Playlist")
+                .document(user.uid)
+                .collection("User")
+                .document(playlistID).update("songs", tempSongs)
+                .addOnSuccessListener {
+                    result.invoke(UiState.Success("Playlist ${playlist.name} added to ${playlist.name}!"))
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
+    }
+
+    override fun getAllSongs(result: (UiState<List<OnlineSong>>) -> Unit) {
+        database
+            .collection("OnlineSong")
+            .addSnapshotListener { value, error ->
+                val songs: ArrayList<OnlineSong> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val song = document.toObject(OnlineSong::class.java)
+                        songs.add(song)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(songs)
+                )
+            }
+    }
+
+    override fun getAllSongInPlaylist(playlist: OnlinePlaylist, result: (UiState<List<OnlineSong>>) -> Unit) {
+
+        if (playlist.songs!!.isEmpty()){
+            return
+        }
+        else {
+            database
+                .collection("OnlineSong")
+                .whereIn("id", playlist.songs)
+                .addSnapshotListener { value, error ->
+                    val songs: ArrayList<OnlineSong> = ArrayList()
+                    if (value != null) {
+                        for (document in value){
+                            val song = document.toObject(OnlineSong::class.java)
+                            songs.add(song)
+                        }
+                    }
+                    result.invoke(UiState.Success(songs))
+                }
+        }
+    }
+
+    override fun getAllPlaylistOfUser(user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit) {
+        database
+            .collection("Playlist")
+            .document(user.uid)
+            .collection("User")
+            .addSnapshotListener { value, error ->
+                val playlist: ArrayList<OnlinePlaylist> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val tempPlaylist = document.toObject(OnlinePlaylist::class.java)
+                        playlist.add(tempPlaylist)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(playlist)
+                )
+            }
+    }
+
+    override fun addPlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
+        val doc = database
+            .collection("Playlist")
+            .document(user.uid)
+            .collection("User").document()
+        playlist.id = doc.id
+
+        doc.set(playlist)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Playlist ${playlist.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
+        playlist.id?.let { playlistID ->
+            database
+                .collection("Playlist")
+                .document(user.uid)
+                .collection("User")
+                .document(playlistID)
+                .update("name", playlist.name)
+                .addOnSuccessListener {
+                    result.invoke(UiState.Success("Playlist ${playlist.name} updated!"))
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
+    }
+
+    override fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
+        playlist.id?.let { playlistID ->
+            database
+                .collection("Playlist")
+                .document(user.uid)
+                .collection("User")
+                .document(playlistID)
+                .delete()
+                .addOnSuccessListener {
+                    result.invoke(UiState.Success("Playlist ${playlist.name} deleted!"))
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
+    }
+
+    override fun getAllPlaylistOfSong(song: OnlineSong, user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit) {
+        song.id?.let { songID ->
+            database
+                .collection("Playlist")
+                .document(user.uid)
+                .collection("User")
+                .whereArrayContains("songs", songID)
+                .get()
+                .addOnSuccessListener { value ->
+                    val playlist: ArrayList<OnlinePlaylist> = ArrayList()
+                    if (value != null) {
+                        for (document in value){
+                            val tempPlaylist = document.toObject(OnlinePlaylist::class.java)
+                            playlist.add(tempPlaylist)
+                        }
+                    }
+                    result.invoke(UiState.Success(playlist))
+                }
+                .addOnFailureListener {
+                    result.invoke(UiState.Failure(it.localizedMessage))
+                }
+        }
+    }
+
+    override fun addArtist(artist: OnlineArtist, result: (UiState<String>) -> Unit) {
+        val doc = database
+            .collection("Artist")
+            .document()
+        artist.id = doc.id
+        doc.set(artist)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Artist ${artist.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override fun addSong(song: OnlineSong, result: (UiState<String>) -> Unit) {
+        val doc = database
+            .collection("Song")
+            .document()
+        song.id = doc.id
+        doc.set(song)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Song ${song.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {
+        try {
+            val uri: Uri = withContext(Dispatchers.IO) {
+                storage.child("Songs/$fileName")
+                    .putFile(fileUri)
+                    .await()
+                    .storage
+                    .downloadUrl
+                    .await()
+            }
+            result.invoke(UiState.Success(uri))
+        } catch (e: FirebaseException){
+            result.invoke(UiState.Failure(e.message))
+        }catch (e: Exception){
+            result.invoke(UiState.Failure(e.message))
+        }
+    }
+
+}
