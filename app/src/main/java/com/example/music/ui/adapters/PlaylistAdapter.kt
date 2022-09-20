@@ -105,6 +105,7 @@ class PlaylistAdapter(
                     })
                 }
                 binding.titleTxt.text = this.name
+                binding.imageView.visibility = View.GONE
             }
         }
 

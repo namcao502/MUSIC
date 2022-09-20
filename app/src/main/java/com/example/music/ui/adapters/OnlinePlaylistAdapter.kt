@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
 import com.example.music.databinding.PlaylistRowItemBinding
@@ -107,6 +108,13 @@ class OnlinePlaylistAdapter(
                         }
                     }
                 })
+
+                if (this.imgFilePath!!.isNotEmpty()){
+                    Glide.with(context).load(this.imgFilePath).into(binding.imageView)
+                }
+                else {
+                    binding.imageView.visibility = View.GONE
+                }
 
                 //load count length and count song
 //                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {

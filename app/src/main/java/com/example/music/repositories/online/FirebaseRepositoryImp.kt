@@ -6,6 +6,7 @@ import com.example.music.data.firebase.FirebaseRepository
 import com.example.music.data.models.online.OnlineArtist
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
+import com.example.music.utils.FireStoreCollection
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,9 +25,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
         playlist.id?.let { playlistID ->
             database
-                .collection("Playlist")
+                .collection(FireStoreCollection.PLAYLIST)
                 .document(user.uid)
-                .collection("User")
+                .collection(FireStoreCollection.USER)
                 .document(playlistID).update("songs", tempSongs)
                 .addOnSuccessListener {
                     result.invoke(UiState.Success("${song.name} in ${playlist.name} deleted!"))
@@ -46,9 +47,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
         playlist.id?.let { playlistID ->
             database
-                .collection("Playlist")
+                .collection(FireStoreCollection.PLAYLIST)
                 .document(user.uid)
-                .collection("User")
+                .collection(FireStoreCollection.USER)
                 .document(playlistID).update("songs", tempSongs)
                 .addOnSuccessListener {
                     result.invoke(UiState.Success("Playlist ${playlist.name} added to ${playlist.name}!"))
@@ -61,7 +62,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
     override fun getAllSongs(result: (UiState<List<OnlineSong>>) -> Unit) {
         database
-            .collection("OnlineSong")
+            .collection(FireStoreCollection.SONG)
             .addSnapshotListener { value, error ->
                 val songs: ArrayList<OnlineSong> = ArrayList()
                 if (value != null) {
@@ -83,7 +84,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
         }
         else {
             database
-                .collection("OnlineSong")
+                .collection(FireStoreCollection.SONG)
                 .whereIn("id", playlist.songs)
                 .addSnapshotListener { value, error ->
                     val songs: ArrayList<OnlineSong> = ArrayList()
@@ -100,9 +101,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
     override fun getAllPlaylistOfUser(user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit) {
         database
-            .collection("Playlist")
+            .collection(FireStoreCollection.PLAYLIST)
             .document(user.uid)
-            .collection("User")
+            .collection(FireStoreCollection.USER)
             .addSnapshotListener { value, error ->
                 val playlist: ArrayList<OnlinePlaylist> = ArrayList()
                 if (value != null) {
@@ -119,9 +120,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
     override fun addPlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
         val doc = database
-            .collection("Playlist")
+            .collection(FireStoreCollection.PLAYLIST)
             .document(user.uid)
-            .collection("User").document()
+            .collection(FireStoreCollection.USER).document()
         playlist.id = doc.id
 
         doc.set(playlist)
@@ -136,9 +137,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     override fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
         playlist.id?.let { playlistID ->
             database
-                .collection("Playlist")
+                .collection(FireStoreCollection.PLAYLIST)
                 .document(user.uid)
-                .collection("User")
+                .collection(FireStoreCollection.USER)
                 .document(playlistID)
                 .update("name", playlist.name)
                 .addOnSuccessListener {
@@ -153,9 +154,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     override fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit) {
         playlist.id?.let { playlistID ->
             database
-                .collection("Playlist")
+                .collection(FireStoreCollection.PLAYLIST)
                 .document(user.uid)
-                .collection("User")
+                .collection(FireStoreCollection.USER)
                 .document(playlistID)
                 .delete()
                 .addOnSuccessListener {
@@ -170,9 +171,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     override fun getAllPlaylistOfSong(song: OnlineSong, user: FirebaseUser, result: (UiState<List<OnlinePlaylist>>) -> Unit) {
         song.id?.let { songID ->
             database
-                .collection("Playlist")
+                .collection(FireStoreCollection.PLAYLIST)
                 .document(user.uid)
-                .collection("User")
+                .collection(FireStoreCollection.USER)
                 .whereArrayContains("songs", songID)
                 .get()
                 .addOnSuccessListener { value ->
@@ -193,7 +194,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
     override fun addArtist(artist: OnlineArtist, result: (UiState<String>) -> Unit) {
         val doc = database
-            .collection("Artist")
+            .collection(FireStoreCollection.ARTIST)
             .document()
         artist.id = doc.id
         doc.set(artist)
@@ -207,7 +208,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 
     override fun addSong(song: OnlineSong, result: (UiState<String>) -> Unit) {
         val doc = database
-            .collection("Song")
+            .collection(FireStoreCollection.SONG)
             .document()
         song.id = doc.id
         doc.set(song)
