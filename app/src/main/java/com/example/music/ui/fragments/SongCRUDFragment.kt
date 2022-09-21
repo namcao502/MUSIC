@@ -38,8 +38,6 @@ class SongCRUDFragment : Fragment() {
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
-    private var imgFilePath: String? = ""
-    private var filePath: String? = ""
     private var songUri: Uri? = null
     private var imgUri: Uri? = null
     private var isSong = true
@@ -80,21 +78,22 @@ class SongCRUDFragment : Fragment() {
         }
 
         binding.listView.setOnItemClickListener { adapterView, view, i, l ->
-            binding.nameEt.setText(songs[i].name)
-            currentSong = songs[i]
 
-            imgFilePath = if (songs[i].imgFilePath!!.isNotEmpty()){
-                Glide.with(requireContext()).load(songs[i].imgFilePath).into(binding.imgFile)
-                songs[i].imgFilePath!!
-            } else {
-                ""
+            currentSong = songs[i]
+            binding.nameEt.setText(currentSong!!.name)
+
+            if (currentSong!!.imgFilePath!!.isNotEmpty()){
+                Glide.with(requireContext()).load(currentSong!!.imgFilePath).into(binding.imgFile)
+            }
+            else {
+                binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
             }
 
-            filePath = if (songs[i].filePath!!.isNotEmpty()){
+             if (currentSong!!.filePath!!.isNotEmpty()){
                 binding.songFile.setImageResource(R.drawable.icons8_audio_file_100)
-                songs[i].filePath!!
-            } else {
-                ""
+            }
+            else {
+                 binding.songFile.setImageResource(R.drawable.icons8_remove_document_64)
             }
         }
 
