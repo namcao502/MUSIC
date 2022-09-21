@@ -33,6 +33,7 @@
         <activity
             android:name=".ui.activities.CRUDActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,19 +50,17 @@
             android:name=".ui.activities.AccountActivity"
             android:exported="true">
 
+
         </activity>
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true">
-
-
-
         </activity>
 
         <service android:name=".services.MusicPlayerService" />
         <service android:name=".services.OnlineMusicPlayerService" />
-
         <receiver android:name=".services.MusicPlayerReceiver" />
+
     </application>
 
 </manifest>

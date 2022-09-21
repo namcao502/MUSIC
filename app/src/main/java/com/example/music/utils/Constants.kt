@@ -10,3 +10,7 @@ object FireStoreCollection{
     val ALBUM = "Album"
     val USER = "User"
 }
+
+object Permission{
+    val PICK_AUDIO_REQUEST = 502
+}
