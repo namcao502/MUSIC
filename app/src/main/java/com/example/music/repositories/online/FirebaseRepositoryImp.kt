@@ -10,6 +10,7 @@ import com.example.music.utils.FireStoreCollection
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -220,10 +221,67 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
             }
     }
 
+    override fun deleteSong(song: OnlineSong, result: (UiState<String>) -> Unit) {
+        database
+            .collection(FireStoreCollection.SONG)
+            .document(song.id.toString())
+            .delete()
+            .addOnSuccessListener {
+                val songRef = FirebaseStorage.getInstance().getReferenceFromUrl(song.filePath.toString())
+                songRef.delete()
+                    .addOnSuccessListener {
+                        result.invoke(UiState.Success("Song ${song.name} deleted!"))
+                    }
+                    .addOnFailureListener {
+                        result.invoke(UiState.Failure(it.localizedMessage))
+                    }
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+    }
+
+    override fun updateSong(song: OnlineSong, result: (UiState<String>) -> Unit) {
+        database
+            .collection(FireStoreCollection.SONG)
+            .document(song.id!!)
+            .update("name", song.name, "filePath", song.filePath, "imgFilePath", song.imgFilePath)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Song ${song.name} updated!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+    }
+
     override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {
         try {
             val uri: Uri = withContext(Dispatchers.IO) {
                 storage.child("Songs/$fileName")
+                    .putFile(fileUri)
+                    .await()
+                    .storage
+                    .downloadUrl
+                    .await()
+            }
+            result.invoke(UiState.Success(uri))
+        } catch (e: FirebaseException){
+            result.invoke(UiState.Failure(e.message))
+        }catch (e: Exception){
+            result.invoke(UiState.Failure(e.message))
+        }
+    }
+
+    override suspend fun uploadSingleImageFile(
+        fileName: String,
+        fileUri: Uri,
+        result: (UiState<Uri>) -> Unit
+    ) {
+        try {
+            val uri: Uri = withContext(Dispatchers.IO) {
+                storage.child("Song Images/$fileName")
                     .putFile(fileUri)
                     .await()
                     .storage

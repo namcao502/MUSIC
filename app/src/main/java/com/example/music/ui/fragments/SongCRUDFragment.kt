@@ -22,6 +22,8 @@ import com.example.music.utils.Permission
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
 import com.example.music.viewModels.FirebaseViewModel
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
 
@@ -39,6 +41,10 @@ class SongCRUDFragment : Fragment() {
     private var imgFilePath: String? = ""
     private var filePath: String? = ""
     private var songUri: Uri? = null
+    private var imgUri: Uri? = null
+    private var isSong = true
+
+    private var currentSong: OnlineSong? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +81,7 @@ class SongCRUDFragment : Fragment() {
 
         binding.listView.setOnItemClickListener { adapterView, view, i, l ->
             binding.nameEt.setText(songs[i].name)
+            currentSong = songs[i]
 
             imgFilePath = if (songs[i].imgFilePath!!.isNotEmpty()){
                 Glide.with(requireContext()).load(songs[i].imgFilePath).into(binding.imgFile)
@@ -92,10 +99,15 @@ class SongCRUDFragment : Fragment() {
         }
 
         binding.imgFile.setOnClickListener {
-
+            isSong = false
+            val intent = Intent()
+            intent.type = "Song Images/"
+            intent.action = Intent.ACTION_GET_CONTENT
+            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
         }
 
         binding.songFile.setOnClickListener {
+            isSong = true
             val intent = Intent()
             intent.type = "Songs/"
             intent.action = Intent.ACTION_GET_CONTENT
@@ -120,16 +132,137 @@ class SongCRUDFragment : Fragment() {
                         progressDialog.show()
                     }
                     is UiState.Failure -> {
+                        progressDialog.cancel()
                         toast("$it")
                     }
                     is UiState.Success -> {
                         addSong(OnlineSong("", name, "", it.data.toString()))
                         toast("Added $name to Database!")
+                        songUri = null
                         progressDialog.cancel()
                     }
                 }
             }
 
+        }
+
+        binding.deleteBtn.setOnClickListener {
+            if (currentSong == null){
+                toast("Please pick a song to delete...")
+                return@setOnClickListener
+            }
+            val progressDialog = createProgressDialog("Deleting a song...")
+            firebaseViewModel.deleteSong(currentSong!!)
+            firebaseViewModel.deleteSong.observe(viewLifecycleOwner){
+                when (it) {
+                    is UiState.Loading -> {
+                        progressDialog.show()
+                    }
+                    is UiState.Failure -> {
+                        progressDialog.cancel()
+                        toast("$it")
+                    }
+                    is UiState.Success -> {
+                        progressDialog.cancel()
+                        toast(it.data)
+                        currentSong = null
+                    }
+                }
+            }
+        }
+
+        binding.updateBtn.setOnClickListener {
+            if (currentSong == null){
+                toast("Please pick a song to update...")
+                return@setOnClickListener
+            }
+
+            val name = binding.nameEt.text.toString()
+            if (name.isEmpty()){
+                toast("Please give it a name...")
+                return@setOnClickListener
+            }
+            val updatedSong = currentSong
+            updatedSong!!.name = name
+
+            updateSong(currentSong!!)
+
+            if (songUri != null){
+                //delete old mp3 file
+                val songRef = FirebaseStorage.getInstance().getReferenceFromUrl(currentSong!!.filePath.toString())
+                songRef.delete()
+                    .addOnSuccessListener {
+                        //upload new mp3 file
+                        val progressDialog = createProgressDialog("Updating a raw song...")
+                        firebaseViewModel.uploadSingleSongFile(name, songUri!!){
+                            when (it) {
+                                is UiState.Loading -> {
+                                    progressDialog.show()
+                                }
+                                is UiState.Failure -> {
+                                    progressDialog.cancel()
+                                    toast("$it")
+                                }
+                                is UiState.Success -> {
+                                    updatedSong.filePath = it.data.toString()
+                                    updateSong(currentSong!!)
+                                    songUri = null
+                                    progressDialog.cancel()
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener {}
+            }
+            if (imgUri != null){
+                if (currentSong!!.imgFilePath!!.isEmpty()){
+                    val progressDialog = createProgressDialog("Updating a song's image...")
+                    firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
+                        when (it) {
+                            is UiState.Loading -> {
+                                progressDialog.show()
+                            }
+                            is UiState.Failure -> {
+                                progressDialog.cancel()
+                                toast("$it")
+                            }
+                            is UiState.Success -> {
+                                updatedSong.imgFilePath = it.data.toString()
+                                updateSong(currentSong!!)
+                                imgUri = null
+                                progressDialog.cancel()
+                            }
+                        }
+                    }
+                }
+                else {
+                    val imgRef = FirebaseStorage
+                        .getInstance()
+                        .getReferenceFromUrl(currentSong!!.imgFilePath.toString())
+                    imgRef.delete()
+                        .addOnSuccessListener {
+                            val progressDialog = createProgressDialog("Updating a song's image...")
+                            firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
+                                when (it) {
+                                    is UiState.Loading -> {
+                                        progressDialog.show()
+                                    }
+                                    is UiState.Failure -> {
+                                        progressDialog.cancel()
+                                        toast("$it")
+                                    }
+                                    is UiState.Success -> {
+                                        updatedSong.imgFilePath = it.data.toString()
+                                        updateSong(currentSong!!)
+                                        imgUri = null
+                                        progressDialog.cancel()
+                                    }
+                                }
+                            }
+                        }
+                        .addOnFailureListener {  }
+                }
+            }
         }
 
     }
@@ -151,15 +284,37 @@ class SongCRUDFragment : Fragment() {
         }
     }
 
+    private fun updateSong(song: OnlineSong){
+        firebaseViewModel.updateSong(song)
+        firebaseViewModel.updateSong.observe(viewLifecycleOwner){
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    toast(it.data)
+                }
+            }
+        }
+    }
+
 
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
             try {
-                songUri = result.data?.data
-                binding.songFile.setImageResource(R.drawable.icons8_audio_file_100)
-                Log.i("TAG502", "onActivityResult: $songUri")
+                if (isSong){
+                    songUri = result.data?.data
+                    binding.songFile.setImageResource(R.drawable.icons8_audio_file_100)
+                }
+                else {
+                    imgUri = result.data?.data
+                    binding.imgFile.setImageURI(imgUri)
+                }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             }

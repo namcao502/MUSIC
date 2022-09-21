@@ -31,6 +31,12 @@ interface FirebaseRepository {
 
     fun addSong(song: OnlineSong, result: (UiState<String>) -> Unit)
 
+    fun deleteSong(song: OnlineSong, result: (UiState<String>) -> Unit)
+
+    fun updateSong(song: OnlineSong, result: (UiState<String>) -> Unit)
+
     suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
+
+    suspend fun uploadSingleImageFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 
 }

@@ -53,8 +53,12 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _addSong = MutableLiveData<UiState<String>>()
     val addSong: LiveData<UiState<String>> get() = _addSong
 
-    private val _uploadSong = MutableLiveData<UiState<Uri>>()
-    val uploadSong: LiveData<UiState<Uri>> get() = _uploadSong
+    private val _deleteSong = MutableLiveData<UiState<String>>()
+    val deleteSong: LiveData<UiState<String>> get() = _deleteSong
+
+    private val _updateSong = MutableLiveData<UiState<String>>()
+    val updateSong: LiveData<UiState<String>> get() = _updateSong
+
 
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
         _deleteSongInPlaylist.value = UiState.Loading
@@ -142,10 +146,31 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         }
     }
 
+    fun deleteSong(song: OnlineSong){
+        _deleteSong.value = UiState.Loading
+        repository.deleteSong(song){
+            _deleteSong.value = it
+        }
+    }
+
+    fun updateSong(song: OnlineSong){
+        _updateSong.value = UiState.Loading
+        repository.updateSong(song){
+            _updateSong.value = it
+        }
+    }
+
     fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
         result.invoke(UiState.Loading)
         viewModelScope.launch {
             repository.uploadSingleSongFile(fileName, fileUri, result)
+        }
+    }
+
+    fun uploadSingleImageFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
+        result.invoke(UiState.Loading)
+        viewModelScope.launch {
+            repository.uploadSingleImageFile(fileName, fileUri, result)
         }
     }
 
