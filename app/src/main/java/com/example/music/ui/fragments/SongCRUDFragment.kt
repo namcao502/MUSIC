@@ -77,6 +77,34 @@ class SongCRUDFragment : Fragment() {
             }
         }
 
+        binding.resetBtn.setOnClickListener {
+            binding.nameEt.setText("")
+            songUri = null
+            imgUri = null
+            currentSong = null
+            binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
+            binding.songFile.setImageResource(R.drawable.icons8_remove_document_64)
+        }
+
+        binding.imgFile.setOnLongClickListener {
+            if (currentSong!!.imgFilePath!!.isNotEmpty()){
+                val imgRef = FirebaseStorage
+                    .getInstance()
+                    .getReferenceFromUrl(currentSong!!.imgFilePath.toString())
+                imgRef.delete()
+                    .addOnSuccessListener {
+                        toast("Deleted ${currentSong!!.name} old image")
+                        currentSong!!.imgFilePath = ""
+                        updateSong(currentSong!!)
+                    }
+                    .addOnFailureListener {
+                        toast("$it")
+                    }
+            }
+            binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
+            return@setOnLongClickListener true
+        }
+
         binding.listView.setOnItemClickListener { adapterView, view, i, l ->
 
             currentSong = songs[i]
@@ -214,52 +242,36 @@ class SongCRUDFragment : Fragment() {
                     .addOnFailureListener {}
             }
             if (imgUri != null){
-                if (currentSong!!.imgFilePath!!.isEmpty()){
-                    val progressDialog = createProgressDialog("Updating a song's image...")
-                    firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
-                        when (it) {
-                            is UiState.Loading -> {
-                                progressDialog.show()
-                            }
-                            is UiState.Failure -> {
-                                progressDialog.cancel()
-                                toast("$it")
-                            }
-                            is UiState.Success -> {
-                                updatedSong.imgFilePath = it.data.toString()
-                                updateSong(currentSong!!)
-                                imgUri = null
-                                progressDialog.cancel()
-                            }
+                val progressDialog = createProgressDialog("Updating a song's image...")
+                firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
+                    when (it) {
+                        is UiState.Loading -> {
+                            progressDialog.show()
+                        }
+                        is UiState.Failure -> {
+                            progressDialog.cancel()
+                            toast("$it")
+                        }
+                        is UiState.Success -> {
+                            updatedSong.imgFilePath = it.data.toString()
+                            updateSong(currentSong!!)
+                            imgUri = null
+                            progressDialog.cancel()
                         }
                     }
                 }
-                else {
+
+                if (currentSong!!.imgFilePath!!.isNotEmpty()){
                     val imgRef = FirebaseStorage
                         .getInstance()
                         .getReferenceFromUrl(currentSong!!.imgFilePath.toString())
                     imgRef.delete()
                         .addOnSuccessListener {
-                            val progressDialog = createProgressDialog("Updating a song's image...")
-                            firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
-                                when (it) {
-                                    is UiState.Loading -> {
-                                        progressDialog.show()
-                                    }
-                                    is UiState.Failure -> {
-                                        progressDialog.cancel()
-                                        toast("$it")
-                                    }
-                                    is UiState.Success -> {
-                                        updatedSong.imgFilePath = it.data.toString()
-                                        updateSong(currentSong!!)
-                                        imgUri = null
-                                        progressDialog.cancel()
-                                    }
-                                }
-                            }
+                            toast("Deleted old image")
                         }
-                        .addOnFailureListener {  }
+                        .addOnFailureListener {
+                            toast("$it")
+                        }
                 }
             }
         }
