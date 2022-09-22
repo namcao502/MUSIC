@@ -4,5 +4,9 @@ data class OnlineArtist(
     var id: String? = "",
     var name: String? = "",
     val songs: List<String>? = emptyList(),
-    val imgFilePath: String? = ""
-)
+    var imgFilePath: String? = ""
+) {
+    override fun toString(): String {
+        return "ID = $id, name = $name"
+    }
+}

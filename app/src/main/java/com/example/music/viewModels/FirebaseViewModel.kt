@@ -47,9 +47,6 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _addSongInPlaylist = MutableLiveData<UiState<String>>()
     val addSongInPlaylist: LiveData<UiState<String>> get() = _addSongInPlaylist
 
-    private val _addArtists = MutableLiveData<UiState<String>>()
-    val addArtists: LiveData<UiState<String>> get() = _addArtists
-
     private val _addSong = MutableLiveData<UiState<String>>()
     val addSong: LiveData<UiState<String>> get() = _addSong
 
@@ -58,6 +55,18 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
 
     private val _updateSong = MutableLiveData<UiState<String>>()
     val updateSong: LiveData<UiState<String>> get() = _updateSong
+
+    private val _addArtist = MutableLiveData<UiState<String>>()
+    val addArtist: LiveData<UiState<String>> get() = _addArtist
+
+    private val _deleteArtist = MutableLiveData<UiState<String>>()
+    val deleteArtist: LiveData<UiState<String>> get() = _deleteArtist
+
+    private val _updateArtist = MutableLiveData<UiState<String>>()
+    val updateArtist: LiveData<UiState<String>> get() = _updateArtist
+
+    private val _artists = MutableLiveData<UiState<List<OnlineArtist>>>()
+    val artist: LiveData<UiState<List<OnlineArtist>>> get() = _artists
 
 
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
@@ -132,10 +141,31 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         }
     }
 
+    fun getAllArtists() {
+        _artists.value = UiState.Loading
+        repository.getAllArtists {
+            _artists.value = it
+        }
+    }
+
     fun addArtist(artist: OnlineArtist){
-        _addArtists.value = UiState.Loading
+        _addArtist.value = UiState.Loading
         repository.addArtist(artist){
-            _addArtists.value = it
+            _addArtist.value = it
+        }
+    }
+
+    fun deleteArtist(artist: OnlineArtist){
+        _deleteArtist.value = UiState.Loading
+        repository.deleteArtist(artist){
+            _deleteArtist.value = it
+        }
+    }
+
+    fun updateArtist(artist: OnlineArtist){
+        _updateArtist.value = UiState.Loading
+        repository.updateArtist(artist){
+            _updateArtist.value = it
         }
     }
 
@@ -167,10 +197,10 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         }
     }
 
-    fun uploadSingleImageFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
+    fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
         result.invoke(UiState.Loading)
         viewModelScope.launch {
-            repository.uploadSingleImageFile(fileName, fileUri, result)
+            repository.uploadSingleImageFile(directory, fileName, fileUri, result)
         }
     }
 

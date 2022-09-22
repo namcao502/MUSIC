@@ -33,6 +33,9 @@ class HomeCRUDFragment : Fragment() {
         binding.songCrudBtn.setOnClickListener {
             findNavController().navigate(R.id.songCRUDFragment)
         }
+        binding.artistCrudBtn.setOnClickListener {
+            findNavController().navigate(R.id.artistCRUDFragment)
+        }
     }
 
     override fun onDestroyView() {

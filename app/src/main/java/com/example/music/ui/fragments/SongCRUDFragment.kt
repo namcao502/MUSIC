@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
+import com.example.music.data.models.online.OnlineArtist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.FragmentHomeCrudBinding
 import com.example.music.databinding.FragmentSongCrudBinding
@@ -152,6 +153,28 @@ class SongCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            val song = OnlineSong("", name, "", "")
+
+            if (imgUri != null){
+                val progressDialog = createProgressDialog("Adding a song's image...")
+                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
+                    when (it) {
+                        is UiState.Loading -> {
+                            progressDialog.show()
+                        }
+                        is UiState.Failure -> {
+                            progressDialog.cancel()
+                            toast("$it")
+                        }
+                        is UiState.Success -> {
+                            song.imgFilePath = it.data.toString()
+                            imgUri = null
+                            progressDialog.cancel()
+                        }
+                    }
+                }
+            }
+
             val progressDialog = createProgressDialog("Adding a new song")
             firebaseViewModel.uploadSingleSongFile(name, songUri!!){
                 when (it) {
@@ -163,7 +186,8 @@ class SongCRUDFragment : Fragment() {
                         toast("$it")
                     }
                     is UiState.Success -> {
-                        addSong(OnlineSong("", name, "", it.data.toString()))
+                        song.filePath = it.data.toString()
+                        addSong(song)
                         toast("Added $name to Database!")
                         songUri = null
                         progressDialog.cancel()
@@ -209,9 +233,7 @@ class SongCRUDFragment : Fragment() {
                 toast("Please give it a name...")
                 return@setOnClickListener
             }
-            val updatedSong = currentSong
-            updatedSong!!.name = name
-
+            currentSong!!.name = name
             updateSong(currentSong!!)
 
             if (songUri != null){
@@ -231,7 +253,7 @@ class SongCRUDFragment : Fragment() {
                                     toast("$it")
                                 }
                                 is UiState.Success -> {
-                                    updatedSong.filePath = it.data.toString()
+                                    currentSong!!.filePath = it.data.toString()
                                     updateSong(currentSong!!)
                                     songUri = null
                                     progressDialog.cancel()
@@ -243,7 +265,7 @@ class SongCRUDFragment : Fragment() {
             }
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Updating a song's image...")
-                firebaseViewModel.uploadSingleImageFile(name, imgUri!!){
+                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -253,7 +275,7 @@ class SongCRUDFragment : Fragment() {
                             toast("$it")
                         }
                         is UiState.Success -> {
-                            updatedSong.imgFilePath = it.data.toString()
+                            currentSong!!.imgFilePath = it.data.toString()
                             updateSong(currentSong!!)
                             imgUri = null
                             progressDialog.cancel()
