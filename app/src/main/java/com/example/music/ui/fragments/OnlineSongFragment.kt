@@ -17,7 +17,9 @@ import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongAdapter
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.FirebaseViewModel
+import com.example.music.viewModels.online.OnlinePlaylistViewModel
+import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +35,8 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
 
     private val onlineSongAdapter: OnlineSongAdapter by lazy {
         OnlineSongAdapter(requireContext(), this)
@@ -60,8 +63,8 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        firebaseViewModel.getAllSongs()
-        firebaseViewModel.song.observe(viewLifecycleOwner){
+        onlineSongViewModel.getAllSongs()
+        onlineSongViewModel.song.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -120,9 +123,9 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 //        })
 
         FirebaseAuth.getInstance().currentUser?.let {
-            firebaseViewModel.getAllPlaylistOfUser(it)
+            onlinePlaylistViewModel.getAllPlaylistOfUser(it)
         }
-        firebaseViewModel.playlist.observe(viewLifecycleOwner){
+        onlinePlaylistViewModel.playlist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -184,10 +187,10 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         val songSelected = currentSong
 
         FirebaseAuth.getInstance().currentUser?.let {
-            firebaseViewModel.addSongToPlaylist(songSelected, playlist, it)
+            onlineSongViewModel.addSongToPlaylist(songSelected, playlist, it)
         }
 
-        firebaseViewModel.addSongInPlaylist.observe(viewLifecycleOwner) {
+        onlineSongViewModel.addSongInPlaylist.observe(viewLifecycleOwner) {
             when (it) {
                 is UiState.Loading -> {
 
@@ -228,9 +231,9 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                 } else {
                     playlist.name = title
                     FirebaseAuth.getInstance().currentUser?.let {
-                        firebaseViewModel.updatePlaylistForUser(playlist, it)
+                        onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
                     }
-                    firebaseViewModel.updatePlaylist.observe(viewLifecycleOwner) {
+                    onlinePlaylistViewModel.updatePlaylist.observe(viewLifecycleOwner) {
                         when (it) {
                             is UiState.Loading -> {
 
@@ -262,9 +265,9 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             .setPositiveButton("Delete") { _, _ ->
 
                 FirebaseAuth.getInstance().currentUser?.let {
-                    firebaseViewModel.deletePlaylistForUser(playlist, it)
+                    onlinePlaylistViewModel.deletePlaylistForUser(playlist, it)
                 }
-                firebaseViewModel.deletePlaylist.observe(viewLifecycleOwner) {
+                onlinePlaylistViewModel.deletePlaylist.observe(viewLifecycleOwner) {
                     when (it) {
                         is UiState.Loading -> {
 
@@ -305,9 +308,9 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                 } else {
                     val playlist = OnlinePlaylist("", title, emptyList())
                     FirebaseAuth.getInstance().currentUser?.let {
-                        firebaseViewModel.addPlaylistForUser(playlist, it)
+                        onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
                     }
-                    firebaseViewModel.addPlaylist.observe(viewLifecycleOwner) {
+                    onlinePlaylistViewModel.addPlaylist.observe(viewLifecycleOwner) {
                         when (it) {
                             is UiState.Loading -> {
 

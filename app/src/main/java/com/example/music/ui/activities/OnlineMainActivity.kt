@@ -32,7 +32,7 @@ import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.OnlinePlaylistFragment
 import com.example.music.ui.fragments.OnlineSongFragment
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.FirebaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth

@@ -4,12 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
@@ -17,10 +18,11 @@ import com.example.music.UiState
 import com.example.music.data.models.online.OnlineArtist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.FragmentArtistCrudBinding
-import com.example.music.databinding.FragmentSongCrudBinding
+import com.example.music.utils.createDialog
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.OnlineArtistViewModel
+import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
@@ -33,7 +35,9 @@ class ArtistCRUDFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
+
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
 
     private var imgUri: Uri? = null
 
@@ -53,8 +57,8 @@ class ArtistCRUDFragment : Fragment() {
 
         var artists: List<OnlineArtist> = emptyList()
 
-        firebaseViewModel.getAllArtists()
-        firebaseViewModel.artist.observe(viewLifecycleOwner){
+        onlineArtistViewModel.getAllArtists()
+        onlineArtistViewModel.artist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -97,7 +101,7 @@ class ArtistCRUDFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
-        binding.listView.setOnItemClickListener { adapterView, view, i, l ->
+        binding.listView.setOnItemClickListener { _, _, i, _ ->
 
             currentArtist = artists[i]
             binding.nameEt.setText(currentArtist!!.name)
@@ -130,7 +134,7 @@ class ArtistCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Adding a song's image...")
-                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                onlineArtistViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -159,8 +163,8 @@ class ArtistCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
             val progressDialog = createProgressDialog("Deleting an artist...")
-            firebaseViewModel.deleteArtist(currentArtist!!)
-            firebaseViewModel.deleteArtist.observe(viewLifecycleOwner){
+            onlineArtistViewModel.deleteArtist(currentArtist!!)
+            onlineArtistViewModel.deleteArtist.observe(viewLifecycleOwner){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -195,7 +199,7 @@ class ArtistCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Updating an artist's image...")
-                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                onlineArtistViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -228,11 +232,121 @@ class ArtistCRUDFragment : Fragment() {
             }
         }
 
+        binding.songMngBtn.setOnClickListener {
+
+            if (currentArtist == null){
+                toast("Please pick an artist...")
+                return@setOnClickListener
+            }
+
+            val dialog = createDialog()
+
+            val allSongs = dialog.findViewById<ListView>(R.id.all_song_lv)
+            val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)
+
+            var current: List<OnlineSong> = emptyList()
+            onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+            onlineSongViewModel.songName.observe(viewLifecycleOwner){
+                when(it) {
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        current = it.data
+                        currentSongs.adapter = ArrayAdapter(requireContext(),
+                            androidx.appcompat.R.layout.
+                            support_simple_spinner_dropdown_item,
+                            current)
+                    }
+                }
+            }
+
+            var all: List<OnlineSong> = emptyList()
+
+            onlineSongViewModel.getAllSongs()
+            onlineSongViewModel.song.observe(viewLifecycleOwner){
+                when(it) {
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        all = it.data
+                        allSongs.adapter = ArrayAdapter(requireContext(),
+                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, all)
+                    }
+                }
+            }
+
+            allSongs.setOnItemClickListener { _, _, i, _ ->
+                val temp = currentArtist!!.songs as ArrayList
+                temp.add(all[i].id!!)
+                currentArtist!!.songs = temp
+                updateArtist(currentArtist!!)
+
+                //reload
+                var current: List<OnlineSong> = emptyList()
+                onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                onlineSongViewModel.songName.observe(viewLifecycleOwner){
+                    when(it) {
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            current = it.data
+                            currentSongs.adapter = ArrayAdapter(requireContext(),
+                                androidx.appcompat.R.layout.
+                                support_simple_spinner_dropdown_item,
+                                current)
+                        }
+                    }
+                }
+            }
+
+            currentSongs.setOnItemClickListener { _, _, i, _ ->
+                val temp = currentArtist!!.songs as ArrayList
+                temp.remove(current[i].id!!)
+                currentArtist!!.songs = temp
+                updateArtist(currentArtist!!)
+
+                //reload
+                var current: List<OnlineSong> = emptyList()
+                onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                onlineSongViewModel.songName.observe(viewLifecycleOwner){
+                    when(it) {
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            current = it.data
+                            currentSongs.adapter = ArrayAdapter(requireContext(),
+                                androidx.appcompat.R.layout.
+                                support_simple_spinner_dropdown_item,
+                                current)
+                        }
+                    }
+                }
+            }
+
+            dialog.show()
+        }
+
     }
 
     private fun addArtist(artist: OnlineArtist) {
-        firebaseViewModel.addArtist(artist)
-        firebaseViewModel.addArtist.observe(viewLifecycleOwner){
+        onlineArtistViewModel.addArtist(artist)
+        onlineArtistViewModel.addArtist.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
@@ -261,8 +375,8 @@ class ArtistCRUDFragment : Fragment() {
     }
 
     private fun updateArtist(artist: OnlineArtist){
-        firebaseViewModel.updateArtist(artist)
-        firebaseViewModel.updateArtist.observe(viewLifecycleOwner){
+        onlineArtistViewModel.updateArtist(artist)
+        onlineArtistViewModel.updateArtist.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 

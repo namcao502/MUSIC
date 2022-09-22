@@ -15,7 +15,7 @@ import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.ui.activities.MainActivity
 import com.example.music.ui.activities.OnlineMainActivity
-import com.example.music.viewModels.FirebaseAuthViewModel
+import com.example.music.viewModels.online.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

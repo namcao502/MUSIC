@@ -87,7 +87,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
             database
                 .collection(FireStoreCollection.SONG)
                 .whereIn("id", playlist.songs)
-                .addSnapshotListener { value, error ->
+                .addSnapshotListener { value, _ ->
                     val songs: ArrayList<OnlineSong> = ArrayList()
                     if (value != null) {
                         for (document in value){

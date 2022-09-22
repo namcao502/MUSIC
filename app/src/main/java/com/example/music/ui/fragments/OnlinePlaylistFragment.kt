@@ -17,7 +17,8 @@ import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.ui.adapters.OnlinePlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.FirebaseViewModel
+import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,10 +28,10 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
     OnlinePlaylistAdapter.ItemPlaylistClickListener,
     OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
 
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
 
     private val onlinePlaylistAdapter: OnlinePlaylistAdapter by lazy {
-        OnlinePlaylistAdapter(requireContext(), this, viewLifecycleOwner, firebaseViewModel)
+        OnlinePlaylistAdapter(requireContext(), this, viewLifecycleOwner, onlinePlaylistViewModel)
     }
 
     private var _binding: FragmentOnlinePlaylistBinding? = null
@@ -56,9 +57,9 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
         }
 
         FirebaseAuth.getInstance().currentUser?.let {
-            firebaseViewModel.getAllPlaylistOfUser(it)
+            onlinePlaylistViewModel.getAllPlaylistOfUser(it)
         }
-        firebaseViewModel.playlist.observe(viewLifecycleOwner){
+        onlinePlaylistViewModel.playlist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -102,9 +103,9 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
                     else {
                         val playlist = OnlinePlaylist("", title, emptyList())
                         FirebaseAuth.getInstance().currentUser?.let {
-                            firebaseViewModel.addPlaylistForUser(playlist, it)
+                            onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
                         }
-                        firebaseViewModel.addPlaylist.observe(viewLifecycleOwner, Observer {
+                        onlinePlaylistViewModel.addPlaylist.observe(viewLifecycleOwner, Observer {
                             when (it) {
                                 is UiState.Loading -> {
 
@@ -149,9 +150,9 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
                     else {
                         playlist.name = title
                         FirebaseAuth.getInstance().currentUser?.let {
-                            firebaseViewModel.updatePlaylistForUser(playlist, it)
+                            onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
                         }
-                        firebaseViewModel.updatePlaylist.observe(viewLifecycleOwner, Observer {
+                        onlinePlaylistViewModel.updatePlaylist.observe(viewLifecycleOwner, Observer {
                             when (it) {
                                 is UiState.Loading -> {
 
@@ -184,9 +185,9 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
                 DialogInterface.OnClickListener { dialog, id ->
 
                     FirebaseAuth.getInstance().currentUser?.let {
-                        firebaseViewModel.deletePlaylistForUser(playlist, it)
+                        onlinePlaylistViewModel.deletePlaylistForUser(playlist, it)
                     }
-                    firebaseViewModel.deletePlaylist.observe(viewLifecycleOwner, Observer {
+                    onlinePlaylistViewModel.deletePlaylist.observe(viewLifecycleOwner, Observer {
                         when (it) {
                             is UiState.Loading -> {
 
@@ -227,9 +228,9 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
         }
         if (action == "Delete from playlist"){
             FirebaseAuth.getInstance().currentUser?.let {
-                firebaseViewModel.deleteSongInPlaylist(songList[position], playlist, it)
+                onlinePlaylistViewModel.deleteSongInPlaylist(songList[position], playlist, it)
             }
-            firebaseViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner, Observer {
+            onlinePlaylistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is UiState.Loading -> {
 

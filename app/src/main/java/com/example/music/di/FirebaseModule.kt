@@ -1,8 +1,7 @@
 package com.example.music.di
 
 import com.example.music.data.firebase.*
-import com.example.music.repositories.online.AuthRepository
-import com.example.music.repositories.online.FirebaseRepositoryImp
+import com.example.music.repositories.online.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -50,6 +49,24 @@ object FirebaseModule {
     @Provides
     fun provideFirebaseRepository(database: FirebaseFirestore, storageReference: StorageReference): FirebaseRepository {
         return FirebaseRepositoryImp(database, storageReference)
+    }
+
+    @Singleton
+    @Provides
+    fun provideArtistRepository(database: FirebaseFirestore, storageReference: StorageReference): ArtistRepository {
+        return ArtistRepositoryImp(database, storageReference)
+    }
+
+    @Singleton
+    @Provides
+    fun provideSongRepository(database: FirebaseFirestore, storageReference: StorageReference): SongRepository {
+        return SongRepositoryImp(database, storageReference)
+    }
+
+    @Singleton
+    @Provides
+    fun providePlaylistRepository(database: FirebaseFirestore, storageReference: StorageReference): PlaylistRepository {
+        return PlaylistRepositoryImp(database, storageReference)
     }
 
 }

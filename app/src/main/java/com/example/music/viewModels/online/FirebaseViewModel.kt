@@ -1,4 +1,4 @@
-package com.example.music.viewModels
+package com.example.music.viewModels.online
 
 import android.net.Uri
 import androidx.lifecycle.LiveData

@@ -161,6 +161,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             createDialogForAddPlaylist()
             dialog.cancel()
         }
+
         dialog.show()
 
         if (dialog.isShowing){

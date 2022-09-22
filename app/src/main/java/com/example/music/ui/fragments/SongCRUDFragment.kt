@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,19 +14,14 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.data.models.online.OnlineArtist
 import com.example.music.data.models.online.OnlineSong
-import com.example.music.databinding.FragmentHomeCrudBinding
 import com.example.music.databinding.FragmentSongCrudBinding
-import com.example.music.utils.Permission
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
-
 
 @AndroidEntryPoint
 class SongCRUDFragment : Fragment() {
@@ -37,7 +31,7 @@ class SongCRUDFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
 
     private var songUri: Uri? = null
     private var imgUri: Uri? = null
@@ -59,8 +53,8 @@ class SongCRUDFragment : Fragment() {
 
         var songs: List<OnlineSong> = emptyList()
 
-        firebaseViewModel.getAllSongs()
-        firebaseViewModel.song.observe(viewLifecycleOwner){
+        onlineSongViewModel.getAllSongs()
+        onlineSongViewModel.song.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -106,7 +100,7 @@ class SongCRUDFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
-        binding.listView.setOnItemClickListener { adapterView, view, i, l ->
+        binding.listView.setOnItemClickListener { _, _, i, _ ->
 
             currentSong = songs[i]
             binding.nameEt.setText(currentSong!!.name)
@@ -157,7 +151,7 @@ class SongCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Adding a song's image...")
-                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
+                onlineSongViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -176,7 +170,7 @@ class SongCRUDFragment : Fragment() {
             }
 
             val progressDialog = createProgressDialog("Adding a new song")
-            firebaseViewModel.uploadSingleSongFile(name, songUri!!){
+            onlineSongViewModel.uploadSingleSongFile(name, songUri!!){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -203,8 +197,8 @@ class SongCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
             val progressDialog = createProgressDialog("Deleting a song...")
-            firebaseViewModel.deleteSong(currentSong!!)
-            firebaseViewModel.deleteSong.observe(viewLifecycleOwner){
+            onlineSongViewModel.deleteSong(currentSong!!)
+            onlineSongViewModel.deleteSong.observe(viewLifecycleOwner){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -243,7 +237,7 @@ class SongCRUDFragment : Fragment() {
                     .addOnSuccessListener {
                         //upload new mp3 file
                         val progressDialog = createProgressDialog("Updating a raw song...")
-                        firebaseViewModel.uploadSingleSongFile(name, songUri!!){
+                        onlineSongViewModel.uploadSingleSongFile(name, songUri!!){
                             when (it) {
                                 is UiState.Loading -> {
                                     progressDialog.show()
@@ -265,7 +259,7 @@ class SongCRUDFragment : Fragment() {
             }
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Updating a song's image...")
-                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
+                onlineSongViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -301,8 +295,8 @@ class SongCRUDFragment : Fragment() {
     }
 
     fun addSong(song: OnlineSong){
-        firebaseViewModel.addSong(song)
-        firebaseViewModel.addSong.observe(viewLifecycleOwner){
+        onlineSongViewModel.addSong(song)
+        onlineSongViewModel.addSong.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
@@ -318,8 +312,8 @@ class SongCRUDFragment : Fragment() {
     }
 
     private fun updateSong(song: OnlineSong){
-        firebaseViewModel.updateSong(song)
-        firebaseViewModel.updateSong.observe(viewLifecycleOwner){
+        onlineSongViewModel.updateSong(song)
+        onlineSongViewModel.updateSong.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 

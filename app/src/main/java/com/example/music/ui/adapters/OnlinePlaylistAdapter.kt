@@ -15,13 +15,15 @@ import com.example.music.UiState
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
-import com.example.music.viewModels.FirebaseViewModel
+import com.example.music.viewModels.online.FirebaseViewModel
+import com.example.music.viewModels.online.OnlinePlaylistViewModel
 
 class OnlinePlaylistAdapter(
     private val context: Context,
     private val itemPlaylistClickListener: ItemPlaylistClickListener,
     private val lifecycle: LifecycleOwner,
-    private val firebaseViewModel: FirebaseViewModel)
+    private val onlinePlaylistViewModel: OnlinePlaylistViewModel
+)
     : RecyclerView.Adapter<OnlinePlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<OnlinePlaylist>()
@@ -94,8 +96,8 @@ class OnlinePlaylistAdapter(
 //                    }
 //                })
 
-                firebaseViewModel.getAllSongInPlaylist(playlist[position], position)
-                firebaseViewModel.songInPlaylist[position].observe(lifecycle, Observer {
+                onlinePlaylistViewModel.getAllSongInPlaylist(playlist[position], position)
+                onlinePlaylistViewModel.songInPlaylist[position].observe(lifecycle, Observer {
                     when(it){
                         is UiState.Loading -> {
 
