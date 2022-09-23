@@ -75,4 +75,10 @@ object FirebaseModule {
         return GenreRepositoryImp(database)
     }
 
+    @Singleton
+    @Provides
+    fun provideAlbumRepository(database: FirebaseFirestore): AlbumRepository {
+        return AlbumRepositoryImp(database)
+    }
+
 }

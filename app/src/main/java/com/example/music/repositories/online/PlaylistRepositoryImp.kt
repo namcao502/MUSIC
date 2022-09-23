@@ -2,11 +2,13 @@ package com.example.music.repositories.online
 
 import com.example.music.UiState
 import com.example.music.data.firebase.PlaylistRepository
+import com.example.music.data.models.online.OnlineGenre
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository {
 
@@ -18,7 +20,7 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
         else {
             database
                 .collection(FireStoreCollection.SONG)
-                .whereIn("id", playlist.songs)
+                .whereIn("id", playlist.songs!!)
                 .addSnapshotListener { value, _ ->
                     val songs: ArrayList<OnlineSong> = ArrayList()
                     if (value != null) {
@@ -119,6 +121,73 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
                     result.invoke(UiState.Failure(it.localizedMessage))
                 }
         }
+    }
+
+    override fun getAllPlaylists(result: (UiState<List<OnlinePlaylist>>) -> Unit) {
+        database
+            .collection(FireStoreCollection.PLAYLIST)
+            .addSnapshotListener { value, _ ->
+                val playlists: ArrayList<OnlinePlaylist> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val playlist = document.toObject(OnlinePlaylist::class.java)
+                        playlists.add(playlist)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(playlists)
+                )
+            }
+    }
+
+    override fun addPlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit) {
+        val doc = database
+            .collection(FireStoreCollection.PLAYLIST)
+            .document()
+        playlist.id = doc.id
+        doc.set(playlist)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Playlist ${playlist.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override fun updatePlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit) {
+        database
+            .collection(FireStoreCollection.PLAYLIST)
+            .document(playlist.id!!)
+            .update("name", playlist.name, "imgFilePath", playlist.imgFilePath, "songs", playlist.songs)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Playlist ${playlist.name} updated!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override fun deletePlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit) {
+        database
+            .collection(FireStoreCollection.PLAYLIST)
+            .document(playlist.id.toString())
+            .delete()
+            .addOnSuccessListener {
+                if (playlist.imgFilePath!!.isNotEmpty()){
+                    val songRef = FirebaseStorage.getInstance().getReferenceFromUrl(playlist.imgFilePath.toString())
+                    songRef.delete()
+                        .addOnSuccessListener {
+                            result.invoke(UiState.Success("Playlist ${playlist.name} deleted!"))
+                        }
+                        .addOnFailureListener {
+                            result.invoke(UiState.Failure(it.localizedMessage))
+                        }
+                }
+                result.invoke(UiState.Success("Playlist ${playlist.name} deleted!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
     }
 
 }

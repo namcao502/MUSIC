@@ -3,6 +3,7 @@ package com.example.music.data.firebase
 import android.net.Uri
 import com.example.music.UiState
 import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlineGenre
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.google.firebase.auth.FirebaseUser
@@ -20,5 +21,13 @@ interface PlaylistRepository {
     fun updatePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
 
     fun deletePlaylistForUser(playlist: OnlinePlaylist, user: FirebaseUser, result: (UiState<String>) -> Unit)
+
+    fun getAllPlaylists(result: (UiState<List<OnlinePlaylist>>) -> Unit)
+
+    fun addPlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit)
+
+    fun updatePlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit)
+
+    fun deletePlaylist(playlist: OnlinePlaylist, result: (UiState<String>) -> Unit)
 
 }

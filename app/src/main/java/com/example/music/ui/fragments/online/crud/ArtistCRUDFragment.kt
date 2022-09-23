@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments.online
+package com.example.music.ui.fragments.online.crud
 
 import android.app.Activity
 import android.content.Intent
@@ -15,51 +15,50 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.data.models.online.OnlineGenre
+import com.example.music.data.models.online.OnlineArtist
 import com.example.music.data.models.online.OnlineSong
-import com.example.music.databinding.FragmentGenreCrudBinding
+import com.example.music.databinding.FragmentArtistCrudBinding
 import com.example.music.utils.createDialog
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
 import com.example.music.viewModels.online.FirebaseViewModel
-import com.example.music.viewModels.online.OnlineGenreViewModel
+import com.example.music.viewModels.online.OnlineArtistViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
 
-
 @AndroidEntryPoint
-class GenreCRUDFragment : Fragment() {
+class ArtistCRUDFragment : Fragment() {
 
-    private var _binding: FragmentGenreCrudBinding? = null
+    private var _binding: FragmentArtistCrudBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
+    private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private var imgUri: Uri? = null
 
-    private var currentGenre: OnlineGenre? = null
+    private var currentArtist: OnlineArtist? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentGenreCrudBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentArtistCrudBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var genres: List<OnlineGenre> = emptyList()
+        var artists: List<OnlineArtist> = emptyList()
 
-        onlineGenreViewModel.getAllGenres()
-        onlineGenreViewModel.genre.observe(viewLifecycleOwner){
+        onlineArtistViewModel.getAllArtists()
+        onlineArtistViewModel.artist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -68,11 +67,10 @@ class GenreCRUDFragment : Fragment() {
 
                 }
                 is UiState.Success -> {
-                    genres = it.data
+                    artists = it.data
                     with(binding.listView){
                         adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item, genres)
+                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
                     }
                 }
             }
@@ -85,15 +83,15 @@ class GenreCRUDFragment : Fragment() {
         }
 
         binding.imgFile.setOnLongClickListener {
-            if (currentGenre!!.imgFilePath!!.isNotEmpty()){
+            if (currentArtist!!.imgFilePath!!.isNotEmpty()){
                 val imgRef = FirebaseStorage
                     .getInstance()
-                    .getReferenceFromUrl(currentGenre!!.imgFilePath.toString())
+                    .getReferenceFromUrl(currentArtist!!.imgFilePath.toString())
                 imgRef.delete()
                     .addOnSuccessListener {
-                        toast("Deleted ${currentGenre!!.name} old image")
-                        currentGenre!!.imgFilePath = ""
-                        updateGenre(currentGenre!!)
+                        toast("Deleted ${currentArtist!!.name} old image")
+                        currentArtist!!.imgFilePath = ""
+                        updateArtist(currentArtist!!)
                     }
                     .addOnFailureListener {
                         toast("$it")
@@ -105,11 +103,11 @@ class GenreCRUDFragment : Fragment() {
 
         binding.listView.setOnItemClickListener { _, _, i, _ ->
 
-            currentGenre = genres[i]
-            binding.nameEt.setText(currentGenre!!.name)
+            currentArtist = artists[i]
+            binding.nameEt.setText(currentArtist!!.name)
 
-            if (currentGenre!!.imgFilePath!!.isNotEmpty()){
-                Glide.with(requireContext()).load(currentGenre!!.imgFilePath).into(binding.imgFile)
+            if (currentArtist!!.imgFilePath!!.isNotEmpty()){
+                Glide.with(requireContext()).load(currentArtist!!.imgFilePath).into(binding.imgFile)
             }
             else {
                 binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
@@ -132,11 +130,11 @@ class GenreCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val genre = OnlineGenre("", name, emptyList(), "")
+            val artist = OnlineArtist("", name, emptyList(), "")
 
             if (imgUri != null){
-                val progressDialog = createProgressDialog("Adding a genre's image...")
-                firebaseViewModel.uploadSingleImageFile("Genre Images", name, imgUri!!){
+                val progressDialog = createProgressDialog("Adding an artist's image...")
+                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -146,8 +144,8 @@ class GenreCRUDFragment : Fragment() {
                             toast("$it")
                         }
                         is UiState.Success -> {
-                            genre.imgFilePath = it.data.toString()
-                            addGenre(genre)
+                            artist.imgFilePath = it.data.toString()
+                            addArtist(artist)
                             imgUri = null
                             progressDialog.cancel()
                         }
@@ -155,18 +153,18 @@ class GenreCRUDFragment : Fragment() {
                 }
             }
             else {
-                addGenre(genre)
+                addArtist(artist)
             }
         }
 
         binding.deleteBtn.setOnClickListener {
-            if (currentGenre == null){
-                toast("Please pick a genre to delete...")
+            if (currentArtist == null){
+                toast("Please pick an artist to delete...")
                 return@setOnClickListener
             }
-            val progressDialog = createProgressDialog("Deleting a genre...")
-            onlineGenreViewModel.deleteGenre(currentGenre!!)
-            onlineGenreViewModel.deleteGenre.observe(viewLifecycleOwner){
+            val progressDialog = createProgressDialog("Deleting an artist...")
+            onlineArtistViewModel.deleteArtist(currentArtist!!)
+            onlineArtistViewModel.deleteArtist.observe(viewLifecycleOwner){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -178,15 +176,15 @@ class GenreCRUDFragment : Fragment() {
                     is UiState.Success -> {
                         progressDialog.cancel()
                         toast(it.data)
-                        currentGenre = null
+                        currentArtist = null
                     }
                 }
             }
         }
 
         binding.updateBtn.setOnClickListener {
-            if (currentGenre == null){
-                toast("Please pick a song to update...")
+            if (currentArtist == null){
+                toast("Please pick an artist to update...")
                 return@setOnClickListener
             }
 
@@ -195,13 +193,13 @@ class GenreCRUDFragment : Fragment() {
                 toast("Please give it a name...")
                 return@setOnClickListener
             }
-            currentGenre!!.name = name
+            currentArtist!!.name = name
 
-            updateGenre(currentGenre!!)
+            updateArtist(currentArtist!!)
 
             if (imgUri != null){
-                val progressDialog = createProgressDialog("Updating a genre's image...")
-                firebaseViewModel.uploadSingleImageFile("Genre Images", name, imgUri!!){
+                val progressDialog = createProgressDialog("Updating an artist's image...")
+                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -211,18 +209,18 @@ class GenreCRUDFragment : Fragment() {
                             toast("$it")
                         }
                         is UiState.Success -> {
-                            currentGenre!!.imgFilePath = it.data.toString()
-                            updateGenre(currentGenre!!)
+                            currentArtist!!.imgFilePath = it.data.toString()
+                            updateArtist(currentArtist!!)
                             imgUri = null
                             progressDialog.cancel()
                         }
                     }
                 }
 
-                if (currentGenre!!.imgFilePath!!.isNotEmpty()){
+                if (currentArtist!!.imgFilePath!!.isNotEmpty()){
                     val imgRef = FirebaseStorage
                         .getInstance()
-                        .getReferenceFromUrl(currentGenre!!.imgFilePath.toString())
+                        .getReferenceFromUrl(currentArtist!!.imgFilePath.toString())
                     imgRef.delete()
                         .addOnSuccessListener {
                             toast("Deleted old image")
@@ -236,7 +234,7 @@ class GenreCRUDFragment : Fragment() {
 
         binding.songMngBtn.setOnClickListener {
 
-            if (currentGenre == null){
+            if (currentArtist == null){
                 toast("Please pick an artist...")
                 return@setOnClickListener
             }
@@ -247,9 +245,8 @@ class GenreCRUDFragment : Fragment() {
             val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)
 
             var current: List<OnlineSong> = emptyList()
-
-            if (currentGenre!!.songs!!.isNotEmpty()){
-                firebaseViewModel.getSongFromListSongID(currentGenre!!.songs!!)
+            if (currentArtist!!.songs!!.isNotEmpty()){
+                firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
                 firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                     when(it) {
                         is UiState.Loading -> {
@@ -289,14 +286,14 @@ class GenreCRUDFragment : Fragment() {
             }
 
             allSongs.setOnItemClickListener { _, _, i, _ ->
-                val temp = currentGenre!!.songs as ArrayList
+                val temp = currentArtist!!.songs as ArrayList
                 temp.add(all[i].id!!)
-                currentGenre!!.songs = temp
-                updateGenre(currentGenre!!)
+                currentArtist!!.songs = temp
+                updateArtist(currentArtist!!)
 
                 //reload
-                if (currentGenre!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentGenre!!.songs!!)
+                if (currentArtist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
                     firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                         when(it) {
                             is UiState.Loading -> {
@@ -325,15 +322,14 @@ class GenreCRUDFragment : Fragment() {
             }
 
             currentSongs.setOnItemClickListener { _, _, i, _ ->
-
-                val temp = currentGenre!!.songs as ArrayList
+                val temp = currentArtist!!.songs as ArrayList
                 temp.remove(current[i].id!!)
-                currentGenre!!.songs = temp
-                updateGenre(currentGenre!!)
+                currentArtist!!.songs = temp
+                updateArtist(currentArtist!!)
 
                 //reload
-                if (currentGenre!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentGenre!!.songs!!)
+                if (currentArtist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
                     firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                         when(it) {
                             is UiState.Loading -> {
@@ -363,11 +359,12 @@ class GenreCRUDFragment : Fragment() {
 
             dialog.show()
         }
+
     }
 
-    private fun addGenre(genre: OnlineGenre) {
-        onlineGenreViewModel.addGenre(genre)
-        onlineGenreViewModel.addGenre.observe(viewLifecycleOwner){
+    private fun addArtist(artist: OnlineArtist) {
+        onlineArtistViewModel.addArtist(artist)
+        onlineArtistViewModel.addArtist.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
@@ -395,9 +392,9 @@ class GenreCRUDFragment : Fragment() {
         }
     }
 
-    private fun updateGenre(genre: OnlineGenre){
-        onlineGenreViewModel.updateGenre(genre)
-        onlineGenreViewModel.updateGenre.observe(viewLifecycleOwner){
+    private fun updateArtist(artist: OnlineArtist){
+        onlineArtistViewModel.updateArtist(artist)
+        onlineArtistViewModel.updateArtist.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
@@ -416,4 +413,5 @@ class GenreCRUDFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

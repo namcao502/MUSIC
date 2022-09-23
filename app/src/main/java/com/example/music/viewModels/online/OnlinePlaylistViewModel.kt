@@ -9,6 +9,7 @@ import com.example.music.UiState
 import com.example.music.data.firebase.FirebaseRepository
 import com.example.music.data.firebase.PlaylistRepository
 import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlineGenre
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.google.firebase.auth.FirebaseUser
@@ -41,6 +42,18 @@ class OnlinePlaylistViewModel @Inject constructor(val repository: PlaylistReposi
 
     private val _deleteSongInPlaylist = MutableLiveData<UiState<String>>()
     val deleteSongInPlaylist: LiveData<UiState<String>> get() = _deleteSongInPlaylist
+
+    private val _playlist2 = MutableLiveData<UiState<List<OnlinePlaylist>>>()
+    val playlist2: LiveData<UiState<List<OnlinePlaylist>>> get() = _playlist2
+
+    private val _addPlaylist2 = MutableLiveData<UiState<String>>()
+    val addPlaylist2: LiveData<UiState<String>> get() = _addPlaylist2
+
+    private val _deletePlaylist2 = MutableLiveData<UiState<String>>()
+    val deletePlaylist2: LiveData<UiState<String>> get() = _deletePlaylist2
+
+    private val _updatePlaylist2 = MutableLiveData<UiState<String>>()
+    val updatePlaylist2: LiveData<UiState<String>> get() = _updatePlaylist2
 
 
     fun deleteSongInPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
@@ -82,6 +95,34 @@ class OnlinePlaylistViewModel @Inject constructor(val repository: PlaylistReposi
         _songInPlaylist[position].value = UiState.Loading
         repository.getAllSongInPlaylist(playlist){
             _songInPlaylist[position].value = it
+        }
+    }
+
+    fun getAllPlaylists() {
+        _playlist2.value = UiState.Loading
+        repository.getAllPlaylists {
+            _playlist2.value = it
+        }
+    }
+
+    fun addPlaylist(playlist: OnlinePlaylist){
+        _addPlaylist2.value = UiState.Loading
+        repository.addPlaylist(playlist){
+            _addPlaylist2.value = it
+        }
+    }
+
+    fun deletePlaylist(playlist: OnlinePlaylist){
+        _deletePlaylist2.value = UiState.Loading
+        repository.deletePlaylist(playlist){
+            _deletePlaylist2.value = it
+        }
+    }
+
+    fun updatePlaylist(playlist: OnlinePlaylist){
+        _updatePlaylist2.value = UiState.Loading
+        repository.updatePlaylist(playlist){
+            _updatePlaylist2.value = it
         }
     }
 

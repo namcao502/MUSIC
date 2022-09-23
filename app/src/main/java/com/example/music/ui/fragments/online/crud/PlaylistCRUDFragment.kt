@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments.online
+package com.example.music.ui.fragments.online.crud
 
 import android.app.Activity
 import android.content.Intent
@@ -15,50 +15,50 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
-import com.example.music.databinding.FragmentArtistCrudBinding
+import com.example.music.databinding.FragmentPlaylistCrudBinding
 import com.example.music.utils.createDialog
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
 import com.example.music.viewModels.online.FirebaseViewModel
-import com.example.music.viewModels.online.OnlineArtistViewModel
+import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
 
 @AndroidEntryPoint
-class ArtistCRUDFragment : Fragment() {
+class PlaylistCRUDFragment : Fragment() {
 
-    private var _binding: FragmentArtistCrudBinding? = null
+    private var _binding: FragmentPlaylistCrudBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
+    private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private var imgUri: Uri? = null
 
-    private var currentArtist: OnlineArtist? = null
+    private var currentPlaylist: OnlinePlaylist? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentArtistCrudBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentPlaylistCrudBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var playlists: List<OnlinePlaylist> = emptyList()
 
-        var artists: List<OnlineArtist> = emptyList()
-
-        onlineArtistViewModel.getAllArtists()
-        onlineArtistViewModel.artist.observe(viewLifecycleOwner){
+        onlinePlaylistViewModel.getAllPlaylists()
+        onlinePlaylistViewModel.playlist2.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -67,10 +67,11 @@ class ArtistCRUDFragment : Fragment() {
 
                 }
                 is UiState.Success -> {
-                    artists = it.data
+                    playlists = it.data
                     with(binding.listView){
                         adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
+                            androidx.appcompat.R.layout.
+                            support_simple_spinner_dropdown_item, playlists)
                     }
                 }
             }
@@ -83,15 +84,15 @@ class ArtistCRUDFragment : Fragment() {
         }
 
         binding.imgFile.setOnLongClickListener {
-            if (currentArtist!!.imgFilePath!!.isNotEmpty()){
+            if (currentPlaylist!!.imgFilePath!!.isNotEmpty()){
                 val imgRef = FirebaseStorage
                     .getInstance()
-                    .getReferenceFromUrl(currentArtist!!.imgFilePath.toString())
+                    .getReferenceFromUrl(currentPlaylist!!.imgFilePath.toString())
                 imgRef.delete()
                     .addOnSuccessListener {
-                        toast("Deleted ${currentArtist!!.name} old image")
-                        currentArtist!!.imgFilePath = ""
-                        updateArtist(currentArtist!!)
+                        toast("Deleted ${currentPlaylist!!.name} old image")
+                        currentPlaylist!!.imgFilePath = ""
+                        updatePlaylist(currentPlaylist!!)
                     }
                     .addOnFailureListener {
                         toast("$it")
@@ -103,11 +104,11 @@ class ArtistCRUDFragment : Fragment() {
 
         binding.listView.setOnItemClickListener { _, _, i, _ ->
 
-            currentArtist = artists[i]
-            binding.nameEt.setText(currentArtist!!.name)
+            currentPlaylist = playlists[i]
+            binding.nameEt.setText(currentPlaylist!!.name)
 
-            if (currentArtist!!.imgFilePath!!.isNotEmpty()){
-                Glide.with(requireContext()).load(currentArtist!!.imgFilePath).into(binding.imgFile)
+            if (currentPlaylist!!.imgFilePath!!.isNotEmpty()){
+                Glide.with(requireContext()).load(currentPlaylist!!.imgFilePath).into(binding.imgFile)
             }
             else {
                 binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
@@ -130,11 +131,11 @@ class ArtistCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val artist = OnlineArtist("", name, emptyList(), "")
+            val playlist = OnlinePlaylist("", name, emptyList(), "")
 
             if (imgUri != null){
-                val progressDialog = createProgressDialog("Adding a song's image...")
-                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                val progressDialog = createProgressDialog("Adding a playlist's image...")
+                firebaseViewModel.uploadSingleImageFile("Playlist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -144,8 +145,8 @@ class ArtistCRUDFragment : Fragment() {
                             toast("$it")
                         }
                         is UiState.Success -> {
-                            artist.imgFilePath = it.data.toString()
-                            addArtist(artist)
+                            playlist.imgFilePath = it.data.toString()
+                            addPlaylist(playlist)
                             imgUri = null
                             progressDialog.cancel()
                         }
@@ -153,18 +154,18 @@ class ArtistCRUDFragment : Fragment() {
                 }
             }
             else {
-                addArtist(artist)
+                addPlaylist(playlist)
             }
         }
 
         binding.deleteBtn.setOnClickListener {
-            if (currentArtist == null){
-                toast("Please pick an artist to delete...")
+            if (currentPlaylist == null){
+                toast("Please pick a playlist to delete...")
                 return@setOnClickListener
             }
-            val progressDialog = createProgressDialog("Deleting an artist...")
-            onlineArtistViewModel.deleteArtist(currentArtist!!)
-            onlineArtistViewModel.deleteArtist.observe(viewLifecycleOwner){
+            val progressDialog = createProgressDialog("Deleting a playlist...")
+            onlinePlaylistViewModel.deletePlaylist(currentPlaylist!!)
+            onlinePlaylistViewModel.deletePlaylist2.observe(viewLifecycleOwner){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -176,15 +177,15 @@ class ArtistCRUDFragment : Fragment() {
                     is UiState.Success -> {
                         progressDialog.cancel()
                         toast(it.data)
-                        currentArtist = null
+                        currentPlaylist = null
                     }
                 }
             }
         }
 
         binding.updateBtn.setOnClickListener {
-            if (currentArtist == null){
-                toast("Please pick a song to update...")
+            if (currentPlaylist == null){
+                toast("Please pick a playlist to update...")
                 return@setOnClickListener
             }
 
@@ -193,13 +194,13 @@ class ArtistCRUDFragment : Fragment() {
                 toast("Please give it a name...")
                 return@setOnClickListener
             }
-            currentArtist!!.name = name
+            currentPlaylist!!.name = name
 
-            updateArtist(currentArtist!!)
+            updatePlaylist(currentPlaylist!!)
 
             if (imgUri != null){
-                val progressDialog = createProgressDialog("Updating an artist's image...")
-                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                val progressDialog = createProgressDialog("Updating a playlist's image...")
+                firebaseViewModel.uploadSingleImageFile("Playlist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -209,18 +210,18 @@ class ArtistCRUDFragment : Fragment() {
                             toast("$it")
                         }
                         is UiState.Success -> {
-                            currentArtist!!.imgFilePath = it.data.toString()
-                            updateArtist(currentArtist!!)
+                            currentPlaylist!!.imgFilePath = it.data.toString()
+                            updatePlaylist(currentPlaylist!!)
                             imgUri = null
                             progressDialog.cancel()
                         }
                     }
                 }
 
-                if (currentArtist!!.imgFilePath!!.isNotEmpty()){
+                if (currentPlaylist!!.imgFilePath!!.isNotEmpty()){
                     val imgRef = FirebaseStorage
                         .getInstance()
-                        .getReferenceFromUrl(currentArtist!!.imgFilePath.toString())
+                        .getReferenceFromUrl(currentPlaylist!!.imgFilePath.toString())
                     imgRef.delete()
                         .addOnSuccessListener {
                             toast("Deleted old image")
@@ -234,8 +235,8 @@ class ArtistCRUDFragment : Fragment() {
 
         binding.songMngBtn.setOnClickListener {
 
-            if (currentArtist == null){
-                toast("Please pick an artist...")
+            if (currentPlaylist == null){
+                toast("Please pick a playlist...")
                 return@setOnClickListener
             }
 
@@ -245,8 +246,9 @@ class ArtistCRUDFragment : Fragment() {
             val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)
 
             var current: List<OnlineSong> = emptyList()
-            if (currentArtist!!.songs!!.isNotEmpty()){
-                firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+
+            if (currentPlaylist!!.songs!!.isNotEmpty()){
+                firebaseViewModel.getSongFromListSongID(currentPlaylist!!.songs!!)
                 firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                     when(it) {
                         is UiState.Loading -> {
@@ -286,14 +288,14 @@ class ArtistCRUDFragment : Fragment() {
             }
 
             allSongs.setOnItemClickListener { _, _, i, _ ->
-                val temp = currentArtist!!.songs as ArrayList
+                val temp = currentPlaylist!!.songs as ArrayList
                 temp.add(all[i].id!!)
-                currentArtist!!.songs = temp
-                updateArtist(currentArtist!!)
+                currentPlaylist!!.songs = temp
+                updatePlaylist(currentPlaylist!!)
 
                 //reload
-                if (currentArtist!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                if (currentPlaylist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentPlaylist!!.songs!!)
                     firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                         when(it) {
                             is UiState.Loading -> {
@@ -322,14 +324,15 @@ class ArtistCRUDFragment : Fragment() {
             }
 
             currentSongs.setOnItemClickListener { _, _, i, _ ->
-                val temp = currentArtist!!.songs as ArrayList
+
+                val temp = currentPlaylist!!.songs as ArrayList
                 temp.remove(current[i].id!!)
-                currentArtist!!.songs = temp
-                updateArtist(currentArtist!!)
+                currentPlaylist!!.songs = temp
+                updatePlaylist(currentPlaylist!!)
 
                 //reload
-                if (currentArtist!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                if (currentPlaylist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentPlaylist!!.songs!!)
                     firebaseViewModel.songFromID.observe(viewLifecycleOwner){
                         when(it) {
                             is UiState.Loading -> {
@@ -362,9 +365,9 @@ class ArtistCRUDFragment : Fragment() {
 
     }
 
-    private fun addArtist(artist: OnlineArtist) {
-        onlineArtistViewModel.addArtist(artist)
-        onlineArtistViewModel.addArtist.observe(viewLifecycleOwner){
+    private fun addPlaylist(playlist: OnlinePlaylist) {
+        onlinePlaylistViewModel.addPlaylist(playlist)
+        onlinePlaylistViewModel.addPlaylist2.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
@@ -392,9 +395,9 @@ class ArtistCRUDFragment : Fragment() {
         }
     }
 
-    private fun updateArtist(artist: OnlineArtist){
-        onlineArtistViewModel.updateArtist(artist)
-        onlineArtistViewModel.updateArtist.observe(viewLifecycleOwner){
+    private fun updatePlaylist(playlist: OnlinePlaylist){
+        onlinePlaylistViewModel.updatePlaylist(playlist)
+        onlinePlaylistViewModel.updatePlaylist2.observe(viewLifecycleOwner){
             when (it) {
                 is UiState.Loading -> {
 
