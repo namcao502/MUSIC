@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeCRUDFragment"
-        android:name="com.example.music.ui.fragments.HomeCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.HomeCRUDFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home_crud" >
         <action
@@ -19,10 +19,13 @@
         <action
             android:id="@+id/action_homeCRUDFragment_to_artistCRUDFragment"
             app:destination="@id/artistCRUDFragment" />
+        <action
+            android:id="@+id/action_homeCRUDFragment_to_genreCRUDFragment"
+            app:destination="@id/genreCRUDFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountCRUDFragment"
-        android:name="com.example.music.ui.fragments.AccountCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.AccountCRUDFragment"
         android:label="Account"
         tools:layout="@layout/fragment_account_crud" >
         <action
@@ -31,12 +34,12 @@
     </fragment>
     <fragment
         android:id="@+id/albumCRUDFragment"
-        android:name="com.example.music.ui.fragments.AlbumCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.AlbumCRUDFragment"
         android:label="Album"
         tools:layout="@layout/fragment_album_crud" />
     <fragment
         android:id="@+id/songCRUDFragment"
-        android:name="com.example.music.ui.fragments.SongCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.SongCRUDFragment"
         android:label="Song"
         tools:layout="@layout/fragment_song_crud" >
         <action
@@ -45,11 +48,19 @@
     </fragment>
     <fragment
         android:id="@+id/artistCRUDFragment"
-        android:name="com.example.music.ui.fragments.ArtistCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.ArtistCRUDFragment"
         android:label="Artist"
         tools:layout="@layout/fragment_artist_crud" >
         <action
             android:id="@+id/action_artistCRUDFragment_to_homeCRUDFragment"
+            app:destination="@id/homeCRUDFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/genreCRUDFragment"
+        android:name="com.example.music.ui.fragments.online.GenreCRUDFragment"
+        android:label="Genre" >
+        <action
+            android:id="@+id/action_genreCRUDFragment_to_homeCRUDFragment"
             app:destination="@id/homeCRUDFragment" />
     </fragment>
 </navigation>

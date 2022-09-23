@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.fragments.online
 
 import android.content.Intent
 import android.os.Bundle

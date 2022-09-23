@@ -19,10 +19,4 @@ interface SongRepository {
 
     fun updateSong(song: OnlineSong, result: (UiState<String>) -> Unit)
 
-    suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
-
-    suspend fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
-
-    fun getSongFromListSongID(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit)
-
 }

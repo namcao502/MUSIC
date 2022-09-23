@@ -60,12 +60,4 @@ class OnlineArtistViewModel @Inject constructor(val repository: ArtistRepository
         }
     }
 
-
-    fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
-        result.invoke(UiState.Loading)
-        viewModelScope.launch {
-            repository.uploadSingleImageFile(directory, fileName, fileUri, result)
-        }
-    }
-
 }

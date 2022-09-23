@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.fragments.online
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -35,6 +35,9 @@ class HomeCRUDFragment : Fragment() {
         }
         binding.artistCrudBtn.setOnClickListener {
             findNavController().navigate(R.id.artistCRUDFragment)
+        }
+        binding.genreCrudBtn.setOnClickListener {
+            findNavController().navigate(R.id.genreCRUDFragment)
         }
     }
 

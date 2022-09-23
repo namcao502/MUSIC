@@ -1,4 +1,4 @@
-package com.example.music.viewModels
+package com.example.music.viewModels.offline
 
 import android.content.ContentUris
 import android.content.Context

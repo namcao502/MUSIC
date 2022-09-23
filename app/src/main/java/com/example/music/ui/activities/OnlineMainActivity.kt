@@ -1,9 +1,9 @@
 package com.example.music.ui.activities
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.*
 import android.media.AudioManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -18,27 +18,28 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
+import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.services.OnlineMusicPlayerService
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
-import com.example.music.ui.fragments.OnlinePlaylistFragment
-import com.example.music.ui.fragments.OnlineSongFragment
-import com.example.music.viewModels.online.FirebaseViewModel
+import com.example.music.ui.fragments.online.OnlinePlaylistFragment
+import com.example.music.ui.fragments.online.OnlineSongFragment
+import com.example.music.viewModels.online.OnlinePlaylistViewModel
+import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,7 +62,7 @@ class OnlineMainActivity
     private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song", "Playlist")
 
     var songList: List<OnlineSong>? = null
-    var songPosition = -1
+    private var songPosition = -1
 
     var audioManager: AudioManager? = null
 
@@ -69,11 +70,12 @@ class OnlineMainActivity
 
     var musicPlayerService: OnlineMusicPlayerService? = null
 
-    var isServiceConnected = false
+    private var isServiceConnected = false
 
     private var iBinder: OnlineMusicPlayerService.MyBinder? = null
 
-    private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
@@ -149,9 +151,9 @@ class OnlineMainActivity
             recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
             FirebaseAuth.getInstance().currentUser?.let { user ->
-                firebaseViewModel.getAllPlaylistOfUser(user)
+                onlinePlaylistViewModel.getAllPlaylistOfUser(user)
             }
-            firebaseViewModel.playlist.observe(this) {
+            onlinePlaylistViewModel.playlist.observe(this) {
                 when (it) {
                     is UiState.Loading -> {
 
@@ -355,6 +357,7 @@ class OnlineMainActivity
         bindService(intent, this, BIND_AUTO_CREATE)
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun setTime() {
         val sdf = SimpleDateFormat("mm:ss")
         binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
@@ -375,6 +378,7 @@ class OnlineMainActivity
     private fun updateProgress() {
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
+            @SuppressLint("SimpleDateFormat")
             override fun run(){
                 try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
@@ -542,7 +546,7 @@ class OnlineMainActivity
     override fun onItemPlaylistClick(playlist: OnlinePlaylist) {
         val currentSong = songList!![songPosition]
         FirebaseAuth.getInstance().currentUser?.let {
-            firebaseViewModel.addSongToPlaylist(currentSong, playlist, it)
+            onlineSongViewModel.addSongToPlaylist(currentSong, playlist, it)
             Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
         }
     }
@@ -558,55 +562,19 @@ class OnlineMainActivity
         builder.setMessage("Rename")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Rename",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Rename") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        playlist.name = title
-                        FirebaseAuth.getInstance().currentUser?.let {
-                            firebaseViewModel.updatePlaylistForUser(playlist, it)
-                        }
-                        firebaseViewModel.updatePlaylist.observe(this, androidx.lifecycle.Observer {
-                            when (it) {
-                                is UiState.Loading -> {
-
-                                }
-                                is UiState.Failure -> {
-
-                                }
-                                is UiState.Success -> {
-                                    Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        })
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
-        // Create the AlertDialog object and return it
-        builder.create().show()
-    }
-
-    private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist){
-
-        val builder = AlertDialog.Builder(this)
-
-        builder.setMessage("Delete ${playlist.name} playlist?")
-            .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-
+                if (title.isEmpty()) {
+                    Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
+                } else {
+                    playlist.name = title
                     FirebaseAuth.getInstance().currentUser?.let {
-                        firebaseViewModel.deletePlaylistForUser(playlist, it)
+                        onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
                     }
-                    firebaseViewModel.deletePlaylist.observe(this, androidx.lifecycle.Observer {
+                    onlinePlaylistViewModel.updatePlaylist.observe(this) {
                         when (it) {
                             is UiState.Loading -> {
 
@@ -618,12 +586,44 @@ class OnlineMainActivity
                                 Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
                             }
                         }
-                    })
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                    }
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
+        // Create the AlertDialog object and return it
+        builder.create().show()
+    }
+
+    private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist){
+
+        val builder = AlertDialog.Builder(this)
+
+        builder.setMessage("Delete ${playlist.name} playlist?")
+            .setTitle("")
+            .setPositiveButton("Delete") { _, _ ->
+
+                FirebaseAuth.getInstance().currentUser?.let {
+                    onlinePlaylistViewModel.deletePlaylistForUser(playlist, it)
+                }
+                onlinePlaylistViewModel.deletePlaylist.observe(this) {
+                    when (it) {
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }

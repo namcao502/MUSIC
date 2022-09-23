@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.fragments.online
 
 import android.app.Activity
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.FragmentSongCrudBinding
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
+import com.example.music.viewModels.online.FirebaseViewModel
 import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,8 @@ class SongCRUDFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private var songUri: Uri? = null
     private var imgUri: Uri? = null
@@ -151,7 +154,7 @@ class SongCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Adding a song's image...")
-                onlineSongViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
+                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -170,7 +173,7 @@ class SongCRUDFragment : Fragment() {
             }
 
             val progressDialog = createProgressDialog("Adding a new song")
-            onlineSongViewModel.uploadSingleSongFile(name, songUri!!){
+            firebaseViewModel.uploadSingleSongFile(name, songUri!!){
                 when (it) {
                     is UiState.Loading -> {
                         progressDialog.show()
@@ -237,7 +240,7 @@ class SongCRUDFragment : Fragment() {
                     .addOnSuccessListener {
                         //upload new mp3 file
                         val progressDialog = createProgressDialog("Updating a raw song...")
-                        onlineSongViewModel.uploadSingleSongFile(name, songUri!!){
+                        firebaseViewModel.uploadSingleSongFile(name, songUri!!){
                             when (it) {
                                 is UiState.Loading -> {
                                     progressDialog.show()
@@ -259,7 +262,7 @@ class SongCRUDFragment : Fragment() {
             }
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Updating a song's image...")
-                onlineSongViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
+                firebaseViewModel.uploadSingleImageFile("Song Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()

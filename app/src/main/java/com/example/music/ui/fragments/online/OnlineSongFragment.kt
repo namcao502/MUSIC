@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.fragments.online
 
 import android.app.Dialog
 import android.os.Bundle
@@ -17,7 +17,6 @@ import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongAdapter
-import com.example.music.viewModels.online.FirebaseViewModel
 import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton

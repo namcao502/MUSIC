@@ -1,4 +1,4 @@
-package com.example.music.ui.fragments
+package com.example.music.ui.fragments.online
 
 import android.app.Activity
 import android.content.Intent
@@ -21,8 +21,8 @@ import com.example.music.databinding.FragmentArtistCrudBinding
 import com.example.music.utils.createDialog
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
+import com.example.music.viewModels.online.FirebaseViewModel
 import com.example.music.viewModels.online.OnlineArtistViewModel
-import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
@@ -37,7 +37,7 @@ class ArtistCRUDFragment : Fragment() {
 
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
 
-    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private var imgUri: Uri? = null
 
@@ -134,7 +134,7 @@ class ArtistCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Adding a song's image...")
-                onlineArtistViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -199,7 +199,7 @@ class ArtistCRUDFragment : Fragment() {
 
             if (imgUri != null){
                 val progressDialog = createProgressDialog("Updating an artist's image...")
-                onlineArtistViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
+                firebaseViewModel.uploadSingleImageFile("Artist Images", name, imgUri!!){
                     when (it) {
                         is UiState.Loading -> {
                             progressDialog.show()
@@ -245,29 +245,31 @@ class ArtistCRUDFragment : Fragment() {
             val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)
 
             var current: List<OnlineSong> = emptyList()
-            onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
-            onlineSongViewModel.songName.observe(viewLifecycleOwner){
-                when(it) {
-                    is UiState.Loading -> {
+            if (currentArtist!!.songs!!.isNotEmpty()){
+                firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                    when(it) {
+                        is UiState.Loading -> {
 
-                    }
-                    is UiState.Failure -> {
+                        }
+                        is UiState.Failure -> {
 
-                    }
-                    is UiState.Success -> {
-                        current = it.data
-                        currentSongs.adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item,
-                            current)
+                        }
+                        is UiState.Success -> {
+                            current = it.data
+                            currentSongs.adapter = ArrayAdapter(requireContext(),
+                                androidx.appcompat.R.layout.
+                                support_simple_spinner_dropdown_item,
+                                current)
+                        }
                     }
                 }
             }
 
             var all: List<OnlineSong> = emptyList()
 
-            onlineSongViewModel.getAllSongs()
-            onlineSongViewModel.song.observe(viewLifecycleOwner){
+            firebaseViewModel.getAllSongs()
+            firebaseViewModel.song.observe(viewLifecycleOwner){
                 when(it) {
                     is UiState.Loading -> {
 
@@ -290,24 +292,32 @@ class ArtistCRUDFragment : Fragment() {
                 updateArtist(currentArtist!!)
 
                 //reload
-                var current: List<OnlineSong> = emptyList()
-                onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
-                onlineSongViewModel.songName.observe(viewLifecycleOwner){
-                    when(it) {
-                        is UiState.Loading -> {
+                if (currentArtist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                        when(it) {
+                            is UiState.Loading -> {
 
-                        }
-                        is UiState.Failure -> {
+                            }
+                            is UiState.Failure -> {
 
-                        }
-                        is UiState.Success -> {
-                            current = it.data
-                            currentSongs.adapter = ArrayAdapter(requireContext(),
-                                androidx.appcompat.R.layout.
-                                support_simple_spinner_dropdown_item,
-                                current)
+                            }
+                            is UiState.Success -> {
+                                current = it.data
+                                currentSongs.adapter = ArrayAdapter(requireContext(),
+                                    androidx.appcompat.R.layout.
+                                    support_simple_spinner_dropdown_item,
+                                    current)
+                            }
                         }
                     }
+                }
+                else {
+                    current = emptyList()
+                    currentSongs.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.
+                        support_simple_spinner_dropdown_item,
+                        current)
                 }
             }
 
@@ -318,24 +328,32 @@ class ArtistCRUDFragment : Fragment() {
                 updateArtist(currentArtist!!)
 
                 //reload
-                var current: List<OnlineSong> = emptyList()
-                onlineSongViewModel.getSongFromListSongID(currentArtist!!.songs!!)
-                onlineSongViewModel.songName.observe(viewLifecycleOwner){
-                    when(it) {
-                        is UiState.Loading -> {
+                if (currentArtist!!.songs!!.isNotEmpty()){
+                    firebaseViewModel.getSongFromListSongID(currentArtist!!.songs!!)
+                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                        when(it) {
+                            is UiState.Loading -> {
 
-                        }
-                        is UiState.Failure -> {
+                            }
+                            is UiState.Failure -> {
 
-                        }
-                        is UiState.Success -> {
-                            current = it.data
-                            currentSongs.adapter = ArrayAdapter(requireContext(),
-                                androidx.appcompat.R.layout.
-                                support_simple_spinner_dropdown_item,
-                                current)
+                            }
+                            is UiState.Success -> {
+                                current = it.data
+                                currentSongs.adapter = ArrayAdapter(requireContext(),
+                                    androidx.appcompat.R.layout.
+                                    support_simple_spinner_dropdown_item,
+                                    current)
+                            }
                         }
                     }
+                }
+                else {
+                    current = emptyList()
+                    currentSongs.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.
+                        support_simple_spinner_dropdown_item,
+                        current)
                 }
             }
 

@@ -32,8 +32,8 @@ import com.example.music.ui.adapters.SongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
 import com.example.music.ui.fragments.PlaylistFragment
 import com.example.music.ui.fragments.SongFragment
-import com.example.music.viewModels.PlaylistViewModel
-import com.example.music.viewModels.SongInPlaylistViewModel
+import com.example.music.viewModels.offline.PlaylistViewModel
+import com.example.music.viewModels.offline.SongInPlaylistViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint

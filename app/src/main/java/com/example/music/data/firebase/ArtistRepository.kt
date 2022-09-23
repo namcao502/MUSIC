@@ -17,6 +17,4 @@ interface ArtistRepository {
 
     fun deleteArtist(artist: OnlineArtist, result: (UiState<String>) -> Unit)
 
-    suspend fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
-
 }

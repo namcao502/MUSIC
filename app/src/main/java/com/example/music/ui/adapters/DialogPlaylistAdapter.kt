@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.data.models.offline.Playlist
-import com.example.music.viewModels.SongInPlaylistViewModel
+import com.example.music.viewModels.offline.SongInPlaylistViewModel
 import java.text.SimpleDateFormat
 
 class DialogPlaylistAdapter(

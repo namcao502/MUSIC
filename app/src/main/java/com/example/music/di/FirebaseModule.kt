@@ -21,7 +21,7 @@ object FirebaseModule {
     //you will simply come and swap here.
     @Singleton
     @Provides
-    fun provideAuthenticator() : BaseAuthenticator {
+    fun provideAuthenticator(): BaseAuthenticator {
         return  FirebaseAuthenticator()
     }
 
@@ -29,7 +29,7 @@ object FirebaseModule {
     //we can simply just swap here
     @Singleton
     @Provides
-    fun provideRepository(authenticator : BaseAuthenticator) : BaseAuthRepository {
+    fun provideRepository(authenticator: BaseAuthenticator): BaseAuthRepository {
         return AuthRepository(authenticator)
     }
 
@@ -53,20 +53,26 @@ object FirebaseModule {
 
     @Singleton
     @Provides
-    fun provideArtistRepository(database: FirebaseFirestore, storageReference: StorageReference): ArtistRepository {
-        return ArtistRepositoryImp(database, storageReference)
+    fun provideArtistRepository(database: FirebaseFirestore): ArtistRepository {
+        return ArtistRepositoryImp(database)
     }
 
     @Singleton
     @Provides
-    fun provideSongRepository(database: FirebaseFirestore, storageReference: StorageReference): SongRepository {
-        return SongRepositoryImp(database, storageReference)
+    fun provideSongRepository(database: FirebaseFirestore): SongRepository {
+        return SongRepositoryImp(database)
     }
 
     @Singleton
     @Provides
-    fun providePlaylistRepository(database: FirebaseFirestore, storageReference: StorageReference): PlaylistRepository {
-        return PlaylistRepositoryImp(database, storageReference)
+    fun providePlaylistRepository(database: FirebaseFirestore): PlaylistRepository {
+        return PlaylistRepositoryImp(database)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGenreRepository(database: FirebaseFirestore): GenreRepository {
+        return GenreRepositoryImp(database)
     }
 
 }

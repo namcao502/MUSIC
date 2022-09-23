@@ -8,7 +8,7 @@
     android:minWidth="300dp"
     android:minHeight="300dp"
     android:background="@color/main_color"
-    tools:context=".ui.fragments.OnlinePlaylistFragment">
+    tools:context=".ui.fragments.online.OnlinePlaylistFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playlist_recyclerView"

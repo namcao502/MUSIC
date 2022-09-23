@@ -78,13 +78,6 @@ class OnlinePlaylistViewModel @Inject constructor(val repository: PlaylistReposi
         }
     }
 
-    fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
-        result.invoke(UiState.Loading)
-        viewModelScope.launch {
-            repository.uploadSingleImageFile(directory, fileName, fileUri, result)
-        }
-    }
-
     fun getAllSongInPlaylist(playlist: OnlinePlaylist, position: Int) {
         _songInPlaylist[position].value = UiState.Loading
         repository.getAllSongInPlaylist(playlist){

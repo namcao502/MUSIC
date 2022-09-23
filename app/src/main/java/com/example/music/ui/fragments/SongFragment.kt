@@ -26,10 +26,10 @@ import com.example.music.data.models.offline.Song
 import com.example.music.data.models.offline.SongPlaylistCrossRef
 import com.example.music.ui.adapters.DialogPlaylistAdapter
 import com.example.music.ui.adapters.SongAdapter
-import com.example.music.viewModels.PlaylistViewModel
-import com.example.music.viewModels.ScanSongInStorage
-import com.example.music.viewModels.SongInPlaylistViewModel
-import com.example.music.viewModels.SongViewModel
+import com.example.music.viewModels.offline.PlaylistViewModel
+import com.example.music.viewModels.offline.ScanSongInStorage
+import com.example.music.viewModels.offline.SongInPlaylistViewModel
+import com.example.music.viewModels.offline.SongViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
