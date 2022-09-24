@@ -5,37 +5,28 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isInvisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
 import com.example.music.data.models.online.OnlineAccount
-import com.example.music.data.models.online.OnlineAlbum
 import com.example.music.databinding.FragmentAccountCrudBinding
-import com.example.music.databinding.FragmentAlbumCrudBinding
-import com.example.music.utils.createDialog
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
-import com.example.music.viewModels.online.FirebaseAuthViewModel
 import com.example.music.viewModels.online.FirebaseViewModel
 import com.example.music.viewModels.online.OnlineAccountViewModel
-import com.example.music.viewModels.online.OnlineAlbumViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.io.FileNotFoundException
 
 @AndroidEntryPoint
@@ -337,94 +328,109 @@ class AccountCRUDFragment : Fragment() {
             }
 
             if (email != currentAccount!!.email){
-                dialog.show()
-                val auth = Firebase.auth
 
-                if (auth.currentUser != null){
-                    Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
-                    auth.signOut()
-                }
+                viewLifecycleOwner.lifecycleScope.launch {
+                    dialog.show()
+                    val auth = Firebase.auth
 
-                auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
-                    .addOnSuccessListener {
-                        val user = auth.currentUser
-                        user!!.updateEmail(email)
-                            .addOnSuccessListener {
+                    if (auth.currentUser != null){
+                        Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
+                        auth.signOut()
+                    }
+
+                    auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
+                        .addOnSuccessListener {
+                            viewLifecycleOwner.lifecycleScope.launch {
+
                                 dialog.show()
                                 currentAccount!!.email = email
                                 updateAccount(currentAccount!!)
                                 dialog.cancel()
-                                auth.signOut()
-                                auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+
+                                val user = auth.currentUser
+                                user!!.updateEmail(email)
                                     .addOnSuccessListener {
-                                        Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                        dialog.cancel()
+                                        auth.signOut()
+                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                            .addOnSuccessListener {
+                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
+                                                dialog.cancel()
+                                            }
+                                            .addOnFailureListener {
+                                                dialog.cancel()
+                                            }
                                     }
                                     .addOnFailureListener {
-                                        dialog.cancel()
+                                        auth.signOut()
+                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                            .addOnSuccessListener {
+                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
+                                                dialog.cancel()
+                                            }
+                                            .addOnFailureListener {
+                                                dialog.cancel()
+                                            }
                                     }
                             }
-                            .addOnFailureListener {
-                                auth.signOut()
-                                auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                    .addOnSuccessListener {
-                                        Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                        dialog.cancel()
-                                    }
-                                    .addOnFailureListener {
-                                        dialog.cancel()
-                                    }
-                            }
-                    }
-                    .addOnFailureListener {
-                        dialog.cancel()
-                    }
+                        }
+                        .addOnFailureListener {
+                            dialog.cancel()
+                        }
+                }
 
             }
 
             if (password != currentAccount!!.password){
-                dialog.show()
-                val auth = Firebase.auth
 
-                if (auth.currentUser != null){
-                    Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
-                    auth.signOut()
-                }
+                viewLifecycleOwner.lifecycleScope.launch {
+                    dialog.show()
+                    val auth = Firebase.auth
 
-                auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
-                    .addOnSuccessListener {
-                        val user = auth.currentUser
-                        user!!.updatePassword(password)
-                            .addOnSuccessListener {
+                    if (auth.currentUser != null){
+                        Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
+                        auth.signOut()
+                    }
+
+                    auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
+                        .addOnSuccessListener {
+                            viewLifecycleOwner.lifecycleScope.launch {
+
                                 dialog.show()
                                 currentAccount!!.password = password
                                 updateAccount(currentAccount!!)
                                 dialog.cancel()
-                                auth.signOut()
-                                auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+
+                                val user = auth.currentUser
+                                user!!.updatePassword(password)
                                     .addOnSuccessListener {
-                                        Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                        dialog.cancel()
+                                        auth.signOut()
+                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                            .addOnSuccessListener {
+                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
+                                                dialog.cancel()
+                                            }
+                                            .addOnFailureListener {
+                                                dialog.cancel()
+                                            }
                                     }
                                     .addOnFailureListener {
-                                        dialog.cancel()
+                                        auth.signOut()
+                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                            .addOnSuccessListener {
+                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
+                                                dialog.cancel()
+                                            }
+                                            .addOnFailureListener {
+                                                dialog.cancel()
+                                            }
                                     }
                             }
-                            .addOnFailureListener {
-                                auth.signOut()
-                                auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                    .addOnSuccessListener {
-                                        Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                        dialog.cancel()
-                                    }
-                                    .addOnFailureListener {
-                                        dialog.cancel()
-                                    }
-                            }
-                    }
-                    .addOnFailureListener {
-                        dialog.cancel()
-                    }
+                        }
+                        .addOnFailureListener {
+                            dialog.cancel()
+                        }
+                }
+
             }
         }
     }

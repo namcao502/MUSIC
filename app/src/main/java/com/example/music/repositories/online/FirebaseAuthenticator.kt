@@ -16,7 +16,7 @@ class FirebaseAuthenticator: BaseAuthenticator {
     override suspend fun signUpWithEmailPassword(email: String, password: String): FirebaseUser? {
         Firebase.auth.createUserWithEmailAndPassword(email, password).await()
         val doc = FirebaseFirestore.getInstance().collection(FireStoreCollection.USER).document()
-        val user = OnlineAccount(Firebase.auth.currentUser!!.uid, "", email, password, "", "")
+        val user = OnlineAccount(doc.id, Firebase.auth.currentUser!!.uid,"", email, password, "", "")
 
         doc.set(user)
             .addOnSuccessListener {
