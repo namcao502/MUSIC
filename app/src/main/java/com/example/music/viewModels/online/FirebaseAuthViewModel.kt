@@ -38,7 +38,7 @@ class FirebaseAuthViewModel @Inject constructor(
 
 
     //validate all fields first before performing any sign in operations
-    fun signInUser(email: String , password: String) = viewModelScope.launch{
+    fun signInUser(email: String, password: String) = viewModelScope.launch{
         when {
             email.isEmpty() -> {
                 eventsChannel.send(AllEvents.ErrorCode(1))

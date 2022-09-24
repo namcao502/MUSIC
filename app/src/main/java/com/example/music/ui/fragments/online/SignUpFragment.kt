@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
-    private val viewModel : FirebaseAuthViewModel by activityViewModels()
-    private var _binding : FragmentSignupBinding? = null
+    private val viewModel: FirebaseAuthViewModel by activityViewModels()
+    private var _binding: FragmentSignupBinding? = null
     private val binding get()  = _binding
     private val TAG = "SignUpFragment"
 
@@ -34,21 +34,22 @@ class SignUpFragment : Fragment() {
 
         registerObservers()
         listenToChannels()
-                binding?.apply {
-                    signUpButton.setOnClickListener {
-                    progressBarSignup.isVisible = true
-                    val email = userEmailEtv.text.toString()
-                    val password = userPasswordEtv.text.toString()
-                        val confirmPass = confirmPasswordEtv.text.toString()
-                    viewModel.signUpUser(email , password , confirmPass)
 
-                }
+        binding?.apply {
+            signUpButton.setOnClickListener {
+                progressBarSignup.isVisible = true
+                val email = userEmailEtv.text.toString()
+                val password = userPasswordEtv.text.toString()
+                val confirmPass = confirmPasswordEtv.text.toString()
+                viewModel.signUpUser(email , password , confirmPass)
 
-                    signInTxt.setOnClickListener {
-                        findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-                    }
+            }
 
-                }
+            signInTxt.setOnClickListener {
+                findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
+            }
+
+        }
 
         return binding?.root
     }

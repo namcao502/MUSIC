@@ -12,13 +12,13 @@ interface BaseAuthRepository {
     //we will use it won't matter since all will inherit from this class. So swapping
     //of repositories will be easy.
 
-    suspend fun signInWithEmailPassword(email:String , password:String): FirebaseUser?
+    suspend fun signInWithEmailPassword(email: String, password: String): FirebaseUser?
 
-    suspend fun signUpWithEmailPassword(email: String , password: String): FirebaseUser?
+    suspend fun signUpWithEmailPassword(email: String, password: String): FirebaseUser?
 
-    fun signOut() : FirebaseUser?
+    fun signOut(): FirebaseUser?
 
-    fun getCurrentUser() : FirebaseUser?
+    fun getCurrentUser(): FirebaseUser?
 
-    suspend fun sendResetPassword(email : String) : Boolean
+    suspend fun sendResetPassword(email: String): Boolean
 }
