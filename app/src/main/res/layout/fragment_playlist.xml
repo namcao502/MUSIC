@@ -21,11 +21,10 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_btn"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="96dp"
         android:clickable="true"
         android:contentDescription="ADD"
         android:src="@drawable/ic_baseline_add_24"

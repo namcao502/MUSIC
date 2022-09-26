@@ -1,5 +1,7 @@
 package com.example.music.ui.fragments.online
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +27,7 @@ class SignInFragment : Fragment() {
     private var _binding : FragmentSigninBinding? = null
     private val binding get() = _binding
     private val TAG = "SignInFragment"
+    private lateinit var rememberSP: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +39,7 @@ class SignInFragment : Fragment() {
         registerObservers()
 
         binding?.apply {
+
             signInButton.setOnClickListener {
                 progressBarSignin.isVisible = true
                 val email = userEmailEtv.text.toString()
@@ -51,10 +55,12 @@ class SignInFragment : Fragment() {
                 findNavController().navigate(R.id.action_signInFragment_to_resetPasswordFragment)
             }
 
-
-            userEmailEtv.setText("nam@gmail.com")
-            userPasswordEtv.setText("nam502")
+            rememberSP = requireActivity().getSharedPreferences("LoginData", Context.MODE_PRIVATE)
+            userEmailEtv.setText(rememberSP.getString("email", ""))
+            userPasswordEtv.setText(rememberSP.getString("password", ""))
+            rememberCb.isChecked = rememberSP.getBoolean("check", false)
         }
+
         return binding?.root
     }
 
@@ -78,6 +84,20 @@ class SignInFragment : Fragment() {
                     }
                     is FirebaseAuthViewModel.AllEvents.Message -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                        //sign in success
+                        val editor = rememberSP.edit()
+                        if (binding!!.rememberCb.isChecked){
+                            editor.putString("email", binding!!.userEmailEtv.text.toString())
+                            editor.putString("password", binding!!.userPasswordEtv.text.toString())
+                            editor.putBoolean("check", true)
+                            editor.commit()
+                        }
+                        else {
+                            editor.putString("email", "")
+                            editor.putString("password", "")
+                            editor.putBoolean("check", false)
+                            editor.commit()
+                        }
                     }
                     is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if (event.code == 1)

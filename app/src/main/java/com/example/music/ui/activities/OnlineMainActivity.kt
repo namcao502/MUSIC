@@ -96,6 +96,10 @@ class OnlineMainActivity
             tab.text = tabLayoutTitles[position]
         }.attach()
 
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
+
         BottomSheetBehavior.from(binding.bottomSheet).apply {
 
             peekHeight = 200
@@ -445,22 +449,6 @@ class OnlineMainActivity
 
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
 
-//        firebaseViewModel.getAllPlaylistOfSong(songList!![songPosition],
-//            Firebase.auth.currentUser!!)
-//        firebaseViewModel.playlist.observe(this){
-//            when (it) {
-//                is UiState.Loading -> {
-//
-//                }
-//                is UiState.Failure -> {
-//
-//                }
-//                is UiState.Success -> {
-//                    Log.i("TAG502", "onServiceConnected: ${it.data}")
-//                }
-//            }
-//        }
-
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
@@ -488,6 +476,7 @@ class OnlineMainActivity
         songList = songs
         songPosition = position
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
             initState()
             binding.bottomSheet.visibility = View.VISIBLE
@@ -509,6 +498,7 @@ class OnlineMainActivity
         this.songList = songList
         songPosition = position
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
             initState()
             binding.bottomSheet.visibility = View.VISIBLE

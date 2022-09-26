@@ -59,30 +59,8 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         // Inflate the layout for this fragment
         _binding = FragmentSongBinding.inflate(layoutInflater, container, false)
 
-        val menuHost: MenuHost = requireActivity()
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.main_song_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.scan_menu -> {
-                        // clearCompletedTasks()
-                        requestRead()
-                        Toast.makeText(requireContext(), "Scan completed", Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        requestRead()
+        Toast.makeText(requireContext(), "Scan completed", Toast.LENGTH_SHORT).show()
 
         return binding.root
     }

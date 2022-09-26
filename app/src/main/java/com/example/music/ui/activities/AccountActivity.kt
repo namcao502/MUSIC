@@ -18,16 +18,10 @@ class AccountActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
-        /**
-         * This class will mainly hold both the
-         * sign in and sign up fragments and navigation
-         * will be handled by the navigation component*/
-
         //here we will simply setup the nav host fragment which is responsible
         //for holding all the other fragments that will be used in the app
         //the onSupportNavigationUp creates the back arrow in the toolbar.
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
 
         setupActionBarWithNavController(navController)

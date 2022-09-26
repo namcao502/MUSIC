@@ -50,30 +50,6 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
         // Inflate the layout for this fragment
         _binding =  FragmentPlaylistBinding.inflate(layoutInflater, container, false)
 
-        val menuHost: MenuHost = requireActivity()
-        // Add menu items without using the Fragment Menu APIs
-        // Note how we can tie the MenuProvider to the viewLifecycleOwner
-        // and an optional Lifecycle.State (here, RESUMED) to indicate when
-        // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Add menu items here
-                menuInflater.inflate(R.menu.main_playlist_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
-                return when (menuItem.itemId) {
-                    R.id.add_new_playlist_menu -> {
-                        // clearCompletedTasks()
-                        createDialogForAddPlaylist()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
         return binding.root
     }
 

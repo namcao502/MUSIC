@@ -96,6 +96,10 @@ class MainActivity :
             tab.text = tabLayoutTitles[position]
         }.attach()
 
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
+
         BottomSheetBehavior.from(binding.bottomSheet).apply {
 
             peekHeight = 200
