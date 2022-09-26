@@ -25,6 +25,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_song_player2.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_test.xml" value="0.16210739614994935" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/column_item.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_account_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_album_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_artist_crud.xml" value="0.25" />
@@ -41,6 +42,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signup.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song_crud.xml" value="0.264" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_welcome.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/menu_playlist_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/nemu_playlist_dialog.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/nemu_song_dialog.xml" value="0.25" />

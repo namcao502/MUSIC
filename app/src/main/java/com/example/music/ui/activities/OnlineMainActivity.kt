@@ -29,8 +29,10 @@ import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.services.OnlineMusicPlayerService
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
+import com.example.music.ui.adapters.OnlinePlaylistInHomeAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.adapters.ViewPagerAdapter
+import com.example.music.ui.fragments.online.HomeFragment
 import com.example.music.ui.fragments.online.OnlinePlaylistFragment
 import com.example.music.ui.fragments.online.OnlineSongFragment
 import com.example.music.viewModels.online.OnlinePlaylistViewModel
@@ -57,9 +59,10 @@ class OnlineMainActivity
 
     private var songFragment: OnlineSongFragment = OnlineSongFragment(this)
     private var playlistFragment: OnlinePlaylistFragment = OnlinePlaylistFragment(this)
-    private var fragmentList: MutableList<Fragment> = mutableListOf(songFragment, playlistFragment)
+    private var homeFragment: HomeFragment = HomeFragment()
+    private var fragmentList: MutableList<Fragment> = mutableListOf(homeFragment, songFragment, playlistFragment)
 
-    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Song", "Playlist")
+    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Home", "Song", "Playlist")
 
     var songList: List<OnlineSong>? = null
     private var songPosition = -1
@@ -79,7 +82,6 @@ class OnlineMainActivity
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +123,6 @@ class OnlineMainActivity
 
             })
         }
-
 
     }
 
@@ -515,12 +516,7 @@ class OnlineMainActivity
         }
     }
 
-    override fun callBackFromMenuSongInPlaylist(
-        action: String,
-        songList: List<OnlineSong>,
-        position: Int,
-        playlist: OnlinePlaylist
-    ) {
+    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
         TODO("Not yet implemented")
     }
 
