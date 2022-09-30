@@ -9,10 +9,8 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
@@ -29,21 +27,17 @@ import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.services.OnlineMusicPlayerService
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
-import com.example.music.ui.adapters.OnlinePlaylistInHomeAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
-import com.example.music.ui.adapters.ViewPagerAdapter
-import com.example.music.ui.fragments.online.HomeFragment
-import com.example.music.ui.fragments.online.OnlinePlaylistFragment
-import com.example.music.ui.fragments.online.OnlineSongFragment
+import com.example.music.ui.fragments.online.*
 import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class OnlineMainActivity
@@ -55,14 +49,12 @@ class OnlineMainActivity
 
     private lateinit var binding: ActivityOnlineMainBinding
 
-    private lateinit var viewPagerChart: ViewPagerAdapter
-
-    private var songFragment: OnlineSongFragment = OnlineSongFragment(this)
-    private var playlistFragment: OnlinePlaylistFragment = OnlinePlaylistFragment(this)
-    private var homeFragment: HomeFragment = HomeFragment()
-    private var fragmentList: MutableList<Fragment> = mutableListOf(homeFragment, songFragment, playlistFragment)
-
-    private val tabLayoutTitles: ArrayList<String> = arrayListOf("Home", "Song", "Playlist")
+    private var songFragment = OnlineSongFragment(this)
+    private var playlistFragment = OnlinePlaylistFragment(this)
+    private var homeFragment = HomeFragment()
+    private var searchFragment = SearchFragment()
+    private var userFragment = UserFragment()
+    var activeFragment: Fragment = homeFragment
 
     var songList: List<OnlineSong>? = null
     private var songPosition = -1
@@ -89,14 +81,55 @@ class OnlineMainActivity
         val view = binding.root
         setContentView(view)
 
-        //SET ADAPTER
-        viewPagerChart = ViewPagerAdapter(supportFragmentManager, lifecycle, fragmentList)
-        binding.viewPagerMain.adapter = viewPagerChart
+        binding.bottomNav.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.online_home_menu -> {
+                    supportFragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .show(homeFragment).commit()
+                    activeFragment = homeFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_search_menu -> {
+                    supportFragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .show(searchFragment).commit()
+                    activeFragment = searchFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_song_menu -> {
+                    supportFragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .show(songFragment).commit()
+                    activeFragment = songFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_collection_menu -> {
+                    supportFragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .show(playlistFragment).commit()
+                    activeFragment = playlistFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_user_menu -> {
+                    supportFragmentManager.beginTransaction()
+                        .hide(activeFragment)
+                        .show(userFragment).commit()
+                    activeFragment = userFragment
+                    return@setOnItemSelectedListener true
+                }
+            }
+            return@setOnItemSelectedListener false
+        }
 
-        //SET TAB TITLE AND MAP WITH FRAGMENT
-        TabLayoutMediator(binding.tabLayoutMain, binding.viewPagerMain) { tab, position ->
-            tab.text = tabLayoutTitles[position]
-        }.attach()
+        with(supportFragmentManager.beginTransaction()){
+            add(R.id.fragment_container, userFragment).hide(userFragment)
+            add(R.id.fragment_container, playlistFragment).hide(playlistFragment)
+            add(R.id.fragment_container, songFragment).hide(songFragment)
+            add(R.id.fragment_container, searchFragment).hide(searchFragment)
+            add(R.id.fragment_container, homeFragment)
+            commit()
+        }
 
         if (supportActionBar != null) {
             supportActionBar!!.hide()
@@ -109,16 +142,13 @@ class OnlineMainActivity
 
             addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_COLLAPSED){
-                        showMiniMenu(true)
-                    }
-                    if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                        showMiniMenu(false)
-                    }
+
                 }
 
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    showMiniMenu(false)
+                    //begin animation
+                    binding.bottomSheet.visibility = View.GONE
+                    //end animation
                 }
 
             })
@@ -126,16 +156,13 @@ class OnlineMainActivity
 
     }
 
-    private fun showMiniMenu(check: Boolean){
-        if (check){
-            binding.miniPlayerLayout.visibility = View.VISIBLE
-        }
-        else {
-            binding.miniPlayerLayout.visibility = View.GONE
-        }
-    }
-
     private fun listener() {
+
+        binding.miniPlayerLayout.setOnClickListener {
+            binding.bottomSheet.visibility = View.VISIBLE
+            BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show()
+        }
 
         binding.addToPlaylistBtn.setOnClickListener {
             val dialog = Dialog(this)
@@ -174,8 +201,6 @@ class OnlineMainActivity
             dialog.show()
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
-
         binding.miniNextBtn.setOnClickListener {
             next()
         }
@@ -190,10 +215,6 @@ class OnlineMainActivity
             } else {
                 play()
             }
-        }
-
-        binding.miniPlayerLayout.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         binding.playStateBtn.setOnClickListener{
@@ -447,9 +468,7 @@ class OnlineMainActivity
         musicPlayerService!!.start()
         setCompleteListener()
         listener()
-
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
-
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
@@ -473,6 +492,14 @@ class OnlineMainActivity
         }
     }
 
+    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+        if (view.layoutParams is MarginLayoutParams) {
+            val p = view.layoutParams as MarginLayoutParams
+            p.setMargins(left, top, right, bottom)
+            view.requestLayout()
+        }
+    }
+
     override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
         songList = songs
         songPosition = position
@@ -480,7 +507,7 @@ class OnlineMainActivity
         binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
             initState()
-            binding.bottomSheet.visibility = View.VISIBLE
+            binding.miniPlayerLayout.visibility = View.VISIBLE
         }
         else{
             musicPlayerService!!.stop()
@@ -493,6 +520,7 @@ class OnlineMainActivity
             listener()
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+
     }
 
     override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
@@ -502,7 +530,7 @@ class OnlineMainActivity
         binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
             initState()
-            binding.bottomSheet.visibility = View.VISIBLE
+            binding.miniPlayerLayout.visibility = View.VISIBLE
         }
         else{
             musicPlayerService!!.stop()
@@ -514,6 +542,7 @@ class OnlineMainActivity
             setCompleteListener()
             listener()
         }
+        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
     override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {

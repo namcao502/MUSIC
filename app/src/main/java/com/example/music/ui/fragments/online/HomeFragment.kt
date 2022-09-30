@@ -1,32 +1,33 @@
 package com.example.music.ui.fragments.online
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
 import com.example.music.UiState
+import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.databinding.FragmentHomeBinding
-import com.example.music.databinding.FragmentWelcomeBinding
-import com.example.music.ui.adapters.OnlineAlbumAdapter
-import com.example.music.ui.adapters.OnlineArtistAdapter
-import com.example.music.ui.adapters.OnlineGenreAdapter
-import com.example.music.ui.adapters.OnlinePlaylistInHomeAdapter
-import com.example.music.viewModels.online.OnlineAlbumViewModel
-import com.example.music.viewModels.online.OnlineArtistViewModel
-import com.example.music.viewModels.online.OnlineGenreViewModel
-import com.example.music.viewModels.online.OnlinePlaylistViewModel
+import com.example.music.ui.adapters.*
+import com.example.music.utils.createBottomSheetDialog
+import com.example.music.utils.toast
+import com.example.music.viewModels.online.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment: Fragment(), OnlinePlaylistInHomeAdapter.ClickAPlaylist {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding
@@ -35,9 +36,10 @@ class HomeFragment : Fragment() {
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
     private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
-        OnlinePlaylistInHomeAdapter(requireContext())
+        OnlinePlaylistInHomeAdapter(requireContext(), this)
     }
 
     private val onlineArtistAdapter: OnlineArtistAdapter by lazy {
@@ -50,6 +52,10 @@ class HomeFragment : Fragment() {
 
     private val onlineAlbumAdapter: OnlineAlbumAdapter by lazy {
         OnlineAlbumAdapter(requireContext())
+    }
+
+    private val onlineListSongAdapter: OnlineListSongAdapter by lazy {
+        OnlineListSongAdapter(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -148,11 +154,63 @@ class HomeFragment : Fragment() {
         )
         binding!!.sliderImg.setImageList(imageList, ScaleTypes.FIT)
 
+        binding!!.changeFragmentBtn.setOnClickListener {
+
+//            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+//            val transaction = this.childFragmentManager.beginTransaction()
+//            transaction.add(R.id.viewPagerMainOnline, BlankFragment())
+//            transaction.disallowAddToBackStack()
+//            transaction.commit()
+
+            val bottomSheetDialog = createBottomSheetDialog()
+            val listSongRV = bottomSheetDialog.findViewById<RecyclerView>(R.id.list_song_rv)
+
+            with(listSongRV!!){
+                adapter = onlineListSongAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            //set state for dialog
+            bottomSheetDialog.show()
+
+        }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun showBSD(listSong: List<String>){
+
+        val bottomSheetDialog = createBottomSheetDialog()
+        val listSongRV = bottomSheetDialog.findViewById<RecyclerView>(R.id.list_song_rv)
+
+        with(listSongRV!!){
+            adapter = onlineListSongAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        firebaseViewModel.getAllSongFromListSongID(listSong)
+        when(firebaseViewModel.allSongFromID){
+            is UiState.Loading -> {
+
+            }
+            is UiState.Failure -> {
+
+            }
+            is UiState.Success -> {
+
+            }
+        }
+
+        //set state for dialog
+        bottomSheetDialog.show()
+    }
+
+    override fun callBackFromPlaylistClick(playlist: OnlinePlaylist) {
+        showBSD(playlist.songs!!)
     }
 
 }

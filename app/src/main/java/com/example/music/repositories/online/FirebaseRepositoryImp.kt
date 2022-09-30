@@ -37,6 +37,9 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     }
 
     override fun getSongFromListSongID(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit) {
+        if (songs.isEmpty()){
+            return
+        }
         database
             .collection(FireStoreCollection.SONG)
             .whereIn("id", songs)
@@ -52,7 +55,6 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
                     UiState.Success(songList)
                 )
             }
-
     }
 
     override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {

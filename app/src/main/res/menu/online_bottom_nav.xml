@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/online_songs"
+        android:id="@+id/online_home_menu"
+        android:title="Home"
+        android:icon="@drawable/ic_baseline_home_24"/>
+
+    <item
+        android:id="@+id/online_search_menu"
+        android:title="Search"
+        android:icon="@drawable/ic_baseline_search_24"/>
+
+    <item
+        android:id="@+id/online_song_menu"
         android:title="Songs"
-        android:icon="@drawable/ic_baseline_library_music_24"/>
+        android:icon="@drawable/ic_baseline_music_note_24"/>
 
     <item
-        android:id="@+id/online_playlist"
-        android:title="Playlist"
-        android:icon="@drawable/ic_baseline_queue_music_24"/>
+        android:id="@+id/online_collection_menu"
+        android:title="Collection"
+        android:icon="@drawable/ic_baseline_collections_bookmark_24"/>
 
     <item
-        android:id="@+id/online_album"
-        android:title="Album"
-        android:icon="@drawable/ic_baseline_album_24"/>
-
-    <item
-        android:id="@+id/online_genre"
-        android:title="Genre"
-        android:icon="@drawable/ic_baseline_dashboard_24"/>
-
-    <item
-        android:id="@+id/online_artist"
-        android:title="Artist"
+        android:id="@+id/online_user_menu"
+        android:title="User"
         android:icon="@drawable/ic_baseline_people_24"/>
 
 </menu>

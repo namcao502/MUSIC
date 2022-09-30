@@ -3,11 +3,16 @@ package com.example.music.utils
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.view.Gravity
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.example.music.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 fun Fragment.toast(message: String?){
     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
@@ -36,4 +41,15 @@ fun Fragment.createDialog(): Dialog{
     dialog.window!!.attributes = lp
 
     return dialog
+}
+
+fun Fragment.createBottomSheetDialog(): BottomSheetDialog{
+
+    val bottomSheetDialog = BottomSheetDialog(requireContext())
+    with(bottomSheetDialog){
+        setContentView(R.layout.bsd_list_song)
+        setCancelable(false)
+        setCanceledOnTouchOutside(true)
+    }
+    return bottomSheetDialog
 }

@@ -44,7 +44,6 @@
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
-
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -142,8 +141,18 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/changeFragment_btn"
+                android:text="change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
+
+    </LinearLayout>
 
 
 </androidx.core.widget.NestedScrollView>
