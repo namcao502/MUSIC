@@ -25,9 +25,6 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _songFromID = MutableLiveData<UiState<List<OnlineSong>>>()
     val songFromID: LiveData<UiState<List<OnlineSong>>> get() = _songFromID
 
-    private lateinit var _allSongFromID: UiState<List<OnlineSong>>
-    val allSongFromID: UiState<List<OnlineSong>> get() = _allSongFromID
-
     fun getAllSongs() {
         _songs.value = UiState.Loading
         repository.getAllSongs {
@@ -41,13 +38,6 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
             _songFromID.value = it
         }
     }
-
-    fun getAllSongFromListSongID(songs: List<String>){
-        repository.getSongFromListSongID(songs){
-            _allSongFromID = it
-        }
-    }
-
 
     fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit){
         result.invoke(UiState.Loading)

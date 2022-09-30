@@ -15,7 +15,7 @@ import com.example.music.databinding.SongRowItemBinding
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.ColumnItemBinding
 
-class OnlineGenreAdapter(val context: Context)
+class OnlineGenreAdapter(val context: Context, val clickAGenre: ClickAGenre)
     : RecyclerView.Adapter<OnlineGenreAdapter.ViewHolder>() {
 
     var genre = emptyList<OnlineGenre>()
@@ -37,7 +37,9 @@ class OnlineGenreAdapter(val context: Context)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
-
+            itemView.setOnClickListener {
+                clickAGenre.callBackFromGenreClick(genre[position])
+            }
             with(genre[position]){
                 binding.itemName.text = this.name
                 val imgUrl = this.imgFilePath
@@ -50,6 +52,10 @@ class OnlineGenreAdapter(val context: Context)
             }
         }
 
+    }
+
+    interface ClickAGenre{
+        fun callBackFromGenreClick(genre: OnlineGenre)
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -1,7 +1,5 @@
 
-làm thêm các màn hình album, artist, genre, user(thông tin cá nhân)
-
-crud cho từng thằng trên
+làm thêm các màn hình user(thông tin cá nhân), search
 
 đi cào data về làm db
 

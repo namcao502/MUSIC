@@ -12,7 +12,7 @@ import com.example.music.data.models.online.*
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.databinding.ColumnItemBinding
 
-class OnlineAlbumAdapter(val context: Context)
+class OnlineAlbumAdapter(val context: Context, val clickAnAlbum: ClickAnAlbum)
     : RecyclerView.Adapter<OnlineAlbumAdapter.ViewHolder>() {
 
     var album = emptyList<OnlineAlbum>()
@@ -34,7 +34,9 @@ class OnlineAlbumAdapter(val context: Context)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
-
+            itemView.setOnClickListener {
+                clickAnAlbum.callBackFromAlbumClick(album[position])
+            }
             with(album[position]){
                 binding.itemName.text = this.name
                 val imgUrl = this.imgFilePath
@@ -48,6 +50,11 @@ class OnlineAlbumAdapter(val context: Context)
         }
 
     }
+
+    interface ClickAnAlbum{
+        fun callBackFromAlbumClick(album: OnlineAlbum)
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(album: List<OnlineAlbum>){
