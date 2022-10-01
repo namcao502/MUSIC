@@ -12,6 +12,8 @@ interface AccountRepository {
 
     fun getAllAccounts(result: (UiState<List<OnlineAccount>>) -> Unit)
 
+    fun getAccountByID(id: String, result: (UiState<OnlineAccount>) -> Unit)
+
     fun addAccount(account: OnlineAccount, result: (UiState<String>) -> Unit)
 
     fun updateAccount(account: OnlineAccount, result: (UiState<String>) -> Unit)

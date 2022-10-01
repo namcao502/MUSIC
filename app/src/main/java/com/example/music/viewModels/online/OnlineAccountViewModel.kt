@@ -35,10 +35,20 @@ class OnlineAccountViewModel @Inject constructor(val repository: AccountReposito
     private val _accounts = MutableLiveData<UiState<List<OnlineAccount>>>()
     val account: LiveData<UiState<List<OnlineAccount>>> get() = _accounts
 
+    private val _accountByID = MutableLiveData<UiState<OnlineAccount>>()
+    val accountByID: LiveData<UiState<OnlineAccount>> get() = _accountByID
+
     fun getAllAccounts() {
         _accounts.value = UiState.Loading
         repository.getAllAccounts {
             _accounts.value = it
+        }
+    }
+
+    fun getAccountByID(id: String){
+        _accountByID.value = UiState.Loading
+        repository.getAccountByID(id){
+            _accountByID.value = it
         }
     }
 

@@ -42,14 +42,3 @@ fun Fragment.createDialog(): Dialog{
 
     return dialog
 }
-
-fun Fragment.createBottomSheetDialog(): BottomSheetDialog{
-
-    val bottomSheetDialog = BottomSheetDialog(requireContext())
-    with(bottomSheetDialog){
-        setContentView(R.layout.bsd_list_song)
-        setCancelable(false)
-        setCanceledOnTouchOutside(true)
-    }
-    return bottomSheetDialog
-}

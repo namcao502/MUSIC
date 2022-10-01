@@ -1,5 +1,6 @@
 package com.example.music.ui.fragments.online
 
+import android.accounts.Account
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +11,15 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentSignupBinding
 import com.example.music.viewModels.online.FirebaseAuthViewModel
+import com.example.music.viewModels.online.OnlineAccountViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -22,6 +27,7 @@ import kotlinx.coroutines.launch
 class SignUpFragment : Fragment() {
     private val viewModel: FirebaseAuthViewModel by activityViewModels()
     private var _binding: FragmentSignupBinding? = null
+    private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
     private val binding get()  = _binding
     private val TAG = "SignUpFragment"
 
@@ -42,7 +48,6 @@ class SignUpFragment : Fragment() {
                 val password = userPasswordEtv.text.toString()
                 val confirmPass = confirmPasswordEtv.text.toString()
                 viewModel.signUpUser(email , password , confirmPass)
-
             }
 
             signInTxt.setOnClickListener {

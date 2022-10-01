@@ -31,6 +31,24 @@ class AccountRepositoryImp(val database: FirebaseFirestore): AccountRepository {
             }
     }
 
+    override fun getAccountByID(id: String, result: (UiState<OnlineAccount>) -> Unit) {
+        database
+            .collection(FireStoreCollection.ACCOUNT)
+            .whereEqualTo("userID", id)
+            .addSnapshotListener { value, _ ->
+                val accounts: ArrayList<OnlineAccount> = ArrayList()
+                if (value != null){
+                    for (document in value){
+                        val account = document.toObject(OnlineAccount::class.java)
+                        accounts.add(account)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(accounts[0])
+                )
+            }
+    }
+
 
     override fun addAccount(account: OnlineAccount, result: (UiState<String>) -> Unit) {
         val doc = database
