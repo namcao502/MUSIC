@@ -14,6 +14,7 @@ import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.FragmentDetailCollectionBinding
 import com.example.music.ui.adapters.DetailCollectionAdapter
 import com.example.music.viewModels.online.FirebaseViewModel
+import com.example.music.viewModels.online.OnlineArtistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,8 +32,10 @@ class DetailCollectionFragment(
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
+    private val artistViewModel: OnlineArtistViewModel by viewModels()
+
     private val detailCollectionAdapter: DetailCollectionAdapter by lazy {
-        DetailCollectionAdapter(requireContext(), this)
+        DetailCollectionAdapter(requireContext(), this, viewLifecycleOwner, artistViewModel)
     }
 
     override fun onCreateView(

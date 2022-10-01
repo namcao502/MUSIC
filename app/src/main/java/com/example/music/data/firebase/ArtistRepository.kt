@@ -17,4 +17,6 @@ interface ArtistRepository {
 
     fun deleteArtist(artist: OnlineArtist, result: (UiState<String>) -> Unit)
 
+    fun getAllArtistFromSong(song: OnlineSong, result: (UiState<List<OnlineArtist>>) -> Unit)
+
 }

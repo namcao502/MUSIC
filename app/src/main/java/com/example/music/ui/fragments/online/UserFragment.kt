@@ -189,103 +189,36 @@ class UserFragment: Fragment() {
             if (email != currentAccount.email){
 
                 viewLifecycleOwner.lifecycleScope.launch {
+
                     dialog.show()
-                    val auth = Firebase.auth
-
-                    if (auth.currentUser != null){
-                        Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
-                        auth.signOut()
-                    }
-
-                    auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
+                    val user = Firebase.auth.currentUser
+                    user!!.updateEmail(email)
                         .addOnSuccessListener {
-                            viewLifecycleOwner.lifecycleScope.launch {
-
-                                dialog.show()
-                                currentAccount!!.email = email
-                                updateAccount(currentAccount!!)
-                                dialog.cancel()
-
-                                val user = auth.currentUser
-                                user!!.updateEmail(email)
-                                    .addOnSuccessListener {
-                                        auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                            .addOnSuccessListener {
-                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                                dialog.cancel()
-                                            }
-                                            .addOnFailureListener {
-                                                dialog.cancel()
-                                            }
-                                    }
-                                    .addOnFailureListener {
-                                        auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                            .addOnSuccessListener {
-                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                                dialog.cancel()
-                                            }
-                                            .addOnFailureListener {
-                                                dialog.cancel()
-                                            }
-                                    }
-                            }
-                        }
-                        .addOnFailureListener {
+                            currentAccount.email = email
+                            updateAccount(currentAccount)
                             dialog.cancel()
                         }
+                        .addOnFailureListener {
+                            toast(it.toString())
+                            dialog.cancel()
+                        }
+
                 }
 
             }
 
             if (password != currentAccount.password){
-
                 viewLifecycleOwner.lifecycleScope.launch {
                     dialog.show()
-                    val auth = Firebase.auth
-
-                    if (auth.currentUser != null){
-                        Log.i("TAG502", "before update: ${auth.currentUser!!.email}")
-                        auth.signOut()
-                    }
-
-                    auth.signInWithEmailAndPassword(currentAccount!!.email!!, currentAccount!!.password!!)
+                    val user = Firebase.auth.currentUser
+                    user!!.updatePassword(password)
                         .addOnSuccessListener {
-                            viewLifecycleOwner.lifecycleScope.launch {
-
-                                dialog.show()
-                                currentAccount!!.password = password
-                                updateAccount(currentAccount!!)
-                                dialog.cancel()
-
-                                val user = auth.currentUser
-                                user!!.updatePassword(password)
-                                    .addOnSuccessListener {
-                                        auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                            .addOnSuccessListener {
-                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                                dialog.cancel()
-                                            }
-                                            .addOnFailureListener {
-                                                dialog.cancel()
-                                            }
-                                    }
-                                    .addOnFailureListener {
-                                        auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-                                            .addOnSuccessListener {
-                                                Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
-                                                dialog.cancel()
-                                            }
-                                            .addOnFailureListener {
-                                                dialog.cancel()
-                                            }
-                                    }
-                            }
+                            currentAccount.password = password
+                            updateAccount(currentAccount)
+                            dialog.cancel()
                         }
                         .addOnFailureListener {
+                            toast(it.toString())
                             dialog.cancel()
                         }
                 }
@@ -303,11 +236,15 @@ class UserFragment: Fragment() {
             binding.editBtn.setImageResource(R.drawable.ic_baseline_cancel_24)
             binding.saveBtn.visibility = View.VISIBLE
             binding.textInputLayoutPW.visibility = View.VISIBLE
+            binding.textInputLayout4.isEnabled = true
+            binding.textInputLayout5.isEnabled = true
         }
         else {
             binding.editBtn.setImageResource(R.drawable.ic_baseline_edit_note_24)
             binding.saveBtn.visibility = View.GONE
             binding.textInputLayoutPW.visibility = View.GONE
+            binding.textInputLayout4.isEnabled = false
+            binding.textInputLayout5.isEnabled = false
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.music.repositories.online
 import com.example.music.UiState
 import com.example.music.data.firebase.ArtistRepository
 import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -74,6 +75,24 @@ class ArtistRepositoryImp(val database: FirebaseFirestore): ArtistRepository {
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
+            }
+    }
+
+    override fun getAllArtistFromSong(song: OnlineSong, result: (UiState<List<OnlineArtist>>) -> Unit) {
+        database
+            .collection(FireStoreCollection.ARTIST)
+            .whereArrayContains("songs", song.id!!)
+            .addSnapshotListener { value, _ ->
+                val artists: ArrayList<OnlineArtist> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val artist = document.toObject(OnlineArtist::class.java)
+                        artists.add(artist)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(artists)
+                )
             }
     }
 

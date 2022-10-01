@@ -32,10 +32,22 @@ class OnlineArtistViewModel @Inject constructor(val repository: ArtistRepository
     private val _artists = MutableLiveData<UiState<List<OnlineArtist>>>()
     val artist: LiveData<UiState<List<OnlineArtist>>> get() = _artists
 
+    private var _artistInSong: List<MutableLiveData<UiState<List<OnlineArtist>>>>
+            = List(10, init= {i: Int -> MutableLiveData<UiState<List<OnlineArtist>>>()})
+
+    var artistInSong: List<LiveData<UiState<List<OnlineArtist>>>> = _artistInSong
+
     fun getAllArtists() {
         _artists.value = UiState.Loading
         repository.getAllArtists {
             _artists.value = it
+        }
+    }
+
+    fun getAllArtistFromSong(song: OnlineSong, position: Int){
+        _artistInSong[position].value = UiState.Loading
+        repository.getAllArtistFromSong(song) {
+            _artistInSong[position].value = it
         }
     }
 
