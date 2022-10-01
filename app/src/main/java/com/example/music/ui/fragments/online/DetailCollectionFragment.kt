@@ -1,24 +1,18 @@
 package com.example.music.ui.fragments.online
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.data.models.online.OnlineAlbum
-import com.example.music.data.models.online.OnlineArtist
-import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.FragmentDetailCollectionBinding
-import com.example.music.databinding.FragmentHomeBinding
-import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.ui.adapters.DetailCollectionAdapter
-import com.example.music.ui.adapters.OnlineArtistAdapter
 import com.example.music.viewModels.online.FirebaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class DetailCollectionFragment(
     val name: String,
     val songs: List<String>,
-    val imgFilePath: String) : Fragment() {
+    val imgFilePath: String,
+    private val clickASongInDetail: ClickASongInDetail)
+    : Fragment(), DetailCollectionAdapter.ClickASong {
 
     private var _binding: FragmentDetailCollectionBinding? = null
     // This property is only valid between onCreateView and
@@ -36,7 +32,7 @@ class DetailCollectionFragment(
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private val detailCollectionAdapter: DetailCollectionAdapter by lazy {
-        DetailCollectionAdapter(requireContext())
+        DetailCollectionAdapter(requireContext(), this)
     }
 
     override fun onCreateView(
@@ -93,6 +89,14 @@ class DetailCollectionFragment(
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    interface ClickASongInDetail{
+        fun callBackFromClickASongInDetail(songList: List<OnlineSong>, position: Int)
+    }
+
+    override fun callBackFromDetailClick(songList: List<OnlineSong>, position: Int) {
+        clickASongInDetail.callBackFromClickASongInDetail(songList, position)
     }
 
 }

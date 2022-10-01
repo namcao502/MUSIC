@@ -11,7 +11,8 @@ import com.example.music.databinding.SongRowItemBinding
 import com.example.music.data.models.online.OnlineSong
 
 class DetailCollectionAdapter(
-    private val context: Context)
+    private val context: Context,
+    private val clickASong: ClickASong)
     : RecyclerView.Adapter<DetailCollectionAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
@@ -37,6 +38,7 @@ class DetailCollectionAdapter(
             itemView.setOnClickListener {
 //                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
                 //click on a song
+                clickASong.callBackFromDetailClick(songList, position)
             }
 
             binding.menuBtn.setOnClickListener {
@@ -55,6 +57,10 @@ class DetailCollectionAdapter(
             }
         }
 
+    }
+
+    interface ClickASong{
+        fun callBackFromDetailClick(songList: List<OnlineSong>, position: Int)
     }
 
     @SuppressLint("NotifyDataSetChanged")

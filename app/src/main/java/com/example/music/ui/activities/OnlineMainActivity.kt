@@ -26,6 +26,7 @@ import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.services.OnlineMusicPlayerService
+import com.example.music.ui.adapters.DetailCollectionAdapter
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.fragments.online.*
@@ -45,13 +46,14 @@ class OnlineMainActivity
     ServiceConnection,
     OnlineSongFragment.SongFromAdapterClick,
     OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener,
-    OnlineDialogPlaylistAdapter.ItemClickListener{
+    OnlineDialogPlaylistAdapter.ItemClickListener,
+    HomeFragment.ClickSongFromDetail{
 
     private lateinit var binding: ActivityOnlineMainBinding
 
     private var songFragment = OnlineSongFragment(this)
     private var playlistFragment = OnlinePlaylistFragment(this)
-    private var homeFragment = HomeFragment()
+    private var homeFragment = HomeFragment(this)
     private var searchFragment = SearchFragment()
     private var userFragment = UserFragment()
     var activeFragment: Fragment = homeFragment
@@ -493,8 +495,12 @@ class OnlineMainActivity
     }
 
     override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
-        songList = songs
-        songPosition = position
+        this.songList = songs
+        this.songPosition = position
+        preparePlayer()
+    }
+
+    private fun preparePlayer(){
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
@@ -512,29 +518,12 @@ class OnlineMainActivity
             listener()
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
-
     }
 
     override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
         this.songList = songList
-        songPosition = position
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-        if (!isServiceConnected){
-            initState()
-            binding.miniPlayerLayout.visibility = View.VISIBLE
-        }
-        else{
-            musicPlayerService!!.stop()
-            musicPlayerService!!.release()
-            musicPlayerService!!.createMediaPlayer(this.songList!![songPosition])
-            musicPlayerService!!.start()
-            setTime()
-            loadUI()
-            setCompleteListener()
-            listener()
-        }
-        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+        this.songPosition = position
+        preparePlayer()
     }
 
     override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
@@ -633,6 +622,12 @@ class OnlineMainActivity
             }
         // Create the AlertDialog object and return it
         builder.create().show()
+    }
+
+    override fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int) {
+        this.songList = songList
+        this.songPosition = position
+        preparePlayer()
     }
 
 }

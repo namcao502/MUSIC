@@ -13,10 +13,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.data.models.online.OnlineAlbum
-import com.example.music.data.models.online.OnlineArtist
-import com.example.music.data.models.online.OnlineGenre
-import com.example.music.data.models.online.OnlinePlaylist
+import com.example.music.data.models.online.*
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.ui.adapters.*
 import com.example.music.viewModels.online.OnlineAlbumViewModel
@@ -27,11 +24,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeFragment: Fragment(),
+class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
     OnlinePlaylistInHomeAdapter.ClickAPlaylist,
     OnlineArtistAdapter.ClickAnArtist,
     OnlineGenreAdapter.ClickAGenre,
-    OnlineAlbumAdapter.ClickAnAlbum{
+    OnlineAlbumAdapter.ClickAnAlbum,
+    DetailCollectionFragment.ClickASongInDetail{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding
@@ -162,7 +160,7 @@ class HomeFragment: Fragment(),
 
     private fun sendDataToDetailFragment(name: String, songs: List<String>, imgFilePath: String){
         val fragmentTransaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container, DetailCollectionFragment(name, songs, imgFilePath))
+        fragmentTransaction.add(R.id.fragment_container, DetailCollectionFragment(name, songs, imgFilePath, this))
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -181,6 +179,14 @@ class HomeFragment: Fragment(),
 
     override fun callBackFromAlbumClick(album: OnlineAlbum) {
         sendDataToDetailFragment(album.name!!, album.songs!!, album.imgFilePath!!)
+    }
+
+    override fun callBackFromClickASongInDetail(songList: List<OnlineSong>, position: Int) {
+        clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+    }
+
+    interface ClickSongFromDetail{
+        fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int)
     }
 
 }

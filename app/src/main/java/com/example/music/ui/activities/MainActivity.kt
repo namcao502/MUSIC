@@ -43,7 +43,7 @@ import java.util.*
 
 
 @AndroidEntryPoint
-class MainActivity :
+class MainActivity:
     AppCompatActivity(),
     ServiceConnection,
     SongFragment.SongFromAdapterClick,
@@ -159,7 +159,6 @@ class MainActivity :
             dialog.show()
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
 
         binding.miniNextBtn.setOnClickListener {
             next()
@@ -175,10 +174,6 @@ class MainActivity :
             } else {
                 play()
             }
-        }
-
-        binding.miniPlayerLayout.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         binding.playStateBtn.setOnClickListener{
@@ -392,34 +387,17 @@ class MainActivity :
         handler.postDelayed(object : Runnable {
             @SuppressLint("SimpleDateFormat")
             override fun run(){
+                try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
                     val sdf = SimpleDateFormat("mm:ss")
                     binding.startTxt.text = sdf.format(currentPosition)
                     binding.songSb.progress = currentPosition
                     binding.miniPb.progress = currentPosition
-
-                    if (currentPosition == musicPlayerService!!.getDuration()) {
-                        if (playState == "Shuffle") {
-                            createRandomTrackPosition()
-                        } else {
-                            if (playState == "Loop") {
-                                musicPlayerService!!.reset()
-                            } else {
-                                songPosition++
-                            }
-                        }
-                        try {
-                            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                        musicPlayerService!!.start()
-                        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-                        setTime()
-                        loadUI()
-                        updateProgress()
-                    }
                     handler.postDelayed(this, 1000)
+                }
+                catch (error: IllegalStateException){
+                    handler.removeCallbacksAndMessages(null)
+                }
             }
         }, 1000)
     }
