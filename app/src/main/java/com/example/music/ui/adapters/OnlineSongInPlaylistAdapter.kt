@@ -3,6 +3,7 @@ package com.example.music.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
@@ -56,16 +57,8 @@ class OnlineSongInPlaylistAdapter(
 
             with(songList[position]){
                 binding.titleTxt.text = this.name
-//                val minutes = this.duration / 1000 / 60
-//                val seconds = this.duration / 1000 % 60
-//                if (seconds < 10){
-//                    binding.lengthTxt.text = "$minutes:0$seconds"
-//                }
-//                else {
-//                    binding.lengthTxt.text = "$minutes:$seconds"
-//                }
-//
-//                binding.authorTxt.text = this.artists
+                binding.lengthTxt.visibility = View.GONE
+                binding.authorTxt.visibility = View.GONE
             }
         }
 

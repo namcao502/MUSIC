@@ -1,5 +1,7 @@
 
-làm thêm các màn hình user(thông tin cá nhân), search
+làm thêm search
+
+xoá bài hát trong danh sách phát
 
 đi cào data về làm db
 

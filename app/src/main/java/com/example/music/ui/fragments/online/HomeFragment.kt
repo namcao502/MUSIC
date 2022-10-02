@@ -1,5 +1,6 @@
 package com.example.music.ui.fragments.online
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.example.music.UiState
 import com.example.music.data.models.online.*
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.ui.adapters.*
+import com.example.music.utils.FireStoreCollection
 import com.example.music.viewModels.online.OnlineAlbumViewModel
 import com.example.music.viewModels.online.OnlineArtistViewModel
 import com.example.music.viewModels.online.OnlineGenreViewModel

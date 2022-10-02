@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.UiState
 import com.example.music.data.models.online.OnlineArtist
+import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.data.models.online.OnlineSong
 import com.example.music.viewModels.online.OnlineArtistViewModel
@@ -52,6 +53,7 @@ class DetailCollectionAdapter(
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_song_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
+                        clickASong.callBackFromMenuDetailClick(menuItem.title.toString(), songList, position)
                         true
                     }
                     // Showing the popup menu
@@ -88,6 +90,7 @@ class DetailCollectionAdapter(
 
     interface ClickASong{
         fun callBackFromDetailClick(songList: List<OnlineSong>, position: Int)
+        fun callBackFromMenuDetailClick(action: String, songList: List<OnlineSong>, position: Int)
     }
 
     @SuppressLint("NotifyDataSetChanged")

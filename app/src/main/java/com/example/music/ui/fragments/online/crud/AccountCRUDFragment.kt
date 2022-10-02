@@ -45,6 +45,8 @@ class AccountCRUDFragment : Fragment() {
 
     private var currentAccount: OnlineAccount? = null
 
+    private var adminAccount: OnlineAccount? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,14 +54,21 @@ class AccountCRUDFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentAccountCrudBinding.inflate(layoutInflater, container, false)
 
-        Firebase.auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
-            .addOnSuccessListener {
-                Log.i("TAG502", "nam sign in: ${Firebase.auth.currentUser!!.email}")
+        onlineAccountViewModel.getAccountByID(Firebase.auth.currentUser!!.uid)
+        onlineAccountViewModel.accountByID.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
 
-            }
-            .addOnFailureListener {
+                }
+                is UiState.Failure -> {
 
+                }
+                is UiState.Success -> {
+                    adminAccount = it.data
+                }
             }
+        }
+
         return binding.root
     }
 
@@ -228,7 +237,7 @@ class AccountCRUDFragment : Fragment() {
                                         toast("$it")
                                     }
                                     is UiState.Success -> {
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                        auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                             .addOnSuccessListener {
                                                 Log.i("TAG502", "after delete: ${auth.currentUser!!.email}")
                                             }
@@ -240,7 +249,7 @@ class AccountCRUDFragment : Fragment() {
                             }
                         }
                         .addOnFailureListener {
-                            Firebase.auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                            Firebase.auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                 .addOnSuccessListener {
                                     Log.i("TAG502", "after delete: ${auth.currentUser!!.email}")
                                 }
@@ -351,7 +360,7 @@ class AccountCRUDFragment : Fragment() {
                                 user!!.updateEmail(email)
                                     .addOnSuccessListener {
                                         auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                        auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                             .addOnSuccessListener {
                                                 Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
                                                 dialog.cancel()
@@ -362,7 +371,7 @@ class AccountCRUDFragment : Fragment() {
                                     }
                                     .addOnFailureListener {
                                         auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                        auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                             .addOnSuccessListener {
                                                 Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
                                                 dialog.cancel()
@@ -404,7 +413,7 @@ class AccountCRUDFragment : Fragment() {
                                 user!!.updatePassword(password)
                                     .addOnSuccessListener {
                                         auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                        auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                             .addOnSuccessListener {
                                                 Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
                                                 dialog.cancel()
@@ -415,7 +424,7 @@ class AccountCRUDFragment : Fragment() {
                                     }
                                     .addOnFailureListener {
                                         auth.signOut()
-                                        auth.signInWithEmailAndPassword("nam@gmail.com", "nam502")
+                                        auth.signInWithEmailAndPassword(adminAccount!!.email!!, adminAccount!!.password!!)
                                             .addOnSuccessListener {
                                                 Log.i("TAG502", "after update: ${auth.currentUser!!.email}")
                                                 dialog.cancel()

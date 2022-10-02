@@ -30,6 +30,7 @@ import com.example.music.ui.adapters.DetailCollectionAdapter
 import com.example.music.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
 import com.example.music.ui.fragments.online.*
+import com.example.music.viewModels.online.OnlineArtistViewModel
 import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.example.music.viewModels.online.OnlineSongViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -45,9 +46,9 @@ class OnlineMainActivity
     : AppCompatActivity(),
     ServiceConnection,
     OnlineSongFragment.SongFromAdapterClick,
-    OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener,
     OnlineDialogPlaylistAdapter.ItemClickListener,
-    HomeFragment.ClickSongFromDetail{
+    HomeFragment.ClickSongFromDetail,
+    OnlinePlaylistFragment.ClickSongFromDetail{
 
     private lateinit var binding: ActivityOnlineMainBinding
 
@@ -73,6 +74,7 @@ class OnlineMainActivity
 
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
     private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
+    private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
@@ -163,7 +165,6 @@ class OnlineMainActivity
         binding.miniPlayerLayout.setOnClickListener {
             binding.bottomSheet.visibility = View.VISIBLE
             BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-            Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show()
         }
 
         binding.addToPlaylistBtn.setOnClickListener {
@@ -395,11 +396,29 @@ class OnlineMainActivity
 
     private fun loadUI(){
         binding.titleTxt.text = songList!![songPosition].name
-//        binding.artistTxt.text = songList!![songPosition].artists
         binding.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniPb.max = musicPlayerService!!.getDuration()
-//        binding.miniSongArtist.text = songList!![songPosition].artists
+        onlineArtistViewModel.getAllArtistFromSong(songList!![songPosition], 0)
+        onlineArtistViewModel.artistInSong[0].observe(this){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    var text = ""
+                    for (x in it.data){
+                        text += x.name.plus(", ")
+                    }
+                    text = text.dropLast(2)
+                    binding.miniSongArtist.text = text
+                    binding.artistTxt.text = text
+                }
+            }
+        }
         updateProgress()
     }
 
@@ -518,16 +537,6 @@ class OnlineMainActivity
             listener()
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
-    }
-
-    override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
-        this.songList = songList
-        this.songPosition = position
-        preparePlayer()
-    }
-
-    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
-        TODO("Not yet implemented")
     }
 
     override fun onMenuClick(action: String, playlist: OnlinePlaylist) {

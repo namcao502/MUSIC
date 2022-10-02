@@ -43,6 +43,7 @@ class OnlinePlaylistViewModel @Inject constructor(val repository: PlaylistReposi
     private val _deleteSongInPlaylist = MutableLiveData<UiState<String>>()
     val deleteSongInPlaylist: LiveData<UiState<String>> get() = _deleteSongInPlaylist
 
+    //playlist that everyone can access
     private val _playlist2 = MutableLiveData<UiState<List<OnlinePlaylist>>>()
     val playlist2: LiveData<UiState<List<OnlinePlaylist>>> get() = _playlist2
 

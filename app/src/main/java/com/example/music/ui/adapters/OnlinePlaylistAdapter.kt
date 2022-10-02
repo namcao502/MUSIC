@@ -20,10 +20,7 @@ import com.example.music.viewModels.online.OnlinePlaylistViewModel
 
 class OnlinePlaylistAdapter(
     private val context: Context,
-    private val itemPlaylistClickListener: ItemPlaylistClickListener,
-    private val lifecycle: LifecycleOwner,
-    private val onlinePlaylistViewModel: OnlinePlaylistViewModel
-)
+    private val clickAPlaylist: ClickAPlaylist)
     : RecyclerView.Adapter<OnlinePlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<OnlinePlaylist>()
@@ -47,20 +44,14 @@ class OnlinePlaylistAdapter(
         with(holder){
 
             itemView.setOnClickListener {
-
-                if (binding.songInPlaylistRecyclerView.visibility == View.VISIBLE){
-                    binding.songInPlaylistRecyclerView.visibility = View.GONE
-                }
-                else {
-                    binding.songInPlaylistRecyclerView.visibility = View.VISIBLE
-                }
+                clickAPlaylist.callBackFromPlaylistClick(playlist[position])
             }
 
             binding.menuBtn.setOnClickListener {
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
-                        itemPlaylistClickListener.callBackFromMenuPlaylistClick(menuItem.title.toString(), playlist[position])
+                        clickAPlaylist.callBackFromMenuPlaylistClick(menuItem.title.toString(), playlist[position])
                         true
                     }
                     // Showing the popup menu
@@ -70,46 +61,9 @@ class OnlinePlaylistAdapter(
 
             with(playlist[position]){
 
-                val onlineSongInPlaylistAdapter: OnlineSongInPlaylistAdapter by lazy {
-                    OnlineSongInPlaylistAdapter(context, object : OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
-
-                        override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
-                            itemPlaylistClickListener.callBackFromSongInPlaylist(songList, position)
-                        }
-
-                        override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
-                            itemPlaylistClickListener.callBackFromMenuSongInPlaylist(action, songList, position, this@with)
-                        }
-                    })
-                }
-
-                binding.songInPlaylistRecyclerView.apply {
-                    adapter = onlineSongInPlaylistAdapter
-                    layoutManager = LinearLayoutManager(context)
-                }
                 binding.titleTxt.text = this.name
-
-//                firebaseViewModel.getAllSongInPlaylist(this)
-//                firebaseViewModel.songInPlaylist.observe(lifecycle, Observer {
-//                    if (it != null){
-//                        onlineSongInPlaylistAdapter.setData(it)
-//                    }
-//                })
-
-                onlinePlaylistViewModel.getAllSongInPlaylist(playlist[position], position)
-                onlinePlaylistViewModel.songInPlaylist[position].observe(lifecycle, Observer {
-                    when(it){
-                        is UiState.Loading -> {
-
-                        }
-                        is UiState.Failure -> {
-
-                        }
-                        is UiState.Success -> {
-                            onlineSongInPlaylistAdapter.setData(it.data)
-                        }
-                    }
-                })
+                binding.countLengthTxt.visibility = View.GONE
+                binding.countSongTxt.visibility = View.GONE
 
                 if (this.imgFilePath!!.isNotEmpty()){
                     Glide.with(context).load(this.imgFilePath).into(binding.imageView)
@@ -117,22 +71,6 @@ class OnlinePlaylistAdapter(
                 else {
                     binding.imageView.visibility = View.GONE
                 }
-
-                //load count length and count song
-//                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
-//                    if (it != null){
-//                        songInPlaylistAdapter.setData(it.listSong)
-//                        val countSong = it.listSong.size.toString()
-//                        var countDuration = 0
-//                        for (x in it.listSong){
-//                            countDuration += x.duration
-//                        }
-//                        binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
-//                        binding.countSongTxt.text = countSong.plus(" songs")
-//
-////                        Log.i("TAG502", "onBindViewHolder: ${it.listSong}")
-//                    }
-//                })
             }
         }
 
@@ -144,9 +82,8 @@ class OnlinePlaylistAdapter(
         notifyDataSetChanged()
     }
 
-    interface ItemPlaylistClickListener {
+    interface ClickAPlaylist {
         fun callBackFromMenuPlaylistClick(action: String, playlist: OnlinePlaylist)
-        fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int)
-        fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist)
+        fun callBackFromPlaylistClick(playlist: OnlinePlaylist)
     }
 }

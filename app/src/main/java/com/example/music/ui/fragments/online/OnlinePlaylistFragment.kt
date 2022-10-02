@@ -7,30 +7,33 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.UiState
-import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.data.models.online.OnlinePlaylist
 import com.example.music.data.models.online.OnlineSong
+import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.ui.adapters.OnlinePlaylistAdapter
-import com.example.music.ui.adapters.OnlineSongInPlaylistAdapter
+import com.example.music.utils.FireStoreCollection
 import com.example.music.viewModels.online.OnlinePlaylistViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener)
-    : Fragment(),
-    OnlinePlaylistAdapter.ItemPlaylistClickListener,
-    OnlineSongInPlaylistAdapter.ItemSongInPlaylistClickListener{
+class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetail):
+    Fragment(),
+    OnlinePlaylistAdapter.ClickAPlaylist,
+    DetailCollectionFragment.ClickASongInDetail{
 
     private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
 
     private val onlinePlaylistAdapter: OnlinePlaylistAdapter by lazy {
-        OnlinePlaylistAdapter(requireContext(), this, viewLifecycleOwner, onlinePlaylistViewModel)
+        OnlinePlaylistAdapter(requireContext(), this)
     }
 
     private var _binding: FragmentOnlinePlaylistBinding? = null
@@ -44,7 +47,6 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
     ): View {
         // Inflate the layout for this fragment
         _binding =  FragmentOnlinePlaylistBinding.inflate(layoutInflater, container, false)
-
         return binding.root
     }
 
@@ -55,9 +57,10 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        FirebaseAuth.getInstance().currentUser?.let {
+        Firebase.auth.currentUser?.let {
             onlinePlaylistViewModel.getAllPlaylistOfUser(it)
         }
+
         onlinePlaylistViewModel.playlist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
@@ -217,31 +220,22 @@ class OnlinePlaylistFragment(private val songInPlaylistClick: OnlineSongInPlayli
         }
     }
 
-    override fun callBackFromSongInPlaylist(songList: List<OnlineSong>, position: Int) {
-        songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
+    override fun callBackFromPlaylistClick(playlist: OnlinePlaylist) {
+        val detailCollectionFragment = DetailCollectionFragment(playlist.name!!, playlist.songs!!, playlist.imgFilePath!!, this)
+        val args = Bundle()
+        args.putSerializable(FireStoreCollection.PLAYLIST, playlist)
+        detailCollectionFragment.arguments = args
+        val fragmentTransaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_container, detailCollectionFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
-    override fun callBackFromMenuSongInPlaylist(action: String, songList: List<OnlineSong>, position: Int, playlist: OnlinePlaylist) {
-        if (action == "Play"){
-            songInPlaylistClick.callBackFromSongInPlaylist(songList, position)
-        }
-        if (action == "Delete from playlist"){
-            FirebaseAuth.getInstance().currentUser?.let {
-                onlinePlaylistViewModel.deleteSongInPlaylist(songList[position], playlist, it)
-            }
-            onlinePlaylistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner, Observer {
-                when (it) {
-                    is UiState.Loading -> {
+    override fun callBackFromClickASongInDetail(songList: List<OnlineSong>, position: Int) {
+        clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+    }
 
-                    }
-                    is UiState.Failure -> {
-
-                    }
-                    is UiState.Success -> {
-                        Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
-        }
+    interface ClickSongFromDetail{
+        fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int)
     }
 }
