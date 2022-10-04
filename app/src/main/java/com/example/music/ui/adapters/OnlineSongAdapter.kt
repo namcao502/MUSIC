@@ -73,7 +73,6 @@ class OnlineSongAdapter(
 
                         }
                         is UiState.Success -> {
-                            Log.i("TAG502", "onBindViewHolder: ${it.data}")
                             var text = ""
                             for (x in it.data){
                                 text += x.name.plus(", ")

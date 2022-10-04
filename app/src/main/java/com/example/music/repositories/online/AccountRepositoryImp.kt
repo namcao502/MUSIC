@@ -16,7 +16,7 @@ class AccountRepositoryImp(val database: FirebaseFirestore): AccountRepository {
 
     override fun getAllAccounts(result: (UiState<List<OnlineAccount>>) -> Unit) {
         database
-            .collection(FireStoreCollection.ACCOUNT)
+            .collection(FireStoreCollection.ACCOUNT).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val accounts: ArrayList<OnlineAccount> = ArrayList()
                 if (value != null) {

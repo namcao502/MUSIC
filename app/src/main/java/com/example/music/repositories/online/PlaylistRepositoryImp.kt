@@ -19,7 +19,7 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
         }
         else {
             database
-                .collection(FireStoreCollection.SONG)
+                .collection(FireStoreCollection.SONG).orderBy("name")
                 .whereIn("id", playlist.songs!!)
                 .addSnapshotListener { value, _ ->
                     val songs: ArrayList<OnlineSong> = ArrayList()
@@ -58,7 +58,7 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
         database
             .collection(FireStoreCollection.PLAYLIST)
             .document(user.uid)
-            .collection(FireStoreCollection.USER)
+            .collection(FireStoreCollection.USER).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val playlist: ArrayList<OnlinePlaylist> = ArrayList()
                 if (value != null) {
@@ -125,7 +125,7 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
 
     override fun getAllPlaylists(result: (UiState<List<OnlinePlaylist>>) -> Unit) {
         database
-            .collection(FireStoreCollection.PLAYLIST)
+            .collection(FireStoreCollection.PLAYLIST).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val playlists: ArrayList<OnlinePlaylist> = ArrayList()
                 if (value != null) {

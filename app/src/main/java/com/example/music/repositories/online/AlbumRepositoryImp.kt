@@ -36,7 +36,7 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
         album.id = doc.id
         doc.set(album)
             .addOnSuccessListener {
-                result.invoke(UiState.Success("ALbum ${album.name} added!"))
+                result.invoke(UiState.Success("Album ${album.name} added!"))
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
@@ -45,7 +45,7 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
 
     override fun updateAlbum(album: OnlineAlbum, result: (UiState<String>) -> Unit) {
         database
-            .collection(FireStoreCollection.ARTIST)
+            .collection(FireStoreCollection.ALBUM)
             .document(album.id!!)
             .update("name", album.name, "imgFilePath", album.imgFilePath, "songs", album.songs)
             .addOnSuccessListener {
@@ -58,7 +58,7 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
 
     override fun deleteAlbum(album: OnlineAlbum, result: (UiState<String>) -> Unit) {
         database
-            .collection(FireStoreCollection.ARTIST)
+            .collection(FireStoreCollection.ALBUM)
             .document(album.id.toString())
             .delete()
             .addOnSuccessListener {

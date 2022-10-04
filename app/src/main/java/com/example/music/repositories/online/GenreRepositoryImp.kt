@@ -11,7 +11,7 @@ class GenreRepositoryImp(val database: FirebaseFirestore): GenreRepository {
 
     override fun getAllGenres(result: (UiState<List<OnlineGenre>>) -> Unit) {
         database
-            .collection(FireStoreCollection.GENRE)
+            .collection(FireStoreCollection.GENRE).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val genres: ArrayList<OnlineGenre> = ArrayList()
                 if (value != null) {

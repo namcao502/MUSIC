@@ -12,7 +12,7 @@ class ArtistRepositoryImp(val database: FirebaseFirestore): ArtistRepository {
 
     override fun getAllArtists(result: (UiState<List<OnlineArtist>>) -> Unit) {
         database
-            .collection(FireStoreCollection.ARTIST)
+            .collection(FireStoreCollection.ARTIST).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val artists: ArrayList<OnlineArtist> = ArrayList()
                 if (value != null) {

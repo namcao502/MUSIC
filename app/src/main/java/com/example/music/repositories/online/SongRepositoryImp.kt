@@ -36,7 +36,7 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
 
     override fun getAllSongs(result: (UiState<List<OnlineSong>>) -> Unit) {
         database
-            .collection(FireStoreCollection.SONG)
+            .collection(FireStoreCollection.SONG).orderBy("name")
             .addSnapshotListener { value, _ ->
                 val songs: ArrayList<OnlineSong> = ArrayList()
                 if (value != null) {

@@ -33,7 +33,7 @@ class OnlineArtistViewModel @Inject constructor(val repository: ArtistRepository
     val artist: LiveData<UiState<List<OnlineArtist>>> get() = _artists
 
     private var _artistInSong: List<MutableLiveData<UiState<List<OnlineArtist>>>>
-            = List(10, init= {i: Int -> MutableLiveData<UiState<List<OnlineArtist>>>()})
+            = List(50, init= {i: Int -> MutableLiveData<UiState<List<OnlineArtist>>>()})
 
     var artistInSong: List<LiveData<UiState<List<OnlineArtist>>>> = _artistInSong
 
