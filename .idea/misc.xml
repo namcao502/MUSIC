@@ -8,8 +8,10 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/gradient_item_background.xml" value="0.157" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/gradient_progressbar_background.xml" value="0.157" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_error.xml" value="0.1805" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_person_grey.xml" value="0.173" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.156" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_album_24.xml" value="0.156" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_category_24.xml" value="0.173" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_library_music_24.xml" value="0.156" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_music_note_24.xml" value="0.14" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.14" />
@@ -18,6 +20,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_play_circle_outline_24.xml" value="0.196" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.14" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/rounded_button.xml" value="0.14" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/rounded_outline.xml" value="0.173" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_account.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/activity_main.xml" value="0.264" />

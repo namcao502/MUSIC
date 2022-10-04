@@ -21,7 +21,7 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:name=".BaseApplication"
+        android:name=".utils.BaseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -32,19 +32,19 @@
         android:theme="@style/Theme.MUSIC"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.CRUDActivity"
+            android:name=".online.ui.activities.CRUDActivity"
             android:exported="true">
 
 
 
         </activity>
         <activity
-            android:name=".ui.activities.OnlineMainActivity"
+            android:name=".online.ui.activities.OnlineMainActivity"
             android:exported="true" >
 
         </activity>
         <activity
-            android:name=".ui.activities.AccountActivity"
+            android:name=".online.ui.activities.AccountActivity"
             android:exported="true">
 
             <intent-filter>
@@ -56,13 +56,13 @@
 
         </activity>
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name="com.example.music.offline.ui.activities.MainActivity"
             android:exported="true">
         </activity>
 
-        <service android:name=".services.MusicPlayerService" />
-        <service android:name=".services.OnlineMusicPlayerService" />
-        <receiver android:name=".services.MusicPlayerReceiver" />
+        <service android:name="com.example.music.offline.services.MusicPlayerService" />
+        <service android:name=".online.services.OnlineMusicPlayerService" />
+        <receiver android:name=".utils.MusicPlayerReceiver" />
 
     </application>
 

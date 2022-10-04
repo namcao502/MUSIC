@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.HomeCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.HomeCRUDFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home_crud" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/accountCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.AccountCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.AccountCRUDFragment"
         android:label="Account"
         tools:layout="@layout/fragment_account_crud" >
         <action
@@ -37,12 +37,12 @@
     </fragment>
     <fragment
         android:id="@+id/albumCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.AlbumCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.AlbumCRUDFragment"
         android:label="Album"
         tools:layout="@layout/fragment_album_crud" />
     <fragment
         android:id="@+id/songCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.SongCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.SongCRUDFragment"
         android:label="Song"
         tools:layout="@layout/fragment_song_crud" >
         <action
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/artistCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.ArtistCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.ArtistCRUDFragment"
         android:label="Artist"
         tools:layout="@layout/fragment_artist_crud" >
         <action
@@ -60,7 +60,7 @@
     </fragment>
     <fragment
         android:id="@+id/genreCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.GenreCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.GenreCRUDFragment"
         android:label="Genre" >
         <action
             android:id="@+id/action_genreCRUDFragment_to_homeCRUDFragment"
@@ -68,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/playlistCRUDFragment"
-        android:name="com.example.music.ui.fragments.online.crud.PlaylistCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.PlaylistCRUDFragment"
         android:label="Playlist"
         tools:layout="@layout/fragment_playlist_crud" >
         <action

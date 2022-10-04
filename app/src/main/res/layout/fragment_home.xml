@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_color"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragments.online.HomeFragment">
+    tools:context=".online.ui.fragments.HomeFragment">
 
     <LinearLayout
         android:id="@+id/home_layout"
@@ -65,12 +65,12 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Artist"
+                    android:text="Artists"
                     android:textAlignment="center"
                     android:textAllCaps="true"
+                    android:textColor="@color/white"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 

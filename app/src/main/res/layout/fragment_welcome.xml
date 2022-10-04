@@ -5,21 +5,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_bg"
-    tools:context=".ui.fragments.online.WelcomeFragment">
+    android:background="@color/main_color"
+    tools:context=".online.ui.fragments.WelcomeFragment">
 
-    <TextView
-        android:id="@+id/welcome_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:fontFamily="sans-serif-medium"
+    <com.denzcoskun.imageslider.ImageSlider
         android:textAlignment="center"
-        android:textSize="24sp"
+        app:iss_auto_cycle="true"
+        app:iss_delay="100"
+        app:iss_period="1000"
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_txt"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:padding="10dp"
+            android:id="@+id/welcome_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#02fbfb"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
+    </androidx.cardview.widget.CardView>
+
+
 
     <Button
         android:id="@+id/signin_button"
@@ -30,7 +54,7 @@
         android:layout_marginBottom="64dp"
         android:text="Sign in for online"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/welcome_txt"
+        app:layout_constraintEnd_toEndOf="@+id/card_txt"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -53,16 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="Continue to online"
-        app:layout_constraintBottom_toTopOf="@+id/offline_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/admin_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Admin"
         app:layout_constraintBottom_toTopOf="@+id/offline_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

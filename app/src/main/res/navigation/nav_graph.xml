@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.music.ui.fragments.online.WelcomeFragment"
-        android:label="Home"
+        android:name="com.example.music.online.ui.fragments.WelcomeFragment"
+        android:label="Welcome to MUSIC"
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_homeFragment_to_signInFragment"
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.example.music.ui.fragments.online.SignInFragment"
+        android:name="com.example.music.online.ui.fragments.SignInFragment"
         android:label="Sign in">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.example.music.ui.fragments.online.SignUpFragment"
+        android:name="com.example.music.online.ui.fragments.SignUpFragment"
         android:label="Sign up">
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.example.music.ui.fragments.online.ResetPasswordFragment"
+        android:name="com.example.music.online.ui.fragments.ResetPasswordFragment"
         android:label="ResetPasswordFragment" >
         <action
             android:id="@+id/action_resetPasswordFragment_to_signInFragment"

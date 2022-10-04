@@ -9,6 +9,7 @@ object FireStoreCollection{
     val ACCOUNT = "Account"
     val ALBUM = "Album"
     val USER = "User"
+    val ADMIN = "Admin"
 }
 
 object Permission{
