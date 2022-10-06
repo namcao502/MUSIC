@@ -6,19 +6,25 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.os.Binder
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.MusicPlayerReceiver
+import kotlinx.coroutines.coroutineScope
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class OnlineMusicPlayerService: Service() {
 
@@ -110,6 +116,7 @@ class OnlineMusicPlayerService: Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(song.name)
 //            .setContentText(song.artists)
+//            .setLargeIcon(Glide.with(this).asBitmap().load(song.imgFilePath).submit().get())
             .setSmallIcon(R.drawable.ic_baseline_music_note_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
@@ -136,6 +143,20 @@ class OnlineMusicPlayerService: Service() {
         val intent = Intent(this, MusicPlayerReceiver::class.java)
         intent.putExtra("action_music", action)
         return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun getBitmapFromURL(src: String?): Bitmap? {
+        return try {
+            val url = URL(src)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input: InputStream = connection.inputStream
+            BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            // Log exception
+            null
+        }
     }
 
     fun pause() {

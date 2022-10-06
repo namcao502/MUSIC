@@ -31,6 +31,8 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/add_new_playlist_dialog.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/bsd_list_song.xml" value="0.17028985507246377" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/column_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/comment_dialog.xml" value="0.24895833333333334" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/comment_row_item.xml" value="0.25" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_account_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_album_crud.xml" value="0.24818840579710144" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_artist_crud.xml" value="0.25" />

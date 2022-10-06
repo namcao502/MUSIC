@@ -87,4 +87,10 @@ object FirebaseModule {
         return AccountRepositoryImp(database)
     }
 
+    @Singleton
+    @Provides
+    fun provideCommentRepository(database: FirebaseFirestore): CommentRepository {
+        return CommentRepositoryImp(database)
+    }
+
 }

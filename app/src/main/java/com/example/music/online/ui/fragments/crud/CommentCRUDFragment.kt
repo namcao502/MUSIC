@@ -5,59 +5,132 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
 import com.example.music.R
+import com.example.music.databinding.FragmentAlbumCrudBinding
+import com.example.music.databinding.FragmentCommentCrudBinding
+import com.example.music.online.data.models.OnlineAlbum
+import com.example.music.online.data.models.OnlineComment
+import com.example.music.online.viewModels.OnlineCommentViewModel
+import com.example.music.utils.UiState
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CommentCRUDFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 @AndroidEntryPoint
 class CommentCRUDFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentCommentCrudBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+    private var currentComment: OnlineComment? = null
+
+    private val onlineCommentViewModel: OnlineCommentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comment_crud, container, false)
+        _binding = FragmentCommentCrudBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommentCRUDFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommentCRUDFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        var comments: List<OnlineComment> = emptyList()
+
+        onlineCommentViewModel.getAllComments()
+        onlineCommentViewModel.comment.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    comments = it.data
+                    with(binding.listView){
+                        adapter = ArrayAdapter(requireContext(),
+                            androidx.appcompat.R.layout.
+                            support_simple_spinner_dropdown_item, comments)
+                    }
                 }
             }
+        }
+
+        binding.listView.setOnItemClickListener { _, _, i, _ ->
+            currentComment = comments[i]
+            binding.messageEt.setText(currentComment!!.message)
+        }
+
+        binding.deleteBtn.setOnClickListener {
+            if (currentComment == null){
+                toast("Please pick a comment to delete...")
+                return@setOnClickListener
+            }
+            val progressDialog = createProgressDialog("Deleting a comment...")
+            onlineCommentViewModel.deleteComment(currentComment!!)
+            onlineCommentViewModel.deleteComment.observe(viewLifecycleOwner){
+                when (it) {
+                    is UiState.Loading -> {
+                        progressDialog.show()
+                    }
+                    is UiState.Failure -> {
+                        progressDialog.cancel()
+                        toast("$it")
+                    }
+                    is UiState.Success -> {
+                        progressDialog.cancel()
+                        toast(it.data)
+                        currentComment = null
+                    }
+                }
+            }
+        }
+
+        binding.updateBtn.setOnClickListener {
+            if (currentComment == null){
+                toast("Please pick a comment to update...")
+                return@setOnClickListener
+            }
+
+            val message = binding.messageEt.text.toString()
+            if (message.isEmpty()){
+                toast("Please type something...")
+                return@setOnClickListener
+            }
+
+            currentComment!!.message = message
+            val progressDialog = createProgressDialog("Updating a comment...")
+            onlineCommentViewModel.updateComment(currentComment!!)
+            onlineCommentViewModel.updateComment.observe(viewLifecycleOwner){
+                when (it) {
+                    is UiState.Loading -> {
+                        progressDialog.show()
+                    }
+                    is UiState.Failure -> {
+                        progressDialog.cancel()
+                        toast("$it")
+                    }
+                    is UiState.Success -> {
+                        progressDialog.cancel()
+                        toast(it.data)
+                        currentComment = null
+                    }
+                }
+            }
+        }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

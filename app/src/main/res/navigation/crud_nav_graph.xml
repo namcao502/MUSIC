@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_homeCRUDFragment_to_playlistCRUDFragment"
             app:destination="@id/playlistCRUDFragment" />
+        <action
+            android:id="@+id/action_homeCRUDFragment_to_commentCRUDFragment"
+            app:destination="@id/commentCRUDFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountCRUDFragment"
@@ -73,6 +76,15 @@
         tools:layout="@layout/fragment_playlist_crud" >
         <action
             android:id="@+id/action_playlistCRUDFragment_to_homeCRUDFragment"
+            app:destination="@id/homeCRUDFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentCRUDFragment"
+        android:name="com.example.music.online.ui.fragments.crud.CommentCRUDFragment"
+        android:label="Comment"
+        tools:layout="@layout/fragment_comment_crud" >
+        <action
+            android:id="@+id/action_commentCRUDFragment_to_homeCRUDFragment"
             app:destination="@id/homeCRUDFragment" />
     </fragment>
 </navigation>

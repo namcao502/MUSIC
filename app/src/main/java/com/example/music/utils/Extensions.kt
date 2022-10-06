@@ -1,5 +1,6 @@
 package com.example.music.utils
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.view.Gravity
@@ -16,6 +17,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 fun Fragment.toast(message: String?){
     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+}
+
+fun Activity.toast(message: String?){
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
 fun Fragment.createProgressDialog(title: String): ProgressDialog{
@@ -41,4 +46,38 @@ fun Fragment.createDialog(): Dialog{
     dialog.window!!.attributes = lp
 
     return dialog
+}
+
+fun Activity.createDialog(): Dialog{
+    val dialog = Dialog(this)
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    dialog.setCancelable(true)
+    dialog.setContentView(R.layout.song_crud_dialog)
+
+    //set size for dialog
+    val lp = WindowManager.LayoutParams()
+    lp.copyFrom(dialog.window!!.attributes)
+    lp.width = WindowManager.LayoutParams.MATCH_PARENT
+    lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+    lp.gravity = Gravity.CENTER
+    dialog.window!!.attributes = lp
+
+    return dialog
+}
+
+fun Activity.createBottomSheetDialog(): BottomSheetDialog{
+    val bottomSheetDialog = BottomSheetDialog(this)
+    bottomSheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    bottomSheetDialog.setCancelable(true)
+    bottomSheetDialog.setContentView(R.layout.comment_dialog)
+
+    //set size for dialog
+    val lp = WindowManager.LayoutParams()
+    lp.copyFrom(bottomSheetDialog.window!!.attributes)
+    lp.width = WindowManager.LayoutParams.MATCH_PARENT
+    lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+    lp.gravity = Gravity.CENTER
+    bottomSheetDialog.window!!.attributes = lp
+
+    return bottomSheetDialog
 }

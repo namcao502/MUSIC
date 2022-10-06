@@ -138,15 +138,24 @@
         android:id="@+id/bottom_sheet"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/song_img"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="75dp"
-            android:src="@drawable/music_default"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_img"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="40dp"
+            app:cardBackgroundColor="@color/main_color"
+            app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mini_player_layout" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:scaleType="fitCenter"
+                android:id="@+id/song_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/music_default" />
+        </androidx.cardview.widget.CardView>
 
 
         <ImageView
@@ -190,8 +199,6 @@
             app:layout_constraintTop_toBottomOf="@+id/play_pause_btn" />
 
         <TextView
-            android:textColor="@color/white"
-            android:textAlignment="center"
             android:id="@+id/title_txt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -205,11 +212,13 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Title"
+            android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/song_img">
+            app:layout_constraintTop_toBottomOf="@id/card_img">
 
         </TextView>
 
@@ -319,16 +328,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
-        <ListView
-            android:id="@+id/mini_lv"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+        <Button
+            android:id="@+id/comment_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/volume_sb" />
+            app:layout_constraintTop_toBottomOf="@id/volume_sb" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

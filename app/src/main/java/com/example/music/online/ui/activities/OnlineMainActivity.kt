@@ -10,28 +10,34 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.view.*
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.ActivityOnlineMainBinding
+import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.services.OnlineMusicPlayerService
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.*
 import com.example.music.online.viewModels.OnlineArtistViewModel
+import com.example.music.online.viewModels.OnlineCommentViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
+import com.example.music.utils.createBottomSheetDialog
+import com.example.music.utils.createDialog
+import com.example.music.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -72,6 +78,7 @@ class OnlineMainActivity
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
     private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
+    private val onlineCommentViewModel: OnlineCommentViewModel by viewModels()
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
@@ -159,24 +166,99 @@ class OnlineMainActivity
 
     private fun listener() {
 
+        binding.commentBtn.setOnClickListener {
+            //create bottom sheet dialog
+            val bottomSheetDialog = createBottomSheetDialog()
+
+            val commentLv = bottomSheetDialog.findViewById<ListView>(R.id.comment_lv)
+            val postBtn = bottomSheetDialog.findViewById<Button>(R.id.post_cmt_btn)
+            val message = bottomSheetDialog.findViewById<EditText>(R.id.message_et_cmt_dialog)
+
+            var comments: List<OnlineComment> = emptyList()
+
+            //prepare data for listView
+            onlineCommentViewModel.getAllCommentForSong(songList!![songPosition])
+            onlineCommentViewModel.comment.observe(this){
+                when (it) {
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        comments = it.data
+                        commentLv!!.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, comments)
+                    }
+                }
+            }
+
+            commentLv!!.setOnItemLongClickListener { _, _, i, l ->
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Delete this comment?")
+                    .setTitle("")
+                    .setPositiveButton("Delete",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            onlineCommentViewModel.deleteComment(comments[i])
+                            onlineCommentViewModel.deleteComment.observe(this){
+                                when (it) {
+                                    is UiState.Loading -> {
+
+                                    }
+                                    is UiState.Failure -> {
+
+                                    }
+                                    is UiState.Success -> {
+                                        toast(it.data)
+                                    }
+                                }
+                            }
+                        })
+                    .setNegativeButton("Cancel",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+                // Create the AlertDialog object and return it
+                builder.create().show()
+
+                return@setOnItemLongClickListener false
+            }
+
+            postBtn!!.setOnClickListener {
+                val message = message!!.text.toString()
+                if (message.isEmpty()){
+                    toast("Please type something to post...")
+                    return@setOnClickListener
+                }
+                val comment = OnlineComment("", message, songList!![songPosition].id, Firebase.auth.currentUser!!.uid)
+                onlineCommentViewModel.addComment(comment)
+                onlineCommentViewModel.addComment.observe(this){
+                    when (it) {
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            toast(it.data)
+                        }
+                    }
+                }
+            }
+
+            bottomSheetDialog.show()
+
+        }
+
         binding.miniPlayerLayout.setOnClickListener {
             binding.bottomSheet.visibility = View.VISIBLE
             BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         binding.addToPlaylistBtn.setOnClickListener {
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.fragment_playlist)
 
-            //set size for dialog
-            val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.window!!.attributes)
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.gravity = Gravity.CENTER
-            dialog.window!!.attributes = lp
+            val dialog = createDialog()
 
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
             recyclerView.adapter = onlineDialogPlaylistAdapter
@@ -396,6 +478,11 @@ class OnlineMainActivity
         binding.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniPb.max = musicPlayerService!!.getDuration()
+
+        if (songList!![songPosition].imgFilePath!!.isNotEmpty()){
+            Glide.with(this).load(songList!![songPosition].imgFilePath!!).into(binding.songImg)
+        }
+
         onlineArtistViewModel.getAllArtistFromSong(songList!![songPosition], 0)
         onlineArtistViewModel.artistInSong[0].observe(this){
             when(it){
@@ -416,6 +503,7 @@ class OnlineMainActivity
                 }
             }
         }
+
         updateProgress()
     }
 

@@ -55,6 +55,7 @@ class AlbumCRUDFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         var albums: List<OnlineAlbum> = emptyList()
 
         onlineAlbumViewModel.getAllAlbums()
@@ -184,6 +185,7 @@ class AlbumCRUDFragment : Fragment() {
         }
 
         binding.updateBtn.setOnClickListener {
+
             if (currentAlbum == null){
                 toast("Please pick an album to update...")
                 return@setOnClickListener
