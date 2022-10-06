@@ -23,7 +23,6 @@ class AccountActivity : AppCompatActivity() {
         //the onSupportNavigationUp creates the back arrow in the toolbar.
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
-
         setupActionBarWithNavController(navController)
     }
 

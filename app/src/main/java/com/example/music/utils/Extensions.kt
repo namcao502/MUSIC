@@ -23,6 +23,13 @@ fun Activity.toast(message: String?){
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
+fun changeEmailToXEmail(email: String): String {
+    val splitEmail = email.split("@")
+    var first = splitEmail[0]
+    first = first.replaceRange(1, first.length, "x")
+    return first + "@" + splitEmail[1]
+}
+
 fun Fragment.createProgressDialog(title: String): ProgressDialog{
     val progressDialog = ProgressDialog(requireContext())
     progressDialog.setTitle(title)

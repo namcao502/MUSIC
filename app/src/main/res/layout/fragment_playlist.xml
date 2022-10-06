@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:minWidth="300dp"
     android:minHeight="300dp"
-    android:background="@color/main_color"
+    android:background="@color/black"
     tools:context=".offline.ui.fragments.PlaylistFragment">
 
     <androidx.recyclerview.widget.RecyclerView

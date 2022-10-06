@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:minHeight="500dp"
-    android:background="@color/main_color"
+    android:background="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,7 +27,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="40dp"
-        app:cardBackgroundColor="@color/main_color"
+        app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

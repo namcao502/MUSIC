@@ -1,12 +1,12 @@
 package com.example.music.online.ui.fragments
 
 import android.content.Intent
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,15 +16,15 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
 import com.example.music.databinding.FragmentWelcomeBinding
-import com.example.music.online.ui.activities.CRUDActivity
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
-class WelcomeFragment : Fragment() {
+class WelcomeFragment: Fragment() {
 
     private var _binding : FragmentWelcomeBinding? = null
     private val binding get() = _binding!!
@@ -35,6 +35,10 @@ class WelcomeFragment : Fragment() {
         getUser()
         registerObserver()
         listenToChannels()
+
+        if ((activity as AppCompatActivity?)!!.supportActionBar != null) {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+        }
 
         binding.offlineButton.setOnClickListener {
             startActivity(Intent(requireContext(), MainActivity::class.java))

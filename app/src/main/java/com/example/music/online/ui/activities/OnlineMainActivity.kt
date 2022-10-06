@@ -1,7 +1,6 @@
 package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.*
 import android.media.AudioManager
 import android.os.Bundle
@@ -14,12 +13,12 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.ActivityOnlineMainBinding
@@ -27,26 +26,23 @@ import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.services.OnlineMusicPlayerService
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.*
-import com.example.music.online.viewModels.OnlineArtistViewModel
-import com.example.music.online.viewModels.OnlineCommentViewModel
-import com.example.music.online.viewModels.OnlinePlaylistViewModel
-import com.example.music.online.viewModels.OnlineSongViewModel
-import com.example.music.utils.createBottomSheetDialog
-import com.example.music.utils.createDialog
-import com.example.music.utils.toast
+import com.example.music.online.viewModels.*
+import com.example.music.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 @AndroidEntryPoint
-class OnlineMainActivity
-    : AppCompatActivity(),
+class OnlineMainActivity: AppCompatActivity(),
     ServiceConnection,
     OnlineSongFragment.SongFromAdapterClick,
     OnlineDialogPlaylistAdapter.ItemClickListener,
@@ -178,8 +174,8 @@ class OnlineMainActivity
 
             //prepare data for listView
             onlineCommentViewModel.getAllCommentForSong(songList!![songPosition])
-            onlineCommentViewModel.comment.observe(this){
-                when (it) {
+            onlineCommentViewModel.comment.observe(this){ comment ->
+                when (comment) {
                     is UiState.Loading -> {
 
                     }
@@ -187,20 +183,27 @@ class OnlineMainActivity
 
                     }
                     is UiState.Success -> {
-                        comments = it.data
+                        comments = comment.data
+                        for (x in comments){
+                            x.message = Firebase.auth.currentUser!!.email.toString() + ": " + x.message
+                        }
                         commentLv!!.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, comments)
                     }
                 }
             }
 
-            commentLv!!.setOnItemLongClickListener { _, _, i, l ->
+            commentLv!!.setOnItemClickListener { _, _, i, _ ->
+                //update
+            }
+
+            commentLv.setOnItemLongClickListener { _, _, i, l ->
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("Delete this comment?")
                     .setTitle("")
-                    .setPositiveButton("Delete",
-                        DialogInterface.OnClickListener { dialog, id ->
+                    .setPositiveButton("Delete") { _, _ ->
+                        if (comments[i].userId!! == Firebase.auth.currentUser!!.uid) {
                             onlineCommentViewModel.deleteComment(comments[i])
-                            onlineCommentViewModel.deleteComment.observe(this){
+                            onlineCommentViewModel.deleteComment.observe(this) {
                                 when (it) {
                                     is UiState.Loading -> {
 
@@ -213,7 +216,11 @@ class OnlineMainActivity
                                     }
                                 }
                             }
-                        })
+                        } else {
+                            toast("You can't delete this comment")
+                        }
+
+                    }
                     .setNegativeButton("Cancel",
                         DialogInterface.OnClickListener { dialog, id ->
                             // User cancelled the dialog
@@ -225,12 +232,13 @@ class OnlineMainActivity
             }
 
             postBtn!!.setOnClickListener {
-                val message = message!!.text.toString()
-                if (message.isEmpty()){
+
+                val text = message!!.text.toString()
+                if (text.isEmpty()){
                     toast("Please type something to post...")
                     return@setOnClickListener
                 }
-                val comment = OnlineComment("", message, songList!![songPosition].id, Firebase.auth.currentUser!!.uid)
+                val comment = OnlineComment("", text, songList!![songPosition].id, Firebase.auth.currentUser!!.uid)
                 onlineCommentViewModel.addComment(comment)
                 onlineCommentViewModel.addComment.observe(this){
                     when (it) {
@@ -254,6 +262,10 @@ class OnlineMainActivity
         binding.miniPlayerLayout.setOnClickListener {
             binding.bottomSheet.visibility = View.VISIBLE
             BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.backBtn.setOnClickListener {
+            binding.bottomSheet.visibility = View.GONE
         }
 
         binding.addToPlaylistBtn.setOnClickListener {
@@ -480,7 +492,7 @@ class OnlineMainActivity
         binding.miniPb.max = musicPlayerService!!.getDuration()
 
         if (songList!![songPosition].imgFilePath!!.isNotEmpty()){
-            Glide.with(this).load(songList!![songPosition].imgFilePath!!).into(binding.songImg)
+            Glide.with(this@OnlineMainActivity).load(songList!![songPosition].imgFilePath!!).into(binding.songImg)
         }
 
         onlineArtistViewModel.getAllArtistFromSong(songList!![songPosition], 0)

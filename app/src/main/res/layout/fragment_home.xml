@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_color"
+    android:background="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".online.ui.fragments.HomeFragment">
 
@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Playlists"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textAllCaps="true"
                     android:textSize="21sp"
                     android:textStyle="bold" />
@@ -50,7 +50,7 @@
                 android:id="@+id/playlist_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp" />
+                android:padding="5dp" />
 
         </LinearLayout>
 
@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -68,19 +68,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Artists"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/artist_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="10dp" />
+                android:padding="5dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,19 +94,19 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Genres"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textAllCaps="true"
+                    android:textColor="@color/white"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="10dp"
+                android:padding="5dp"
                 android:id="@+id/genre_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
@@ -123,19 +123,19 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Albums"
-                    android:textAlignment="center"
+                    android:textAlignment="textStart"
                     android:textAllCaps="true"
+                    android:textColor="@color/white"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="10dp"
+                android:padding="5dp"
                 android:id="@+id/album_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
