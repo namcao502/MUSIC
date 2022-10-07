@@ -35,7 +35,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     DetailCollectionFragment.ClickASongInDetail {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding
+    private val binding get() = _binding!!
 
     private val onlinePlaylistViewModel: OnlinePlaylistViewModel by viewModels()
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
@@ -58,17 +58,17 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         OnlineAlbumAdapter(requireContext(), this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //load data for playlist
-        with(binding!!.playlistRv){
+        with(binding.playlistRv){
             adapter = onlinePlaylistInHomeAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
@@ -88,7 +88,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         }
 
         //load data for artist
-        with(binding!!.artistRv){
+        with(binding.artistRv){
             adapter = onlineArtistAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
@@ -108,7 +108,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         }
 
         //load data for genre
-        with(binding!!.genreRv){
+        with(binding.genreRv){
             adapter = onlineGenreAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
@@ -128,7 +128,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         }
 
         //load data for album
-        with(binding!!.albumRv){
+        with(binding.albumRv){
             adapter = onlineAlbumAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
@@ -154,7 +154,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.alan_walker_slide, ""),
             SlideModel(R.drawable.poster_08, "")
         )
-        binding!!.sliderImg.setImageList(imageList, ScaleTypes.FIT)
+        binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
 
     }
 

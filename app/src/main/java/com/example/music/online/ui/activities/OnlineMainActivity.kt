@@ -47,6 +47,7 @@ class OnlineMainActivity: AppCompatActivity(),
     OnlineSongFragment.SongFromAdapterClick,
     OnlineDialogPlaylistAdapter.ItemClickListener,
     HomeFragment.ClickSongFromDetail,
+    SearchFragment.ClickSongFromDetail,
     OnlinePlaylistFragment.ClickSongFromDetail{
 
     private lateinit var binding: ActivityOnlineMainBinding
@@ -54,7 +55,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private var songFragment = OnlineSongFragment(this)
     private var playlistFragment = OnlinePlaylistFragment(this)
     private var homeFragment = HomeFragment(this)
-    private var searchFragment = SearchFragment()
+    private var searchFragment = SearchFragment(this)
     private var userFragment = UserFragment()
     var activeFragment: Fragment = homeFragment
 
