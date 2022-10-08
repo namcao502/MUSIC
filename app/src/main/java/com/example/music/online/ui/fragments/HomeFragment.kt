@@ -155,7 +155,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.poster_08, "")
         )
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
-
     }
 
     override fun onDestroy() {

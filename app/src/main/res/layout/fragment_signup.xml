@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_color"
     tools:context=".online.ui.fragments.SignUpFragment">
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
         android:layout_marginEnd="24dp"
         android:hint="Email"
         app:errorEnabled="true"
+        android:textColorHint="@color/white"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -51,6 +54,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_email_etv"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
@@ -65,6 +69,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:hint="Password"
+        android:textColorHint="@color/white"
         app:endIconMode="password_toggle"
         app:errorEnabled="true"
         app:errorIconDrawable="@drawable/ic_error"
@@ -76,6 +81,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_password_etv"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
@@ -90,6 +96,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:hint="Confirm password"
+        android:textColorHint="@color/white"
         app:errorEnabled="true"
         app:endIconMode="password_toggle"
         app:errorIconDrawable="@drawable/ic_error"
@@ -102,6 +109,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/confirm_password_etv"
             android:layout_width="match_parent"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -133,6 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_up_button" />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

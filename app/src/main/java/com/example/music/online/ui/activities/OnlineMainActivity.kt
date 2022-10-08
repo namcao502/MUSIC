@@ -140,6 +140,9 @@ class OnlineMainActivity: AppCompatActivity(),
             supportActionBar!!.hide()
         }
 
+        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+
         BottomSheetBehavior.from(binding.bottomSheet).apply {
 
             peekHeight = 200

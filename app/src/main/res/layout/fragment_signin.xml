@@ -5,9 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_color"
     tools:context=".online.ui.fragments.SignInFragment">
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
         android:layout_marginEnd="24dp"
         android:hint="Email"
         app:errorEnabled="true"
+        android:textColorHint="@color/white"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -52,6 +55,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_email_etv"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
@@ -67,6 +71,7 @@
         android:layout_marginEnd="24dp"
         android:hint="Password"
         app:errorEnabled="true"
+        android:textColorHint="@color/white"
         app:endIconMode="password_toggle"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +82,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_password_etv"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
@@ -122,6 +128,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

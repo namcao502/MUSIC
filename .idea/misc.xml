@@ -9,6 +9,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/gradient_progressbar_background.xml" value="0.157" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_error.xml" value="0.1805" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable-v24/ic_person_grey.xml" value="0.173" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/bottom_navigation_selector.xml" value="0.178" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.156" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_album_24.xml" value="0.156" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/drawable/ic_baseline_category_24.xml" value="0.173" />
@@ -51,7 +52,7 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_playlist.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_playlist_crud.xml" value="0.16210739614994935" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_search.xml" value="0.1641337386018237" />
-        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signin.xml" value="0.25416666666666665" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signin.xml" value="0.264" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_signup.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song.xml" value="0.22826086956521738" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/layout/fragment_song_crud.xml" value="0.264" />
@@ -75,6 +76,8 @@
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_playlist_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_in_playlist_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/menu/row_song_menu.xml" value="0.24895833333333334" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.178" />
+        <entry key="..\:/~project/AndroidKotlin/MUSIC/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1135" />
       </map>
     </option>
   </component>
