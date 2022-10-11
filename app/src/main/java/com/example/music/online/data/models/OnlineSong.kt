@@ -11,7 +11,7 @@ data class OnlineSong(
 ) : Serializable {
 
     override fun toString(): String {
-        return "$name"
+        return "$name, views = $views"
     }
 
 }

@@ -1,13 +1,12 @@
 package com.example.music.online.repositories
 
-import com.example.music.utils.UiState
 import com.example.music.online.data.dao.SongRepository
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
+import com.example.music.utils.UiState
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 
 class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
@@ -48,6 +47,28 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
                 result.invoke(
                     UiState.Success(songs)
                 )
+            }
+    }
+
+    override fun getAllSongForSearch(result: (UiState<List<OnlineSong>>) -> Unit) {
+        database
+            .collection(FireStoreCollection.SONG).orderBy("name")
+            .get()
+            .addOnCompleteListener{
+                val songs: ArrayList<OnlineSong> = ArrayList()
+                if (it.isSuccessful) {
+                    for (doc in it.result){
+                        val song = doc.toObject(OnlineSong::class.java)
+                        songs.add(song)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(songs)
+                )
+
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
             }
     }
 

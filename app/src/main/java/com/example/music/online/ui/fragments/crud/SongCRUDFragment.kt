@@ -23,6 +23,7 @@ import com.example.music.online.viewModels.OnlineSongViewModel
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
+import java.util.*
 
 @AndroidEntryPoint
 class SongCRUDFragment : Fragment() {
@@ -74,6 +75,46 @@ class SongCRUDFragment : Fragment() {
                 }
             }
         }
+
+        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryTextChange(text: String): Boolean {
+                //creating a new array list to filter our data.
+                val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
+
+                // running a for loop to compare elements.
+                for (item in songs) {
+                    // checking if the entered string matched with any item of our recycler view.
+                    if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                        // if the item is matched we are
+                        // adding it to our filtered list.
+                        filter.add(item)
+                    }
+                }
+                if (filter.isEmpty() || text.isEmpty()) {
+                    // if no item is added in filtered list we are
+                    // displaying a toast message as no data found.
+                    toast("Not found")
+                    with(binding.listView){
+                        adapter = ArrayAdapter(requireContext(),
+                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, songs)
+                    }
+                } else {
+                    // at last we are passing that filtered
+                    // list to our adapter class.
+                    with(binding.listView){
+                        adapter = ArrayAdapter(requireContext(),
+                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
+                    }
+                }
+
+                return false
+            }
+
+        })
 
         binding.resetBtn.setOnClickListener {
             binding.nameEt.setText("")

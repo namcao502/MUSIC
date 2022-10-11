@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.OnlineAlbumAdapter
@@ -25,14 +24,13 @@ import com.example.music.online.viewModels.OnlineAlbumViewModel
 import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlineGenreViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.utils.UiState
 import com.example.music.utils.WelcomeText
-import com.example.music.utils.toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
-import java.time.Clock
 import java.util.*
 
 
@@ -191,7 +189,9 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                 if (currentTime < 12){
                     greeting = WelcomeText.MORNING
                 }
-                binding.welcomeTv.text = greeting.plus(", $name")
+                if (_binding != null){
+                    binding.welcomeTv.text = greeting.plus(", $name")
+                }
                 handler.postDelayed(this, 1000)
             }
         }, 1000)

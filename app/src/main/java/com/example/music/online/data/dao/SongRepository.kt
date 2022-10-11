@@ -21,4 +21,6 @@ interface SongRepository {
 
     fun updateViewForSong(song: OnlineSong, result: (UiState<String>) -> Unit)
 
+    fun getAllSongForSearch(result: (UiState<List<OnlineSong>>) -> Unit)
+
 }

@@ -20,6 +20,9 @@ class OnlineSongViewModel @Inject constructor(val repository: SongRepository): V
     private val _songs = MutableLiveData<UiState<List<OnlineSong>>>()
     val song: LiveData<UiState<List<OnlineSong>>> get() = _songs
 
+    private val _songForSearch = MutableLiveData<UiState<List<OnlineSong>>>()
+    val songForSearch: LiveData<UiState<List<OnlineSong>>> get() = _songForSearch
+
     private val _addSongInPlaylist = MutableLiveData<UiState<String>>()
     val addSongInPlaylist: LiveData<UiState<String>> get() = _addSongInPlaylist
 
@@ -63,6 +66,13 @@ class OnlineSongViewModel @Inject constructor(val repository: SongRepository): V
         _songs.value = UiState.Loading
         repository.getAllSongs {
             _songs.value = it
+        }
+    }
+
+    fun getAllSongForSearch() {
+        _songForSearch.value = UiState.Loading
+        repository.getAllSongForSearch {
+            _songForSearch.value = it
         }
     }
 
