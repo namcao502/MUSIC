@@ -16,3 +16,9 @@ object Permission{
     val PICK_AUDIO_REQUEST = 502
 }
 
+object WelcomeText{
+    val MORNING = "Good morning"
+    val AFTERNOON = "Good afternoon"
+    val EVENING = "Good evening"
+}
+

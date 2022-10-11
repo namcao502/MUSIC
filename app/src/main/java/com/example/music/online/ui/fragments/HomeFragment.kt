@@ -1,6 +1,8 @@
 package com.example.music.online.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,15 @@ import com.example.music.online.viewModels.OnlineAlbumViewModel
 import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlineGenreViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.utils.WelcomeText
+import com.example.music.utils.toast
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Runnable
+import java.text.SimpleDateFormat
+import java.time.Clock
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -66,6 +76,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        showGreeting()
 
         //load data for playlist
         with(binding.playlistRv){
@@ -160,6 +172,30 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun showGreeting(){
+        val sdf = SimpleDateFormat("HH:mm:ss")
+        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable{
+            override fun run() {
+                val currentTime = sdf.format(Date()).dropLast(6).toInt()
+                var greeting = "Welcome, guest"
+                if (currentTime < 24){
+                    greeting = WelcomeText.EVENING
+                }
+                if (currentTime < 18){
+                    greeting = WelcomeText.AFTERNOON
+                }
+                if (currentTime < 12){
+                    greeting = WelcomeText.MORNING
+                }
+                binding.welcomeTv.text = greeting.plus(", $name")
+                handler.postDelayed(this, 60000)
+            }
+        }, 1000)
+
     }
 
     private fun sendDataToDetailFragment(name: String, songs: List<String>, imgFilePath: String){

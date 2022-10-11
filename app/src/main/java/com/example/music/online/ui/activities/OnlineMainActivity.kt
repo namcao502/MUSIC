@@ -8,34 +8,38 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import android.view.*
+import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.databinding.ActivityOnlineMainBinding
+import com.example.music.online.data.models.OnlineArtist
+import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
-import com.example.music.databinding.ActivityOnlineMainBinding
-import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.services.OnlineMusicPlayerService
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.*
-import com.example.music.online.viewModels.*
-import com.example.music.utils.*
+import com.example.music.online.viewModels.OnlineArtistViewModel
+import com.example.music.online.viewModels.OnlineCommentViewModel
+import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.online.viewModels.OnlineSongViewModel
+import com.example.music.utils.UiState
+import com.example.music.utils.createBottomSheetDialog
+import com.example.music.utils.createDialog
+import com.example.music.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -225,10 +229,9 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
 
                     }
-                    .setNegativeButton("Cancel",
-                        DialogInterface.OnClickListener { dialog, id ->
-                            // User cancelled the dialog
-                        })
+                    .setNegativeButton("Cancel") { _, _ ->
+                        // User cancelled the dialog
+                    }
                 // Create the AlertDialog object and return it
                 builder.create().show()
 
@@ -354,7 +357,7 @@ class OnlineMainActivity: AppCompatActivity(),
         try {
             audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
             binding.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
+//            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
             val handler = Handler(Looper.getMainLooper())
             handler.postDelayed(object : Runnable{
                 override fun run() {

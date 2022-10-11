@@ -20,6 +20,8 @@ import com.example.music.online.ui.adapters.OnlineSongAdapter
 import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
+import com.example.music.utils.createDialog
+import com.example.music.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -95,33 +97,16 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
         if (action == "Delete"){
 //            createDialogForDeleteSong(songList[position])
+            toast("Just for fun, you can't delete :>")
         }
     }
 
     private fun createDialogForAddToPlaylist() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.fragment_playlist)
-
-        //set size for dialog
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.gravity = Gravity.CENTER
-        dialog.window!!.attributes = lp
+        val dialog = createDialog()
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
         recyclerView.adapter = onlineDialogPlaylistAdapter
         recyclerView.layoutManager = LinearLayoutManager(dialog.context)
-
-//        FirebaseAuth.getInstance().currentUser?.let {
-//            firebaseViewModel.getAllPlaylistOfUser(it)
-//        }
-//        firebaseViewModel.playlist.observe(viewLifecycleOwner, Observer {
-//            onlineSongInPlaylistAdapter.setData(it)
-//        })
 
         FirebaseAuth.getInstance().currentUser?.let {
             onlinePlaylistViewModel.getAllPlaylistOfUser(it)
@@ -147,24 +132,6 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
         dialog.show()
     }
-
-//    private fun createDialogForDeleteSong(song: Song){
-//
-//        val builder = AlertDialog.Builder(requireContext())
-//
-//        builder.setMessage("Delete ${song.name}?")
-//            .setTitle("")
-//            .setPositiveButton("Delete",
-//                DialogInterface.OnClickListener { dialog, id ->
-//                    songViewModel.deleteSong(song)
-//                })
-//            .setNegativeButton("Cancel",
-//                DialogInterface.OnClickListener { dialog, id ->
-//                    // User cancelled the dialog
-//                })
-//        // Create the AlertDialog object and return it
-//        builder.create().show()
-//    }
 
     override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
         songFromAdapterClick.callBackFromSongFragment(songList, position)

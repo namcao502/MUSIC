@@ -99,4 +99,16 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
 
     }
 
+    override fun countSong(result: (UiState<Int>) -> Unit) {
+        database
+            .collection(FireStoreCollection.SONG)
+            .addSnapshotListener { value, _ ->
+                if (value != null) {
+                    result.invoke(
+                        UiState.Success(value.size())
+                    )
+                }
+            }
+    }
+
 }

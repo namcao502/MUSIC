@@ -10,7 +10,6 @@ import com.example.music.online.data.models.OnlineSong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-
 @HiltViewModel
 class OnlineArtistViewModel @Inject constructor(val repository: ArtistRepository): ViewModel(){
 
@@ -27,7 +26,7 @@ class OnlineArtistViewModel @Inject constructor(val repository: ArtistRepository
     val artist: LiveData<UiState<List<OnlineArtist>>> get() = _artists
 
     private var _artistInSong: List<MutableLiveData<UiState<List<OnlineArtist>>>>
-            = List(50, init= {i: Int -> MutableLiveData<UiState<List<OnlineArtist>>>()})
+            = List(100, init={MutableLiveData<UiState<List<OnlineArtist>>>()})
 
     var artistInSong: List<LiveData<UiState<List<OnlineArtist>>>> = _artistInSong
 

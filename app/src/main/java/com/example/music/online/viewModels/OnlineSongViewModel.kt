@@ -3,12 +3,15 @@ package com.example.music.online.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.music.utils.UiState
 import com.example.music.online.data.dao.SongRepository
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,9 +32,15 @@ class OnlineSongViewModel @Inject constructor(val repository: SongRepository): V
     private val _updateSong = MutableLiveData<UiState<String>>()
     val updateSong: LiveData<UiState<String>> get() = _updateSong
 
-    private val _songName = MutableLiveData<UiState<List<OnlineSong>>>()
-    val songName: LiveData<UiState<List<OnlineSong>>> get() = _songName
+    private val _songCount= MutableLiveData<UiState<Int>>()
+    val songCount: LiveData<UiState<Int>> get() = _songCount
 
+    fun countSong(){
+        _songCount.value = UiState.Loading
+        repository.countSong {
+            _songCount.value = it
+        }
+    }
 
     fun addSongToPlaylist(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
         _addSongInPlaylist.value = UiState.Loading

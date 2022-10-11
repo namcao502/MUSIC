@@ -1,9 +1,8 @@
 package com.example.music.online.data.dao
 
-import com.example.music.utils.UiState
-import com.example.music.online.data.models.OnlineAlbum
 import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.utils.UiState
 
 interface CommentRepository {
 

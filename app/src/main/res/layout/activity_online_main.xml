@@ -12,8 +12,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:background="@drawable/player_bg"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="1dp"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -24,7 +23,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:visibility="gone"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="1dp"
             android:id="@+id/mini_player_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,8 +119,8 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.cardview.widget.CardView
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
             android:id="@+id/bottom_card"
             app:cardCornerRadius="10dp"
             android:layout_width="match_parent"
