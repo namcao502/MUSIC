@@ -176,7 +176,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     private fun showGreeting(){
         val sdf = SimpleDateFormat("HH:mm:ss")
-        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
+        val name = Firebase.auth.currentUser!!.email
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{
             override fun run() {
@@ -192,7 +192,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                     greeting = WelcomeText.MORNING
                 }
                 binding.welcomeTv.text = greeting.plus(", $name")
-                handler.postDelayed(this, 60000)
+                handler.postDelayed(this, 1000)
             }
         }, 1000)
 

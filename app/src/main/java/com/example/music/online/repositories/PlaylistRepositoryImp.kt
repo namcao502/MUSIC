@@ -7,6 +7,7 @@ import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 
 class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository {
@@ -18,7 +19,7 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
         }
         else {
             database
-                .collection(FireStoreCollection.SONG).orderBy("name")
+                .collection(FireStoreCollection.SONG).orderBy("views", Query.Direction.DESCENDING)
                 .whereIn("id", playlist.songs!!)
                 .addSnapshotListener { value, _ ->
                     val songs: ArrayList<OnlineSong> = ArrayList()

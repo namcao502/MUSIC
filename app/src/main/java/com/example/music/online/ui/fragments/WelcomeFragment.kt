@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
@@ -44,12 +45,14 @@ class WelcomeFragment: Fragment() {
             startActivity(Intent(requireContext(), MainActivity::class.java))
         }
 
-        val imageList = arrayListOf(
-            SlideModel(R.drawable.poster_02, "MUSIC IS LOVE"),
-            SlideModel(R.drawable.poster_05, "MUSIC IS LIFE"),
-            SlideModel(R.drawable.music_default, "MUSIC IS ALL")
-        )
-        binding.slider.setImageList(imageList, ScaleTypes.FIT)
+//        val imageList = arrayListOf(
+//            SlideModel(R.drawable.poster_02, "MUSIC IS LOVE"),
+//            SlideModel(R.drawable.poster_05, "MUSIC IS LIFE"),
+//            SlideModel(R.drawable.music_default, "MUSIC IS ALL")
+//        )
+//        binding.slider.setImageList(imageList, ScaleTypes.FIT)
+
+        Glide.with(requireContext()).load(R.drawable.poster_gif).into(binding.gifImg)
 
         return binding.root
     }
@@ -76,7 +79,7 @@ class WelcomeFragment: Fragment() {
             user?.let {
                 binding.apply {
                     //login success
-                    welcomeTxt.text = "Welcome ${it.email}"
+//                    welcomeTxt.text = "Welcome ${it.email}"
                     signinButton.text = "Sign out"
                     signinButton.setOnClickListener {
                         firebaseAuthViewModel.signOut()
@@ -88,7 +91,7 @@ class WelcomeFragment: Fragment() {
                     startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
                 }
             } ?: binding.apply {
-                welcomeTxt.isVisible = false
+//                welcomeTxt.isVisible = false
                 signinButton.text = "Sign in for online"
                 signinButton.setOnClickListener {
                     findNavController().navigate(R.id.action_homeFragment_to_signInFragment)

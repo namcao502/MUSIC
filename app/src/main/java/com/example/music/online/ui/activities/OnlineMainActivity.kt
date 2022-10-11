@@ -523,6 +523,22 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
+        songList!![songPosition].views = songList!![songPosition].views?.toInt()?.plus(1).toString()
+        onlineSongViewModel.updateViewForSong(songList!![songPosition])
+        onlineSongViewModel.updateView.observe(this){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    Log.i("TAG502", "loadUI: ${it.data}")
+                }
+            }
+        }
+
         updateProgress()
     }
 

@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.databinding.OnlinePlaylistRowItemBinding
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.online.data.models.OnlinePlaylist
 
@@ -20,10 +21,10 @@ class OnlinePlaylistAdapter(
 
     var playlist = emptyList<OnlinePlaylist>()
 
-    inner class ViewHolder(val binding: PlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: OnlinePlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = PlaylistRowItemBinding.inflate(
+        val binding = OnlinePlaylistRowItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false)
@@ -57,15 +58,7 @@ class OnlinePlaylistAdapter(
             with(playlist[position]){
 
                 binding.titleTxt.text = this.name
-                binding.countLengthTxt.visibility = View.GONE
-                binding.countSongTxt.visibility = View.GONE
 
-                if (this.imgFilePath!!.isNotEmpty()){
-                    Glide.with(context).load(this.imgFilePath).into(binding.imageView)
-                }
-                else {
-                    binding.imageView.visibility = View.GONE
-                }
             }
         }
 

@@ -5,45 +5,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_color"
     tools:context=".online.ui.fragments.WelcomeFragment">
 
-    <com.denzcoskun.imageslider.ImageSlider
-        android:textAlignment="center"
-        app:iss_auto_cycle="true"
-        app:iss_delay="100"
-        app:iss_period="1000"
-        android:id="@+id/slider"
+<!--    <com.denzcoskun.imageslider.ImageSlider-->
+<!--        android:textAlignment="center"-->
+<!--        app:iss_auto_cycle="true"-->
+<!--        app:iss_delay="100"-->
+<!--        app:iss_period="1000"-->
+<!--        android:id="@+id/slider"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/card_txt"-->
+<!--        app:cardCornerRadius="20dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <TextView-->
+<!--            android:padding="10dp"-->
+<!--            android:id="@+id/welcome_txt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="#02fbfb"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="24sp" />-->
+
+<!--    </androidx.cardview.widget.CardView>-->
+
+    <ImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/gif_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_txt"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:padding="10dp"
-            android:id="@+id/welcome_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#02fbfb"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:textSize="24sp" />
-
-    </androidx.cardview.widget.CardView>
-
-
 
     <Button
         android:id="@+id/signin_button"
@@ -54,7 +61,6 @@
         android:layout_marginBottom="64dp"
         android:text="Sign in for online"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/card_txt"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 

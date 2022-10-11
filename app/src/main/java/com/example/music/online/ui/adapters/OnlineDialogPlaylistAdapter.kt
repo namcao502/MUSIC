@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
+import com.example.music.databinding.OnlinePlaylistRowItemBinding
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.online.data.models.OnlinePlaylist
 
@@ -17,10 +18,10 @@ class OnlineDialogPlaylistAdapter(
 
     var playlist = emptyList<OnlinePlaylist>()
 
-    inner class ViewHolder(val binding: PlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: OnlinePlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = PlaylistRowItemBinding.inflate(
+        val binding = OnlinePlaylistRowItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false)
@@ -53,17 +54,6 @@ class OnlineDialogPlaylistAdapter(
 
             with(playlist[position]){
                 binding.titleTxt.text = this.name
-//                songInPlaylistViewModel.getSongsOfPlaylist(this.playlist_id).observe(lifecycle, Observer {
-//                    if (it != null){
-//                        val countSong = it.listSong.size.toString()
-//                        var countDuration = 0
-//                        for (x in it.listSong){
-//                            countDuration += x.duration
-//                        }
-//                        binding.countLengthTxt.text = SimpleDateFormat("mm:ss").format(countDuration).toString()
-//                        binding.countSongTxt.text = countSong.plus(" songs")
-//                    }
-//                })
             }
         }
 

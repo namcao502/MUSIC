@@ -1,7 +1,9 @@
 
-làm thêm search
+làm thêm search ở bài hát và danh sách phát
 
-xoá bài hát trong danh sách phát
+cập nhật lượt nghe của bài hát khi phát
+
+tối ưa giao diện
 
 đi cào data về làm db
 

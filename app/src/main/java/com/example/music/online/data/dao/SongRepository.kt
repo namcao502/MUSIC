@@ -19,4 +19,6 @@ interface SongRepository {
 
     fun countSong(result: (UiState<Int>) -> Unit)
 
+    fun updateViewForSong(song: OnlineSong, result: (UiState<String>) -> Unit)
+
 }

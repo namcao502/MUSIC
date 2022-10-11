@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.databinding.FragmentOnlineSongBinding
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
@@ -20,11 +19,13 @@ import com.example.music.online.ui.adapters.OnlineSongAdapter
 import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
+import com.example.music.utils.UiState
 import com.example.music.utils.createDialog
 import com.example.music.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
@@ -51,6 +52,8 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
     private lateinit var currentSong: OnlineSong
 
+    private var initialList: List<OnlineSong>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,6 +64,19 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                filterSong(newText)
+                return false
+            }
+
+        })
+
         binding.songRecyclerView.apply {
             adapter = onlineSongAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -77,8 +93,33 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                 }
                 is UiState.Success -> {
                     onlineSongAdapter.setData(it.data)
+                    initialList = it.data
                 }
             }
+        }
+    }
+
+    private fun filterSong(text: String) {
+        //creating a new array list to filter our data.
+        val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
+
+        // running a for loop to compare elements.
+        for (item in onlineSongAdapter.songList) {
+            // checking if the entered string matched with any item of our recycler view.
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                // if the item is matched we are
+                // adding it to our filtered list.
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty() || text.isEmpty()) {
+            // if no item is added in filtered list we are
+            // displaying a toast message as no data found.
+            onlineSongAdapter.setData(initialList!!)
+        } else {
+            // at last we are passing that filtered
+            // list to our adapter class.
+            onlineSongAdapter.setData(filter)
         }
     }
 
@@ -102,7 +143,18 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun createDialogForAddToPlaylist() {
-        val dialog = createDialog()
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.fragment_online_playlist)
+
+        //set size for dialog
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.window!!.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+        lp.gravity = Gravity.CENTER
+        dialog.window!!.attributes = lp
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
         recyclerView.adapter = onlineDialogPlaylistAdapter
