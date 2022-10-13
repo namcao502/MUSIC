@@ -45,6 +45,7 @@ class AlbumCRUDFragment : Fragment() {
 
     private var currentAlbum: OnlineAlbum? = null
 
+    private var albums: List<OnlineAlbum> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +59,6 @@ class AlbumCRUDFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var albums: List<OnlineAlbum> = emptyList()
-
         onlineAlbumViewModel.getAllAlbums()
         onlineAlbumViewModel.album.observe(viewLifecycleOwner){
             when(it){
@@ -71,49 +70,21 @@ class AlbumCRUDFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     albums = it.data
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item, albums)
-                    }
+                    binding.listView.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.
+                        support_simple_spinner_dropdown_item, albums)
                 }
             }
         }
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                TODO("Not yet implemented")
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterAlbum(text)
+                return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                //creating a new array list to filter our data.
-                val filter: ArrayList<OnlineAlbum> = ArrayList<OnlineAlbum>()
-
-                // running a for loop to compare elements.
-                for (item in albums) {
-                    // checking if the entered string matched with any item of our recycler view.
-                    if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                        // if the item is matched we are
-                        // adding it to our filtered list.
-                        filter.add(item)
-                    }
-                }
-                if (filter.isEmpty() || text.isEmpty()) {
-                    // if no item is added in filtered list we are
-                    // displaying a toast message as no data found.
-                    toast("Not found")
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, albums)
-                    }
-                } else {
-                    // at last we are passing that filtered
-                    // list to our adapter class.
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
-                    }
-                }
+                filterAlbum(text)
                 return false
             }
 
@@ -406,6 +377,27 @@ class AlbumCRUDFragment : Fragment() {
             dialog.show()
         }
 
+    }
+
+    private fun filterAlbum(text: String) {
+        val filter: ArrayList<OnlineAlbum> = ArrayList()
+
+        for (item in albums) {
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty()) {
+            toast("Not found")
+        }
+        if (text.isEmpty()){
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, albums)
+        }
+        else {
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
+        }
     }
 
     private fun addAlbum(album: OnlineAlbum) {

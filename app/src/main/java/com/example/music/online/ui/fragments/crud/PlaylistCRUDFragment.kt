@@ -45,6 +45,7 @@ class PlaylistCRUDFragment : Fragment() {
 
     private var currentPlaylist: OnlinePlaylist? = null
 
+    private var playlists: List<OnlinePlaylist> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,9 +56,29 @@ class PlaylistCRUDFragment : Fragment() {
         return binding.root
     }
 
+    private fun filterPlaylist(text: String) {
+        val filter: ArrayList<OnlinePlaylist> = ArrayList()
+
+        for (item in playlists) {
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty()) {
+            toast("Not found")
+        }
+        if (text.isEmpty()){
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, playlists)
+        }
+        else {
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var playlists: List<OnlinePlaylist> = emptyList()
 
         onlinePlaylistViewModel.getAllPlaylists()
         onlinePlaylistViewModel.playlist2.observe(viewLifecycleOwner){
@@ -81,38 +102,12 @@ class PlaylistCRUDFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String): Boolean {
-                TODO("Not yet implemented")
+                filterPlaylist(p0)
+                return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                //creating a new array list to filter our data.
-                val filter: ArrayList<OnlinePlaylist> = ArrayList<OnlinePlaylist>()
-
-                // running a for loop to compare elements.
-                for (item in playlists) {
-                    // checking if the entered string matched with any item of our recycler view.
-                    if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                        // if the item is matched we are
-                        // adding it to our filtered list.
-                        filter.add(item)
-                    }
-                }
-                if (filter.isEmpty() || text.isEmpty()) {
-                    // if no item is added in filtered list we are
-                    // displaying a toast message as no data found.
-                    toast("Not found")
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, playlists)
-                    }
-                } else {
-                    // at last we are passing that filtered
-                    // list to our adapter class.
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
-                    }
-                }
+                filterPlaylist(text)
                 return false
             }
 

@@ -20,7 +20,6 @@ import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
 import com.example.music.utils.UiState
-import com.example.music.utils.createDialog
 import com.example.music.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -67,7 +66,8 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                TODO("Not yet implemented")
+                filterSong(query)
+                return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
@@ -112,11 +112,15 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
+        if (filter.isEmpty()) {
             // if no item is added in filtered list we are
             // displaying a toast message as no data found.
+            toast("Not found")
+        }
+        if (text.isEmpty()){
             onlineSongAdapter.setData(initialList!!)
-        } else {
+        }
+        else {
             // at last we are passing that filtered
             // list to our adapter class.
             onlineSongAdapter.setData(filter)

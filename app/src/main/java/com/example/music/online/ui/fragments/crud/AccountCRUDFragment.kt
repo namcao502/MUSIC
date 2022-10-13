@@ -15,14 +15,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
-import com.example.music.online.data.models.OnlineAccount
 import com.example.music.databinding.FragmentAccountCrudBinding
-import com.example.music.online.data.models.OnlinePlaylist
-import com.example.music.utils.createProgressDialog
-import com.example.music.utils.toast
+import com.example.music.online.data.models.OnlineAccount
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
+import com.example.music.utils.UiState
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -30,7 +29,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class AccountCRUDFragment : Fragment() {
@@ -49,6 +47,8 @@ class AccountCRUDFragment : Fragment() {
     private var currentAccount: OnlineAccount? = null
 
     private var adminAccount: OnlineAccount? = null
+
+    private var accounts: List<OnlineAccount> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,7 +77,6 @@ class AccountCRUDFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var accounts: List<OnlineAccount> = emptyList()
 
         onlineAccountViewModel.getAllAccounts()
         onlineAccountViewModel.account.observe(viewLifecycleOwner){
@@ -90,49 +89,21 @@ class AccountCRUDFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     accounts = it.data
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item, accounts)
-                    }
+                    binding.listView.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.
+                        support_simple_spinner_dropdown_item, accounts)
                 }
             }
         }
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                TODO("Not yet implemented")
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterAccount(text)
+                return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                //creating a new array list to filter our data.
-                val filter: ArrayList<OnlineAccount> = ArrayList<OnlineAccount>()
-
-                // running a for loop to compare elements.
-                for (item in accounts) {
-                    // checking if the entered string matched with any item of our recycler view.
-                    if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                        // if the item is matched we are
-                        // adding it to our filtered list.
-                        filter.add(item)
-                    }
-                }
-                if (filter.isEmpty() || text.isEmpty()) {
-                    // if no item is added in filtered list we are
-                    // displaying a toast message as no data found.
-                    toast("Not found")
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, accounts)
-                    }
-                } else {
-                    // at last we are passing that filtered
-                    // list to our adapter class.
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
-                    }
-                }
+                filterAccount(text)
                 return false
             }
 
@@ -483,6 +454,27 @@ class AccountCRUDFragment : Fragment() {
                 }
 
             }
+        }
+    }
+
+    private fun filterAccount(text: String) {
+        val filter: ArrayList<OnlineAccount> = ArrayList()
+
+        for (item in accounts) {
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty()) {
+            toast("Not found")
+        }
+        if (text.isEmpty()){
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, accounts)
+        }
+        else {
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
         }
     }
 

@@ -46,6 +46,8 @@ class ArtistCRUDFragment : Fragment() {
 
     private var currentArtist: OnlineArtist? = null
 
+    private var artists: List<OnlineArtist> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,10 +57,29 @@ class ArtistCRUDFragment : Fragment() {
         return binding.root
     }
 
+    private fun filterArtist(text: String) {
+        val filter: ArrayList<OnlineArtist> = ArrayList()
+
+        for (item in artists) {
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty()) {
+            toast("Not found")
+        }
+        if (text.isEmpty()){
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
+        }
+        else {
+            binding.listView.adapter = ArrayAdapter(requireContext(),
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        var artists: List<OnlineArtist> = emptyList()
 
         onlineArtistViewModel.getAllArtists()
         onlineArtistViewModel.artist.observe(viewLifecycleOwner){
@@ -71,48 +92,20 @@ class ArtistCRUDFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     artists = it.data
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
-                    }
+                    binding.listView.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
                 }
             }
         }
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(p0: String): Boolean {
-                TODO("Not yet implemented")
+                filterArtist(p0)
+                return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                //creating a new array list to filter our data.
-                val filter: ArrayList<OnlineArtist> = ArrayList<OnlineArtist>()
-
-                // running a for loop to compare elements.
-                for (item in artists) {
-                    // checking if the entered string matched with any item of our recycler view.
-                    if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                        // if the item is matched we are
-                        // adding it to our filtered list.
-                        filter.add(item)
-                    }
-                }
-                if (filter.isEmpty() || text.isEmpty()) {
-                    // if no item is added in filtered list we are
-                    // displaying a toast message as no data found.
-                    toast("Not found")
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
-                    }
-                } else {
-                    // at last we are passing that filtered
-                    // list to our adapter class.
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, filter)
-                    }
-                }
+                filterArtist(text)
                 return false
             }
 

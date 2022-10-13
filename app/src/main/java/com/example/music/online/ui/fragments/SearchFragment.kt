@@ -15,6 +15,7 @@ import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
+import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -173,8 +174,13 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         }
 
         binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                TODO("Not yet implemented")
+            override fun onQueryTextSubmit(newText: String): Boolean {
+                filterPlaylist(newText)
+                filterArtist(newText)
+                filterGenre(newText)
+                filterAlbum(newText)
+                filterSong(newText)
+                return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
@@ -192,7 +198,6 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private fun filterSong(text: String) {
         // creating a new array list to filter our data.
         val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
-
         // running a for loop to compare elements.
         for (item in onlineSongInSearchAdapter.songList) {
             // checking if the entered string matched with any item of our recycler view.
@@ -202,11 +207,16 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
+        if (filter.isEmpty()) {
             // if no item is added in filtered list we are
             // displaying a toast message as no data found.
+            toast("Not found")
             binding.songRv.visibility = View.GONE
-        } else {
+        }
+        if (text.isEmpty()){
+            binding.songRv.visibility = View.GONE
+        }
+        else {
             // at last we are passing that filtered
             // list to our adapter class.
             onlineSongInSearchAdapter.setData(filter)
@@ -215,100 +225,85 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     }
 
     private fun filterAlbum(text: String) {
-        // creating a new array list to filter our data.
         val filter: ArrayList<OnlineAlbum> = ArrayList<OnlineAlbum>()
 
-        // running a for loop to compare elements.
         for (item in onlineAlbumAdapter.album) {
-            // checking if the entered string matched with any item of our recycler view.
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                // if the item is matched we are
-                // adding it to our filtered list.
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
+        if (filter.isEmpty()) {
+            toast("Not found")
             binding.albumRv.visibility = View.GONE
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
+        }
+        if (text.isEmpty()){
+            binding.albumRv.visibility = View.GONE
+        }
+        else {
             onlineAlbumAdapter.setData(filter)
             binding.albumRv.visibility = View.VISIBLE
         }
     }
 
     private fun filterGenre(text: String) {
-        // creating a new array list to filter our data.
         val filter: ArrayList<OnlineGenre> = ArrayList<OnlineGenre>()
 
-        // running a for loop to compare elements.
         for (item in onlineGenreAdapter.genre) {
-            // checking if the entered string matched with any item of our recycler view.
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                // if the item is matched we are
-                // adding it to our filtered list.
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
+        if (filter.isEmpty()) {
+            toast("Not found")
             binding.genreRv.visibility = View.GONE
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
+        }
+        if (text.isEmpty()){
+            binding.genreRv.visibility = View.GONE
+        }
+        else {
             onlineGenreAdapter.setData(filter)
             binding.genreRv.visibility = View.VISIBLE
         }
     }
 
     private fun filterArtist(text: String) {
-        // creating a new array list to filter our data.
         val filter: ArrayList<OnlineArtist> = ArrayList<OnlineArtist>()
 
-        // running a for loop to compare elements.
         for (item in onlineArtistAdapter.artist) {
-            // checking if the entered string matched with any item of our recycler view.
+
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                // if the item is matched we are
-                // adding it to our filtered list.
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
+        if (filter.isEmpty()) {
+            toast("Not found")
             binding.artistRv.visibility = View.GONE
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
+        }
+        if (text.isEmpty()){
+            binding.artistRv.visibility = View.GONE
+        }
+        else {
             onlineArtistAdapter.setData(filter)
             binding.artistRv.visibility = View.VISIBLE
         }
     }
 
     private fun filterPlaylist(text: String) {
-        // creating a new array list to filter our data.
         val filter: ArrayList<OnlinePlaylist> = ArrayList<OnlinePlaylist>()
 
-        // running a for loop to compare elements.
         for (item in onlinePlaylistInHomeAdapter.playlist) {
-            // checking if the entered string matched with any item of our recycler view.
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                // if the item is matched we are
-                // adding it to our filtered list.
                 filter.add(item)
             }
         }
-        if (filter.isEmpty() || text.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
+        if (filter.isEmpty()) {
+            toast("Not found")
             binding.playlistRv.visibility = View.GONE
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
+        }
+        if (text.isEmpty()){
+            binding.playlistRv.visibility = View.GONE
+        }
+        else {
             onlinePlaylistInHomeAdapter.setData(filter)
             binding.playlistRv.visibility = View.VISIBLE
         }
