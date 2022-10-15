@@ -113,13 +113,14 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                                     is UiState.Success -> {
                                         x.songs = it.data
                                         updatePlaylist(x)
-                                        Log.i("TAG502", "onViewCreated: ${x.songs}")
                                         onlinePlaylistInHomeAdapter.setData(playlist.data)
                                     }
                                 }
                             }
+                            break
                         }
                     }
+                    onlinePlaylistInHomeAdapter.setData(playlist.data)
                 }
             }
         }
@@ -225,7 +226,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
                 }
                 is UiState.Success -> {
-                    toast(it.data)
+                    Log.i("TAG502", "updatePlaylist: ${it.data}")
                 }
             }
         }

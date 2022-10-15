@@ -3,6 +3,6 @@ tối ưa giao diện
 
 đi cào data về làm db
 
-lỗi where in khi quá 10 item trong 1 list
+
 
 
