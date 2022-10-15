@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +22,14 @@ import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
 import com.example.music.utils.WelcomeText
+import com.example.music.utils.toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
@@ -45,6 +48,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -84,8 +88,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
         onlinePlaylistViewModel.getAllPlaylists()
-        onlinePlaylistViewModel.playlist2.observe(viewLifecycleOwner){
-            when(it){
+        onlinePlaylistViewModel.playlist2.observe(viewLifecycleOwner){ playlist ->
+            when(playlist){
                 is UiState.Loading -> {
 
                 }
@@ -93,7 +97,29 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
                 }
                 is UiState.Success -> {
-                    onlinePlaylistInHomeAdapter.setData(it.data)
+//                    onlinePlaylistInHomeAdapter.setData(playlist.data)
+                    for (x in playlist.data){
+                        if (x.name == "Trending"){
+                            //update trending songs
+                            onlineSongViewModel.getTrendingSong()
+                            onlineSongViewModel.trendingSong.observe(viewLifecycleOwner){
+                                when(it){
+                                    is UiState.Loading -> {
+
+                                    }
+                                    is UiState.Failure -> {
+
+                                    }
+                                    is UiState.Success -> {
+                                        x.songs = it.data
+                                        updatePlaylist(x)
+                                        Log.i("TAG502", "onViewCreated: ${x.songs}")
+                                        onlinePlaylistInHomeAdapter.setData(playlist.data)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -186,6 +212,23 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.poster_08, "")
         )
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
+    }
+
+    private fun updatePlaylist(playlist: OnlinePlaylist){
+        onlinePlaylistViewModel.updatePlaylist(playlist)
+        onlinePlaylistViewModel.updatePlaylist2.observe(viewLifecycleOwner){
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    toast(it.data)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

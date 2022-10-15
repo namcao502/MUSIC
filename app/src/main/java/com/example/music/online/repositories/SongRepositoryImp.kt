@@ -7,6 +7,7 @@ import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 
 class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
@@ -121,15 +122,20 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
 
     }
 
-    override fun countSong(result: (UiState<Int>) -> Unit) {
+    override fun getTrendingSong(result: (UiState<List<String>>) -> Unit) {
         database
-            .collection(FireStoreCollection.SONG)
+            .collection(FireStoreCollection.SONG).orderBy("views", Query.Direction.DESCENDING).limit(10)
             .addSnapshotListener { value, _ ->
+                val songs: ArrayList<String> = ArrayList()
                 if (value != null) {
-                    result.invoke(
-                        UiState.Success(value.size())
-                    )
+                    for (document in value){
+                        val song = document.toObject(OnlineSong::class.java)
+                        songs.add(song.id!!)
+                    }
                 }
+                result.invoke(
+                    UiState.Success(songs)
+                )
             }
     }
 

@@ -2,6 +2,7 @@ package com.example.music.online.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,7 @@ import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.databinding.ColumnItemBinding
 
 class OnlinePlaylistInHomeAdapter(val context: Context,
-                                  private val clickAPlaylist: ClickAPlaylist
-)
+                                  private val clickAPlaylist: ClickAPlaylist)
     : RecyclerView.Adapter<OnlinePlaylistInHomeAdapter.ViewHolder>() {
 
     var playlist = emptyList<OnlinePlaylist>()

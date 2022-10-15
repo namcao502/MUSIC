@@ -2,6 +2,7 @@ package com.example.music.online.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
@@ -123,6 +124,7 @@ class DetailCollectionFragment(
 
                 }
                 is UiState.Success -> {
+                    Log.i("TAG502", "onViewCreated: ${it.data}")
                     detailCollectionAdapter.setData(it.data)
                 }
             }
@@ -157,21 +159,24 @@ class DetailCollectionFragment(
                 val playlist = arguments?.getSerializable(FireStoreCollection.PLAYLIST) as OnlinePlaylist
                 deleteSongInPlaylistForUser(songList[position], playlist, Firebase.auth.currentUser!!)
             }
-
-            firebaseViewModel.getSongFromListSongID(songs)
-            firebaseViewModel.songFromID.observe(viewLifecycleOwner){
-                when(it){
-                    is UiState.Loading -> {
-
-                    }
-                    is UiState.Failure -> {
-
-                    }
-                    is UiState.Success -> {
-                        detailCollectionAdapter.setData(it.data)
-                    }
-                }
+            else {
+                toast("Ehe, you can't delete this")
             }
+
+//            firebaseViewModel.getSongFromListSongID(songs)
+//            firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+//                when(it){
+//                    is UiState.Loading -> {
+//
+//                    }
+//                    is UiState.Failure -> {
+//
+//                    }
+//                    is UiState.Success -> {
+//                        detailCollectionAdapter.setData(it.data)
+//                    }
+//                }
+//            }
 
         }
     }

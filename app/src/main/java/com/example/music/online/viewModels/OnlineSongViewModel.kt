@@ -35,16 +35,16 @@ class OnlineSongViewModel @Inject constructor(val repository: SongRepository): V
     private val _updateSong = MutableLiveData<UiState<String>>()
     val updateSong: LiveData<UiState<String>> get() = _updateSong
 
-    private val _songCount= MutableLiveData<UiState<Int>>()
-    val songCount: LiveData<UiState<Int>> get() = _songCount
+    private val _trendingSong = MutableLiveData<UiState<List<String>>>()
+    val trendingSong: LiveData<UiState<List<String>>> get() = _trendingSong
 
     private val _updateView = MutableLiveData<UiState<String>>()
     val updateView: LiveData<UiState<String>> get() = _updateView
 
-    fun countSong(){
-        _songCount.value = UiState.Loading
-        repository.countSong {
-            _songCount.value = it
+    fun getTrendingSong(){
+        _trendingSong.value = UiState.Loading
+        repository.getTrendingSong {
+            _trendingSong.value = it
         }
     }
 
