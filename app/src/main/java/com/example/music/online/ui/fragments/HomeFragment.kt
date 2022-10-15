@@ -1,5 +1,6 @@
 package com.example.music.online.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,14 +17,8 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.online.data.models.*
-import com.example.music.online.ui.adapters.OnlineAlbumAdapter
-import com.example.music.online.ui.adapters.OnlineArtistAdapter
-import com.example.music.online.ui.adapters.OnlineGenreAdapter
-import com.example.music.online.ui.adapters.OnlinePlaylistInHomeAdapter
-import com.example.music.online.viewModels.OnlineAlbumViewModel
-import com.example.music.online.viewModels.OnlineArtistViewModel
-import com.example.music.online.viewModels.OnlineGenreViewModel
-import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.online.ui.adapters.*
+import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
 import com.example.music.utils.WelcomeText
 import com.google.firebase.auth.ktx.auth
@@ -33,13 +28,13 @@ import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
     OnlinePlaylistInHomeAdapter.ClickAPlaylist,
     OnlineArtistAdapter.ClickAnArtist,
     OnlineGenreAdapter.ClickAGenre,
     OnlineAlbumAdapter.ClickAnAlbum,
+    OnlineCountryAdapter.ClickACountry,
     DetailCollectionFragment.ClickASongInDetail {
 
     private var _binding: FragmentHomeBinding? = null
@@ -49,6 +44,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
     private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
+    private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -65,6 +61,11 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineAlbumAdapter: OnlineAlbumAdapter by lazy {
         OnlineAlbumAdapter(requireContext(), this)
     }
+
+    private val onlineCountryAdapter: OnlineCountryAdapter by lazy {
+        OnlineCountryAdapter(requireContext(), this)
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -157,6 +158,26 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             }
         }
 
+        //load data for country
+        with(binding.countryRv){
+            adapter = onlineCountryAdapter
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        }
+        onlineCountryViewModel.getAllCountries()
+        onlineCountryViewModel.country.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    onlineCountryAdapter.setData(it.data)
+                }
+            }
+        }
+
         val imageList = arrayListOf(
             SlideModel(R.drawable.poster_06, ""),
             SlideModel(R.drawable.ncs_slide, ""),
@@ -172,6 +193,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         _binding = null
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun showGreeting(){
         val sdf = SimpleDateFormat("HH:mm:ss")
         val name = Firebase.auth.currentUser!!.email
@@ -227,6 +249,10 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     interface ClickSongFromDetail{
         fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int)
+    }
+
+    override fun callBackFromCountryClick(country: OnlineCountry) {
+        sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
     }
 
 }

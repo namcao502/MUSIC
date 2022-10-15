@@ -93,4 +93,10 @@ object FirebaseModule {
         return CommentRepositoryImp(database)
     }
 
+    @Singleton
+    @Provides
+    fun provideCountryRepository(database: FirebaseFirestore): CountryRepository{
+        return CountryRepositoryImp(database)
+    }
+
 }

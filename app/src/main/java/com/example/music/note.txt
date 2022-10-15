@@ -7,3 +7,5 @@ tối ưa giao diện
 
 đi cào data về làm db
 
+crash app khi thêm coroutine vào
+

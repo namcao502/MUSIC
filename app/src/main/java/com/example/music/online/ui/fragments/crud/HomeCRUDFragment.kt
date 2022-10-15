@@ -51,6 +51,9 @@ class HomeCRUDFragment : Fragment() {
         binding.commentCrudBtn.setOnClickListener {
             findNavController().navigate(R.id.commentCRUDFragment)
         }
+        binding.countryCrudBtn.setOnClickListener {
+            findNavController().navigate(R.id.countryCRUDFragment)
+        }
     }
 
     override fun onDestroyView() {

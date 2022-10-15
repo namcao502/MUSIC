@@ -7,7 +7,6 @@ import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -34,24 +33,45 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     }
 
     override fun getSongFromListSongID(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit) {
+
         if (songs.isEmpty()){
             return
         }
-        database
-            .collection(FireStoreCollection.SONG)
-            .whereIn("id", songs)
-            .addSnapshotListener { value, _ ->
-                val songList: ArrayList<OnlineSong> = ArrayList()
-                if (value != null) {
-                    for (document in value){
-                        val song = document.toObject(OnlineSong::class.java)
-                        songList.add(song)
+
+        val songList: ArrayList<OnlineSong> = ArrayList()
+        for (list10ID in songs.chunked(10)){
+            database
+                .collection(FireStoreCollection.SONG)
+                .whereIn("id", list10ID)
+                .addSnapshotListener { value, _ ->
+                    if (value != null) {
+                        for (document in value){
+                            val song = document.toObject(OnlineSong::class.java)
+                            songList.add(song)
+                        }
                     }
                 }
-                result.invoke(
-                    UiState.Success(songList)
-                )
-            }
+        }
+        Thread.sleep(100)
+        result.invoke(
+            UiState.Success(songList)
+        )
+
+//        database
+//            .collection(FireStoreCollection.SONG)
+//            .whereIn("id", songs)
+//            .addSnapshotListener { value, _ ->
+//                val songList: ArrayList<OnlineSong> = ArrayList()
+//                if (value != null) {
+//                    for (document in value){
+//                        val song = document.toObject(OnlineSong::class.java)
+//                        songList.add(song)
+//                    }
+//                }
+//                result.invoke(
+//                    UiState.Success(songList)
+//                )
+//            }
     }
 
     override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {
