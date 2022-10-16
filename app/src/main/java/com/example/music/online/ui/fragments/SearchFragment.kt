@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
@@ -27,6 +28,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     OnlineGenreAdapter.ClickAGenre,
     OnlineAlbumAdapter.ClickAnAlbum,
     OnlineSongInSearchAdapter.ClickASong,
+    OnlineCountryAdapter.ClickACountry,
     DetailCollectionFragment.ClickASongInDetail {
 
     private var _binding: FragmentSearchBinding? = null
@@ -39,6 +41,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -56,10 +59,13 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         OnlineAlbumAdapter(requireContext(), this)
     }
 
+    private val onlineCountryAdapter: OnlineCountryAdapter by lazy {
+        OnlineCountryAdapter(requireContext(), this)
+    }
+
     private val onlineSongInSearchAdapter: OnlineSongInSearchAdapter by lazy {
         OnlineSongInSearchAdapter(requireContext(),this)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -173,26 +179,70 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
 
-        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(newText: String): Boolean {
-                filterPlaylist(newText)
-                filterArtist(newText)
-                filterGenre(newText)
-                filterAlbum(newText)
-                filterSong(newText)
+        //load data for country
+        with(binding.countryRv){
+            adapter = onlineCountryAdapter
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        }
+        onlineCountryViewModel.getAllCountries()
+        onlineCountryViewModel.country.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    onlineCountryAdapter.setData(it.data)
+                }
+            }
+        }
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterPlaylist(text)
+                filterArtist(text)
+                filterGenre(text)
+                filterAlbum(text)
+                filterSong(text)
+                filterCountry(text)
                 return false
             }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                filterPlaylist(newText)
-                filterArtist(newText)
-                filterGenre(newText)
-                filterAlbum(newText)
-                filterSong(newText)
+            override fun onQueryTextChange(text: String): Boolean {
+                filterPlaylist(text)
+                filterArtist(text)
+                filterGenre(text)
+                filterAlbum(text)
+                filterSong(text)
+                filterCountry(text)
                 return false
             }
 
         })
+    }
+
+    private fun filterCountry(text: String) {
+        val filter: ArrayList<OnlineCountry> = ArrayList<OnlineCountry>()
+
+        for (item in onlineCountryAdapter.countries) {
+            if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
+                filter.add(item)
+            }
+        }
+        if (filter.isEmpty()) {
+            toast("Not found")
+            binding.countryRv.visibility = View.GONE
+        }
+        if (text.isEmpty()){
+            binding.countryRv.visibility = View.GONE
+        }
+        else {
+            onlineCountryAdapter.setData(filter)
+            binding.countryRv.visibility = View.VISIBLE
+        }
     }
 
     private fun filterSong(text: String) {
@@ -270,7 +320,6 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         val filter: ArrayList<OnlineArtist> = ArrayList<OnlineArtist>()
 
         for (item in onlineArtistAdapter.artist) {
-
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
@@ -347,6 +396,10 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
     override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
         clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+    }
+
+    override fun callBackFromCountryClick(country: OnlineCountry) {
+        sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
     }
 
 }

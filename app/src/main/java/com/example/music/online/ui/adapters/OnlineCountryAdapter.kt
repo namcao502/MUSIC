@@ -54,11 +54,9 @@ class OnlineCountryAdapter(val context: Context, private val clickACountry: Clic
         fun callBackFromCountryClick(country: OnlineCountry)
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun setData(countries: List<OnlineCountry>){
         this.countries = countries
         notifyDataSetChanged()
     }
-
 }
