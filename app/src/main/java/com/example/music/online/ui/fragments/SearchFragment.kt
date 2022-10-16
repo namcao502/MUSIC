@@ -67,6 +67,13 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         OnlineSongInSearchAdapter(requireContext(),this)
     }
 
+    private var albums: List<OnlineAlbum> = emptyList()
+    private var playlists: List<OnlinePlaylist> = emptyList()
+    private var artists: List<OnlineArtist> = emptyList()
+    private var genres: List<OnlineGenre> = emptyList()
+    private var songs: List<OnlineSong> = emptyList()
+    private var countries: List<OnlineCountry> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +101,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlineSongInSearchAdapter.setData(it.data)
+                    songs = it.data
                 }
             }
         }
@@ -114,7 +121,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlinePlaylistInHomeAdapter.setData(it.data)
+                    playlists = it.data
                 }
             }
         }
@@ -134,7 +141,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlineArtistAdapter.setData(it.data)
+                    artists = it.data
                 }
             }
         }
@@ -154,7 +161,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlineGenreAdapter.setData(it.data)
+                    genres = it.data
                 }
             }
         }
@@ -174,7 +181,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlineAlbumAdapter.setData(it.data)
+                    albums = it.data
                 }
             }
         }
@@ -194,7 +201,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
-                    onlineCountryAdapter.setData(it.data)
+                    countries = it.data
                 }
             }
         }
@@ -225,15 +232,14 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     }
 
     private fun filterCountry(text: String) {
-        val filter: ArrayList<OnlineCountry> = ArrayList<OnlineCountry>()
+        val filter: MutableList<OnlineCountry> = mutableListOf()
 
-        for (item in onlineCountryAdapter.countries) {
+        for (item in countries) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            toast("Not found")
             binding.countryRv.visibility = View.GONE
         }
         if (text.isEmpty()){
@@ -249,7 +255,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         // creating a new array list to filter our data.
         val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
         // running a for loop to compare elements.
-        for (item in onlineSongInSearchAdapter.songList) {
+        for (item in songs) {
             // checking if the entered string matched with any item of our recycler view.
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 // if the item is matched we are
@@ -260,7 +266,6 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         if (filter.isEmpty()) {
             // if no item is added in filtered list we are
             // displaying a toast message as no data found.
-            toast("Not found")
             binding.songRv.visibility = View.GONE
         }
         if (text.isEmpty()){
@@ -277,13 +282,12 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private fun filterAlbum(text: String) {
         val filter: ArrayList<OnlineAlbum> = ArrayList<OnlineAlbum>()
 
-        for (item in onlineAlbumAdapter.album) {
+        for (item in albums) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            toast("Not found")
             binding.albumRv.visibility = View.GONE
         }
         if (text.isEmpty()){
@@ -298,13 +302,12 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private fun filterGenre(text: String) {
         val filter: ArrayList<OnlineGenre> = ArrayList<OnlineGenre>()
 
-        for (item in onlineGenreAdapter.genre) {
+        for (item in genres) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            toast("Not found")
             binding.genreRv.visibility = View.GONE
         }
         if (text.isEmpty()){
@@ -319,13 +322,12 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private fun filterArtist(text: String) {
         val filter: ArrayList<OnlineArtist> = ArrayList<OnlineArtist>()
 
-        for (item in onlineArtistAdapter.artist) {
+        for (item in artists) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            toast("Not found")
             binding.artistRv.visibility = View.GONE
         }
         if (text.isEmpty()){
@@ -340,13 +342,12 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private fun filterPlaylist(text: String) {
         val filter: ArrayList<OnlinePlaylist> = ArrayList<OnlinePlaylist>()
 
-        for (item in onlinePlaylistInHomeAdapter.playlist) {
+        for (item in playlists) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            toast("Not found")
             binding.playlistRv.visibility = View.GONE
         }
         if (text.isEmpty()){
