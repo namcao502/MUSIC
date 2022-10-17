@@ -1,6 +1,7 @@
 package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.*
 import android.media.AudioManager
 import android.os.Bundle
@@ -8,7 +9,10 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -31,9 +35,9 @@ import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
 import com.example.music.utils.UiState
 import com.example.music.utils.createBottomSheetDialog
-import com.example.music.utils.createDialog
 import com.example.music.utils.toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -59,7 +63,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private var homeFragment = HomeFragment(this)
     private var searchFragment = SearchFragment(this)
     private var userFragment = UserFragment()
-    var activeFragment: Fragment = homeFragment
+    private var activeFragment: Fragment = homeFragment
 
     var songList: List<OnlineSong>? = null
     private var songPosition = -1
@@ -200,6 +204,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
             commentLv!!.setOnItemClickListener { _, _, i, _ ->
                 //update
+
             }
 
             commentLv.setOnItemLongClickListener { _, _, i, l ->
@@ -275,7 +280,18 @@ class OnlineMainActivity: AppCompatActivity(),
 
         binding.addToPlaylistBtn.setOnClickListener {
 
-            val dialog = createDialog()
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.fragment_online_playlist)
+
+            //set size for dialog
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.gravity = Gravity.CENTER
+            dialog.window!!.attributes = lp
 
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
             recyclerView.adapter = onlineDialogPlaylistAdapter
@@ -297,6 +313,11 @@ class OnlineMainActivity: AppCompatActivity(),
                     }
                 }
             }
+
+            dialog.findViewById<FloatingActionButton>(R.id.add_btn).setOnClickListener {
+                createDialogForAddPlaylist()
+            }
+
             dialog.show()
         }
 
@@ -740,6 +761,49 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                         is UiState.Success -> {
                             Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
+        // Create the AlertDialog object and return it
+        builder.create().show()
+    }
+
+    private fun createDialogForAddPlaylist(){
+
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
+
+        builder.setMessage("Create")
+            .setTitle("")
+            .setView(view)
+            .setPositiveButton("Create") { _, _ ->
+
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                if (title.isEmpty()) {
+                    Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
+                } else {
+                    val playlist = OnlinePlaylist("", title, emptyList())
+                    FirebaseAuth.getInstance().currentUser?.let {
+                        onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
+                    }
+                    onlinePlaylistViewModel.addPlaylist.observe(this) {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
