@@ -1,4 +1,4 @@
-package com.example.music.utils
+package com.example.music.online.di
 
 import android.app.Application
 import android.app.NotificationChannel

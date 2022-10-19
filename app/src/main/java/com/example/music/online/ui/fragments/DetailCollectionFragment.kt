@@ -13,18 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.FragmentDetailCollectionBinding
 import com.example.music.online.ui.adapters.DetailCollectionAdapter
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
-import com.example.music.utils.FireStoreCollection
-import com.example.music.utils.toast
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
+import com.example.music.utils.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -76,6 +74,8 @@ class DetailCollectionFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        DetailFragmentState.isOn = true
+
         binding.addImg.setOnClickListener {
             val currentUser = Firebase.auth.currentUser!!
             val playlist = OnlinePlaylist("", name, songs, imgFilePath)
@@ -98,6 +98,7 @@ class DetailCollectionFragment(
         binding.backImg.setOnClickListener {
             //back press
             requireActivity().onBackPressed()
+            DetailFragmentState.isOn = false
         }
 
         binding.nameTv.text = name

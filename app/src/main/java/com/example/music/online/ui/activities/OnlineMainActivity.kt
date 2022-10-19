@@ -33,9 +33,7 @@ import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlineCommentViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
-import com.example.music.utils.UiState
-import com.example.music.utils.createBottomSheetDialog
-import com.example.music.utils.toast
+import com.example.music.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +43,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 @AndroidEntryPoint
 class OnlineMainActivity: AppCompatActivity(),
@@ -95,6 +92,10 @@ class OnlineMainActivity: AppCompatActivity(),
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.online_home_menu -> {
+                    if (DetailFragmentState.isOn){
+                        onBackPressed()
+                        DetailFragmentState.isOn = false
+                    }
                     supportFragmentManager.beginTransaction()
                         .hide(activeFragment)
                         .show(homeFragment).commit()
@@ -102,6 +103,10 @@ class OnlineMainActivity: AppCompatActivity(),
                     return@setOnItemSelectedListener true
                 }
                 R.id.online_search_menu -> {
+                    if (DetailFragmentState.isOn){
+                        onBackPressed()
+                        DetailFragmentState.isOn = false
+                    }
                     supportFragmentManager.beginTransaction()
                         .hide(activeFragment)
                         .show(searchFragment).commit()
@@ -109,6 +114,10 @@ class OnlineMainActivity: AppCompatActivity(),
                     return@setOnItemSelectedListener true
                 }
                 R.id.online_song_menu -> {
+                    if (DetailFragmentState.isOn){
+                        onBackPressed()
+                        DetailFragmentState.isOn = false
+                    }
                     supportFragmentManager.beginTransaction()
                         .hide(activeFragment)
                         .show(songFragment).commit()
@@ -116,6 +125,10 @@ class OnlineMainActivity: AppCompatActivity(),
                     return@setOnItemSelectedListener true
                 }
                 R.id.online_collection_menu -> {
+                    if (DetailFragmentState.isOn){
+                        onBackPressed()
+                        DetailFragmentState.isOn = false
+                    }
                     supportFragmentManager.beginTransaction()
                         .hide(activeFragment)
                         .show(playlistFragment).commit()
@@ -123,6 +136,10 @@ class OnlineMainActivity: AppCompatActivity(),
                     return@setOnItemSelectedListener true
                 }
                 R.id.online_user_menu -> {
+                    if (DetailFragmentState.isOn){
+                        onBackPressed()
+                        DetailFragmentState.isOn = false
+                    }
                     supportFragmentManager.beginTransaction()
                         .hide(activeFragment)
                         .show(userFragment).commit()
@@ -174,7 +191,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
         binding.commentBtn.setOnClickListener {
             //create bottom sheet dialog
-            val bottomSheetDialog = createBottomSheetDialog()
+            val bottomSheetDialog = createBottomSheetDialog(R.layout.comment_dialog)
 
             val commentLv = bottomSheetDialog.findViewById<ListView>(R.id.comment_lv)
             val postBtn = bottomSheetDialog.findViewById<Button>(R.id.post_cmt_btn)
@@ -194,9 +211,9 @@ class OnlineMainActivity: AppCompatActivity(),
                     }
                     is UiState.Success -> {
                         comments = comment.data
-                        for (x in comments){
-                            x.message = Firebase.auth.currentUser!!.email.toString() + ": " + x.message
-                        }
+//                        for (x in comments){
+//                            x.message = Firebase.auth.currentUser!!.email.toString() + ": " + x.message
+//                        }
                         commentLv!!.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, comments)
                     }
                 }
@@ -204,7 +221,50 @@ class OnlineMainActivity: AppCompatActivity(),
 
             commentLv!!.setOnItemClickListener { _, _, i, _ ->
                 //update
+                if (comments[i].userId!! == Firebase.auth.currentUser!!.uid){
+                    val builder = AlertDialog.Builder(this)
+                    val inflater = layoutInflater
+                    val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(comments[i].message)
+
+                    builder.setMessage("Edit this comment...")
+                        .setTitle("")
+                        .setView(view)
+                        .setPositiveButton("Save") { _, _ ->
+
+                            val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                            if (title.isEmpty()){
+                                toast("Please type something...")
+                            }
+                            else {
+                                comments[i].message = title
+                                onlineCommentViewModel.updateComment(comments[i])
+                                onlineCommentViewModel.updateComment.observe(this){
+                                    when(it){
+                                        is UiState.Loading -> {
+
+                                        }
+                                        is UiState.Failure -> {
+
+                                        }
+                                        is UiState.Success -> {
+                                            toast("Updated!!!")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .setNegativeButton("Cancel") { _, _ ->
+                            // User cancelled the dialog
+                        }
+                    // Create the AlertDialog object and return it
+                    builder.create().show()
+                }
+                else {
+                    toast("You can't edit this comment!")
+                }
             }
 
             commentLv.setOnItemLongClickListener { _, _, i, l ->
@@ -248,6 +308,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     toast("Please type something to post...")
                     return@setOnClickListener
                 }
+
                 val comment = OnlineComment("", text, songList!![songPosition].id, Firebase.auth.currentUser!!.uid)
                 onlineCommentViewModel.addComment(comment)
                 onlineCommentViewModel.addComment.observe(this){
@@ -280,26 +341,16 @@ class OnlineMainActivity: AppCompatActivity(),
 
         binding.addToPlaylistBtn.setOnClickListener {
 
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.fragment_online_playlist)
-
-            //set size for dialog
-            val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.window!!.attributes)
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.gravity = Gravity.CENTER
-            dialog.window!!.attributes = lp
+            val dialog = createBottomSheetDialog(R.layout.fragment_online_playlist)
 
             val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
-            recyclerView.adapter = onlineDialogPlaylistAdapter
+            recyclerView!!.adapter = onlineDialogPlaylistAdapter
             recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 onlinePlaylistViewModel.getAllPlaylistOfUser(user)
             }
+
             onlinePlaylistViewModel.playlist.observe(this) {
                 when (it) {
                     is UiState.Loading -> {
@@ -314,8 +365,8 @@ class OnlineMainActivity: AppCompatActivity(),
                 }
             }
 
-            dialog.findViewById<FloatingActionButton>(R.id.add_btn).setOnClickListener {
-                createDialogForAddPlaylist()
+            dialog.findViewById<FloatingActionButton>(R.id.add_btn)!!.setOnClickListener {
+                createDialogForAddPlaylist(onlinePlaylistViewModel)
             }
 
             dialog.show()
@@ -398,6 +449,48 @@ class OnlineMainActivity: AppCompatActivity(),
             e.printStackTrace()
         }
 //        setCompleteListener()
+    }
+
+    private fun createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel) {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
+
+        builder.setMessage("Create")
+            .setTitle("")
+            .setView(view)
+            .setPositiveButton("Create") { _, _ ->
+
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                if (title.isEmpty()) {
+                    Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
+                } else {
+                    val playlist = OnlinePlaylist("", title, emptyList())
+                    FirebaseAuth.getInstance().currentUser?.let {
+                        onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
+                    }
+                    onlinePlaylistViewModel.addPlaylist.observe(this) {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
+        // Create the AlertDialog object and return it
+        builder.create().show()
     }
 
     private fun previous() {
@@ -680,68 +773,14 @@ class OnlineMainActivity: AppCompatActivity(),
 
     override fun onMenuClick(action: String, playlist: OnlinePlaylist) {
         if (action == "Rename"){
-            createDialogForRenamePlaylist(playlist)
+            createDialogForRenamePlaylist(playlist, onlinePlaylistViewModel)
         }
         if (action == "Delete"){
-            createDialogForDeletePlaylist(playlist)
+            createDialogForDeletePlaylist(playlist, onlinePlaylistViewModel)
         }
     }
 
-    override fun onItemPlaylistClick(playlist: OnlinePlaylist) {
-        val currentSong = songList!![songPosition]
-        FirebaseAuth.getInstance().currentUser?.let {
-            onlineSongViewModel.addSongToPlaylist(currentSong, playlist, it)
-            Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun createDialogForRenamePlaylist(playlist: OnlinePlaylist){
-
-        val builder = AlertDialog.Builder(this)
-        val inflater = this.layoutInflater
-        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
-
-        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(playlist.name)
-
-        builder.setMessage("Rename")
-            .setTitle("")
-            .setView(view)
-            .setPositiveButton("Rename") { _, _ ->
-
-                val title =
-                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
-
-                if (title.isEmpty()) {
-                    Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
-                } else {
-                    playlist.name = title
-                    FirebaseAuth.getInstance().currentUser?.let {
-                        onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
-                    }
-                    onlinePlaylistViewModel.updatePlaylist.observe(this) {
-                        when (it) {
-                            is UiState.Loading -> {
-
-                            }
-                            is UiState.Failure -> {
-
-                            }
-                            is UiState.Success -> {
-                                Toast.makeText(this, it.data, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }
-            }
-            .setNegativeButton("Cancel") { _, _ ->
-                // User cancelled the dialog
-            }
-        // Create the AlertDialog object and return it
-        builder.create().show()
-    }
-
-    private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist){
-
+    private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel) {
         val builder = AlertDialog.Builder(this)
 
         builder.setMessage("Delete ${playlist.name} playlist?")
@@ -772,28 +811,28 @@ class OnlineMainActivity: AppCompatActivity(),
         builder.create().show()
     }
 
-    private fun createDialogForAddPlaylist(){
-
+    private fun createDialogForRenamePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel) {
         val builder = AlertDialog.Builder(this)
-        val inflater = layoutInflater
+        val inflater = this.layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
-        builder.setMessage("Create")
+        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(playlist.name)
+
+        builder.setMessage("Rename")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Create") { _, _ ->
+            .setPositiveButton("Rename") { _, _ ->
 
-                val title =
-                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
                 if (title.isEmpty()) {
                     Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
                 } else {
-                    val playlist = OnlinePlaylist("", title, emptyList())
+                    playlist.name = title
                     FirebaseAuth.getInstance().currentUser?.let {
-                        onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
+                        onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
                     }
-                    onlinePlaylistViewModel.addPlaylist.observe(this) {
+                    onlinePlaylistViewModel.updatePlaylist.observe(this) {
                         when (it) {
                             is UiState.Loading -> {
 
@@ -813,6 +852,14 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         // Create the AlertDialog object and return it
         builder.create().show()
+    }
+
+    override fun onItemPlaylistClick(playlist: OnlinePlaylist) {
+        val currentSong = songList!![songPosition]
+        FirebaseAuth.getInstance().currentUser?.let {
+            onlineSongViewModel.addSongToPlaylist(currentSong, playlist, it)
+            Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int) {

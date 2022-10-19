@@ -22,14 +22,12 @@ import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
 import com.example.music.utils.WelcomeText
-import com.example.music.utils.toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),

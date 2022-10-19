@@ -276,7 +276,7 @@ class PlaylistCRUDFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val dialog = createDialog()
+            val dialog = createDialog(R.layout.song_crud_dialog)
 
             val allSongs = dialog.findViewById<ListView>(R.id.all_song_lv)
             val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)

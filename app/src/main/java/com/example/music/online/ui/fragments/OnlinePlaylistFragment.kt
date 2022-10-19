@@ -12,13 +12,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.FragmentOnlinePlaylistBinding
 import com.example.music.online.ui.adapters.OnlinePlaylistAdapter
-import com.example.music.utils.FireStoreCollection
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.utils.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -76,7 +75,7 @@ class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetai
         }
 
         binding.addBtn.setOnClickListener {
-            createDialogForAddPlaylist()
+            createDialogForAddPlaylist(onlinePlaylistViewModel)
         }
     }
 
@@ -85,138 +84,12 @@ class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetai
         _binding = null
     }
 
-    private fun createDialogForAddPlaylist(){
-
-        val builder = AlertDialog.Builder(requireContext())
-        val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
-
-        builder.setMessage("Create")
-            .setTitle("")
-            .setView(view)
-            .setPositiveButton("Create",
-                DialogInterface.OnClickListener { dialog, id ->
-
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
-
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val playlist = OnlinePlaylist("", title, emptyList())
-                        FirebaseAuth.getInstance().currentUser?.let {
-                            onlinePlaylistViewModel.addPlaylistForUser(playlist, it)
-                        }
-                        onlinePlaylistViewModel.addPlaylist.observe(viewLifecycleOwner, Observer {
-                            when (it) {
-                                is UiState.Loading -> {
-
-                                }
-                                is UiState.Failure -> {
-
-                                }
-                                is UiState.Success -> {
-                                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        })
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
-        // Create the AlertDialog object and return it
-        builder.create().show()
-    }
-
-    private fun createDialogForRenamePlaylist(playlist: OnlinePlaylist){
-
-        val builder = AlertDialog.Builder(requireContext())
-        val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
-
-        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(playlist.name)
-
-        builder.setMessage("Rename")
-            .setTitle("")
-            .setView(view)
-            .setPositiveButton("Rename",
-                DialogInterface.OnClickListener { dialog, id ->
-
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
-
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        playlist.name = title
-                        FirebaseAuth.getInstance().currentUser?.let {
-                            onlinePlaylistViewModel.updatePlaylistForUser(playlist, it)
-                        }
-                        onlinePlaylistViewModel.updatePlaylist.observe(viewLifecycleOwner, Observer {
-                            when (it) {
-                                is UiState.Loading -> {
-
-                                }
-                                is UiState.Failure -> {
-
-                                }
-                                is UiState.Success -> {
-                                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        })
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
-        // Create the AlertDialog object and return it
-        builder.create().show()
-    }
-
-    private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist){
-
-        val builder = AlertDialog.Builder(requireContext())
-
-        builder.setMessage("Delete ${playlist.name} playlist?")
-            .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-
-                    FirebaseAuth.getInstance().currentUser?.let {
-                        onlinePlaylistViewModel.deletePlaylistForUser(playlist, it)
-                    }
-                    onlinePlaylistViewModel.deletePlaylist.observe(viewLifecycleOwner, Observer {
-                        when (it) {
-                            is UiState.Loading -> {
-
-                            }
-                            is UiState.Failure -> {
-
-                            }
-                            is UiState.Success -> {
-                                Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
-        // Create the AlertDialog object and return it
-        builder.create().show()
-    }
-
     override fun callBackFromMenuPlaylistClick(action: String, playlist: OnlinePlaylist) {
         if (action == "Rename"){
-            createDialogForRenamePlaylist(playlist)
+            createDialogForRenamePlaylist(playlist, onlinePlaylistViewModel)
         }
         if (action == "Delete"){
-            createDialogForDeletePlaylist(playlist)
+            createDialogForDeletePlaylist(playlist, onlinePlaylistViewModel)
         }
     }
 

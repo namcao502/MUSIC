@@ -512,23 +512,21 @@ class MainActivity:
         builder.setMessage("Rename")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Rename",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Rename") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
-                        playlistViewModel.updatePlaylist(updatedPlaylist)
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                if (title.isEmpty()) {
+                    Toast.makeText(this, "Name can not be empty", Toast.LENGTH_SHORT).show()
+                } else {
+                    val updatedPlaylist = Playlist(playlist.playlist_id, title)
+                    playlistViewModel.updatePlaylist(updatedPlaylist)
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -538,14 +536,12 @@ class MainActivity:
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-                    playlistViewModel.deletePlaylist(playlist)
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+            .setPositiveButton("Delete") { _, _ ->
+                playlistViewModel.deletePlaylist(playlist)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
 
         builder.create().show()

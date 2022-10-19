@@ -40,12 +40,13 @@ class OnlinePlaylistInHomeAdapter(val context: Context,
             with(playlist[position]){
                 binding.itemName.text = this.name
                 val imgUrl = this.imgFilePath
-                if (imgUrl!!.isNotEmpty()){
-                    Glide.with(context).load(imgUrl).into(binding.itemImg)
-                }
-                else {
-                    binding.itemImg.setImageResource(R.drawable.ic_baseline_airplay_24)
-                }
+                Glide.with(context).load(imgUrl).into(binding.itemImg)
+//                if (imgUrl!!.isNotEmpty()){
+//
+//                }
+//                else {
+//                    binding.itemImg.setImageResource(R.drawable.ic_baseline_airplay_24)
+//                }
             }
         }
 
