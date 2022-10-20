@@ -238,7 +238,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     @SuppressLint("SimpleDateFormat")
     private fun showGreeting(){
         val sdf = SimpleDateFormat("HH:mm:ss")
-        val name = Firebase.auth.currentUser!!.email
+        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{
             override fun run() {

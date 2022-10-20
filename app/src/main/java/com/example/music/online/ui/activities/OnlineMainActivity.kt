@@ -166,30 +166,29 @@ class OnlineMainActivity: AppCompatActivity(),
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
 
-        BottomSheetBehavior.from(binding.bottomSheet).apply {
-
-            peekHeight = 200
-            this.state = BottomSheetBehavior.STATE_COLLAPSED
-
-            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                }
-
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    //begin animation
-                    binding.bottomSheet.visibility = View.GONE
-                    //end animation
-                }
-
-            })
-        }
+//        BottomSheetBehavior.from(binding.bottomSheet.playerLayout).apply {
+//
+//            this.state = BottomSheetBehavior.STATE_COLLAPSED
+//
+//            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+//                override fun onStateChanged(bottomSheet: View, newState: Int) {
+//
+//                }
+//
+//                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                    //begin animation
+//                    binding.bottomSheet.playerLayout.visibility = View.GONE
+//                    //end animation
+//                }
+//
+//            })
+//        }
 
     }
 
     private fun listener() {
 
-        binding.commentBtn.setOnClickListener {
+        binding.playerSheet.commentBtn.setOnClickListener {
             //create bottom sheet dialog
             val bottomSheetDialog = createBottomSheetDialog(R.layout.comment_dialog)
 
@@ -331,46 +330,47 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniPlayerLayout.setOnClickListener {
-            binding.bottomSheet.visibility = View.VISIBLE
-            BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            binding.miniPlayerLayout.visibility = View.VISIBLE
+//            BottomSheetBehavior.from(binding.bottomSheet.playerLayout).state = BottomSheetBehavior.STATE_EXPANDED
+            binding.playerSheet.playerLayout.visibility = View.VISIBLE
         }
 
-        binding.backBtn.setOnClickListener {
-            binding.bottomSheet.visibility = View.GONE
+        binding.playerSheet.backBtn.setOnClickListener {
+            binding.playerSheet.playerLayout.visibility = View.GONE
         }
 
-        binding.addToPlaylistBtn.setOnClickListener {
-
-            val dialog = createBottomSheetDialog(R.layout.fragment_online_playlist)
-
-            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
-            recyclerView!!.adapter = onlineDialogPlaylistAdapter
-            recyclerView.layoutManager = LinearLayoutManager(dialog.context)
-
-            FirebaseAuth.getInstance().currentUser?.let { user ->
-                onlinePlaylistViewModel.getAllPlaylistOfUser(user)
-            }
-
-            onlinePlaylistViewModel.playlist.observe(this) {
-                when (it) {
-                    is UiState.Loading -> {
-
-                    }
-                    is UiState.Failure -> {
-
-                    }
-                    is UiState.Success -> {
-                        onlineDialogPlaylistAdapter.setData(it.data)
-                    }
-                }
-            }
-
-            dialog.findViewById<FloatingActionButton>(R.id.add_btn)!!.setOnClickListener {
-                createDialogForAddPlaylist(onlinePlaylistViewModel)
-            }
-
-            dialog.show()
-        }
+//        binding.bottomSheet.addToPlaylistBtn.setOnClickListener {
+//
+//            val dialog = createBottomSheetDialog(R.layout.fragment_online_playlist)
+//
+//            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+//            recyclerView!!.adapter = onlineDialogPlaylistAdapter
+//            recyclerView.layoutManager = LinearLayoutManager(dialog.context)
+//
+//            FirebaseAuth.getInstance().currentUser?.let { user ->
+//                onlinePlaylistViewModel.getAllPlaylistOfUser(user)
+//            }
+//
+//            onlinePlaylistViewModel.playlist.observe(this) {
+//                when (it) {
+//                    is UiState.Loading -> {
+//
+//                    }
+//                    is UiState.Failure -> {
+//
+//                    }
+//                    is UiState.Success -> {
+//                        onlineDialogPlaylistAdapter.setData(it.data)
+//                    }
+//                }
+//            }
+//
+//            dialog.findViewById<FloatingActionButton>(R.id.add_btn)!!.setOnClickListener {
+//                createDialogForAddPlaylist(onlinePlaylistViewModel)
+//            }
+//
+//            dialog.show()
+//        }
 
         binding.miniNextBtn.setOnClickListener {
             next()
@@ -388,35 +388,35 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
-        binding.playStateBtn.setOnClickListener{
-            if (playState == "Loop") {
-                playState = "Shuffle"
-                binding.playStateBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
-                Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
-            } else {
-                if (playState == "Shuffle") {
-                    playState = "Go"
-                    binding.playStateBtn.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
-                    Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
-                } else {
-                    if (playState == "Go") {
-                        playState = "Loop"
-                        binding.playStateBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
-                        Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-        binding.nextBtn.setOnClickListener{ next() }
-        binding.previousBtn.setOnClickListener{ previous() }
-        binding.playPauseBtn.setOnClickListener{
+//        binding.playStateBtn.setOnClickListener{
+//            if (playState == "Loop") {
+//                playState = "Shuffle"
+//                binding.playStateBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
+//                Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
+//            } else {
+//                if (playState == "Shuffle") {
+//                    playState = "Go"
+//                    binding.playStateBtn.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
+//                    Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
+//                } else {
+//                    if (playState == "Go") {
+//                        playState = "Loop"
+//                        binding.playStateBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
+//                        Toast.makeText(this, "Switched to $playState", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+        binding.playerSheet.nextBtn.setOnClickListener{ next() }
+        binding.playerSheet.previousBtn.setOnClickListener{ previous() }
+        binding.playerSheet.playPauseBtn.setOnClickListener{
             if (musicPlayerService!!.isPlaying()) {
                 pause()
             } else {
                 play()
             }
         }
-        binding.songSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.playerSheet.songSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {}
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {
@@ -424,30 +424,30 @@ class OnlineMainActivity: AppCompatActivity(),
                 updateProgress()
             }
         })
-        try {
-            audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-            binding.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-//            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed(object : Runnable{
-                override fun run() {
-                    binding.volumeSb.progress = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
-                    handler.postDelayed(this, 500)
-                }
-
-            }, 500)
-
-
-            binding.volumeSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(arg0: SeekBar) {}
-                override fun onStartTrackingTouch(arg0: SeekBar) {}
-                override fun onProgressChanged(arg0: SeekBar, progress: Int, arg2: Boolean) {
-                    audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
-                }
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        try {
+//            audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+//            binding.bottomSheet.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+////            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
+//            val handler = Handler(Looper.getMainLooper())
+//            handler.postDelayed(object : Runnable{
+//                override fun run() {
+//                    binding.bottomSheet.volumeSb.progress = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
+//                    handler.postDelayed(this, 500)
+//                }
+//
+//            }, 500)
+//
+//
+//            binding.bottomSheet.volumeSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//                override fun onStopTrackingTouch(arg0: SeekBar) {}
+//                override fun onStartTrackingTouch(arg0: SeekBar) {}
+//                override fun onProgressChanged(arg0: SeekBar, progress: Int, arg2: Boolean) {
+//                    audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
+//                }
+//            })
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
 //        setCompleteListener()
     }
 
@@ -523,7 +523,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -559,7 +559,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 e.printStackTrace()
             }
         }
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
@@ -574,7 +574,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun play(){
         musicPlayerService!!.start()
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         updateProgress()
@@ -582,7 +582,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun pause(){
         musicPlayerService!!.pause()
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
         setTime()
         updateProgress()
@@ -599,19 +599,21 @@ class OnlineMainActivity: AppCompatActivity(),
     @SuppressLint("SimpleDateFormat")
     private fun setTime() {
         val sdf = SimpleDateFormat("mm:ss")
-        binding.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
-        binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.playerSheet.endTxt.text = sdf.format(musicPlayerService!!.getDuration())
+        binding.playerSheet.songSb.max = musicPlayerService!!.getDuration()
         binding.miniPb.max = musicPlayerService!!.getDuration()
     }
 
     private fun loadUI(){
-        binding.titleTxt.text = songList!![songPosition].name
-        binding.songSb.max = musicPlayerService!!.getDuration()
+        binding.playerSheet.titleTxt.text = songList!![songPosition].name
+        binding.playerSheet.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniPb.max = musicPlayerService!!.getDuration()
 
         if (songList!![songPosition].imgFilePath!!.isNotEmpty()){
-            Glide.with(this@OnlineMainActivity).load(songList!![songPosition].imgFilePath!!).into(binding.songImg)
+            Glide.with(this@OnlineMainActivity)
+                .load(songList!![songPosition].imgFilePath!!)
+                .into(binding.playerSheet.songImg)
         }
 
         onlineArtistViewModel.getAllArtistFromSong(songList!![songPosition], 0)
@@ -630,7 +632,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     }
                     text = text.dropLast(2)
                     binding.miniSongArtist.text = text
-                    binding.artistTxt.text = text
+                    binding.playerSheet.artistTxt.text = text
                 }
             }
         }
@@ -662,8 +664,8 @@ class OnlineMainActivity: AppCompatActivity(),
                 try{
                     val currentPosition = musicPlayerService!!.getCurrentDuration()
                     val sdf = SimpleDateFormat("mm:ss")
-                    binding.startTxt.text = sdf.format(currentPosition)
-                    binding.songSb.progress = currentPosition
+                    binding.playerSheet.startTxt.text = sdf.format(currentPosition)
+                    binding.playerSheet.songSb.progress = currentPosition
                     binding.miniPb.progress = currentPosition
                     handler.postDelayed(this, 1000)
                 }
@@ -753,7 +755,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun preparePlayer(){
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
         if (!isServiceConnected){
             initState()
             binding.miniPlayerLayout.visibility = View.VISIBLE

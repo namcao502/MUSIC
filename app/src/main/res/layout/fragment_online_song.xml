@@ -8,11 +8,16 @@
     android:background="@color/main_color"
     tools:context=".online.ui.fragments.OnlineSongFragment">
 
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <androidx.appcompat.widget.SearchView
+        android:layout_margin="10dp"
+        app:queryHint="Search here..."
+        app:submitBackground="@null"
+        android:background="@drawable/shapebgsearch"
+        app:iconifiedByDefault="false"
         android:queryHint="Search here..."
+        android:id="@+id/searchView"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/song_recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

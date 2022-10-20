@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:padding="10dp"
-        android:background="@color/main_color"
+        android:background="@color/button_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -31,20 +31,10 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="3dp"
-            android:background="@color/main_color"
+            android:background="@color/button_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_more_vert_24" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/song_in_playlist_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="10dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
