@@ -1,25 +1,27 @@
 package com.example.music.utils
 
 object FireStoreCollection{
-    val SONG = "Song"
-    val ARTIST = "Artist"
-    val COMMENT = "Comment"
-    val PLAYLIST = "Playlist"
-    val GENRE = "Genre"
-    val ACCOUNT = "Account"
-    val ALBUM = "Album"
-    val USER = "User"
-    val COUNTRY = "Country"
-    val ADMIN = "Admin"
+    const val SONG = "Song"
+    const val ARTIST = "Artist"
+    const val COMMENT = "Comment"
+    const val PLAYLIST = "Playlist"
+    const val GENRE = "Genre"
+    const val ACCOUNT = "Account"
+    const val ALBUM = "Album"
+    const val USER = "User"
+    const val COUNTRY = "Country"
+    const val ADMIN = "Admin"
 }
 
-object Permission{
-    val PICK_AUDIO_REQUEST = 502
+object PlayState{
+    const val GO = "Go"
+    const val LOOP = "Loop"
+    const val SHUFFLE = "Shuffle"
 }
 
 object WelcomeText{
-    val MORNING = "Good morning"
-    val AFTERNOON = "Good afternoon"
-    val EVENING = "Good evening"
+    const val MORNING = "Good morning"
+    const val AFTERNOON = "Good afternoon"
+    const val EVENING = "Good evening"
 }
 

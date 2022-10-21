@@ -56,9 +56,7 @@ class OnlinePlaylistAdapter(
             }
 
             with(playlist[position]){
-
                 binding.titleTxt.text = this.name
-
             }
         }
 

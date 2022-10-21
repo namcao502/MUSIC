@@ -72,6 +72,30 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/play_state_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_baseline_airline_stops_24"/>
+
+        <TextView
+            android:id="@+id/play_state_txt"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current play state: Go"
+            android:layout_marginStart="30dp"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/add_to_playlist_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"

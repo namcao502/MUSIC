@@ -53,7 +53,6 @@ class OnlineAlbumAdapter(val context: Context, val clickAnAlbum: ClickAnAlbum)
         fun callBackFromAlbumClick(album: OnlineAlbum)
     }
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun setData(album: List<OnlineAlbum>){
         this.album = album

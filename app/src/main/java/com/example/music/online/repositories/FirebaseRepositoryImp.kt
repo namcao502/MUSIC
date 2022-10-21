@@ -10,10 +10,13 @@ import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.example.music.utils.downloadFile
+import com.example.music.utils.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -142,6 +145,24 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
         }catch (e: Exception){
             result.invoke(UiState.Failure(e.message))
         }
+    }
+
+    override fun downloadSingleSongFile(
+        context: Context,
+        fileName: String,
+        filePath: String,
+        result: (UiState<String>) -> Unit
+    ) {
+        Firebase.storage
+            .getReferenceFromUrl(filePath)
+            .downloadUrl
+            .addOnSuccessListener { uri: Uri ->
+                val url = uri.toString()
+                downloadFile(context, fileName, "", Environment.DIRECTORY_DOWNLOADS, url)
+                result.invoke(UiState.Success("Downloading..."))
+            }.addOnFailureListener { e: Exception ->
+                result.invoke(UiState.Failure(e.toString()))
+            }
     }
 
 }

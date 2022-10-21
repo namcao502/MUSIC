@@ -72,7 +72,7 @@
         android:text="Title"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -99,11 +99,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:progressBackgroundTint="#727477"
-        android:progressTint="#01f0f0"
-        android:thumbTint="#01f0f0"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
@@ -124,7 +121,7 @@
         android:text="Artist"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -150,9 +147,10 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/circle_button_light"
         android:src="@drawable/ic_baseline_skip_next_24"
-        app:layout_constraintEnd_toStartOf="@id/volume_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/play_pause_btn"
         app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
@@ -160,33 +158,12 @@
         android:id="@+id/previous_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/circle_button_light"
         android:src="@drawable/ic_baseline_skip_previous_24"
         app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
-        app:layout_constraintStart_toEndOf="@id/play_state_btn"
-        app:layout_constraintTop_toBottomOf="@+id/song_sb" />
-
-    <ImageButton
-        android:id="@+id/play_state_btn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/circle_button_light"
-        android:src="@drawable/ic_baseline_arrow_forward_24"
-        app:layout_constraintEnd_toStartOf="@+id/previous_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/song_sb" />
-
-    <ImageButton
-        android:id="@+id/volume_btn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/circle_button_light"
-        android:src="@drawable/ic_baseline_volume_up_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/next_btn"
         app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
     <TextView
@@ -208,7 +185,7 @@
         android:text="Now playing"
         android:textAllCaps="true"
         android:textColor="@color/white"
-        android:textSize="20dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/card_img"
         app:layout_constraintEnd_toStartOf="@+id/option_btn"
         app:layout_constraintStart_toEndOf="@+id/back_btn"

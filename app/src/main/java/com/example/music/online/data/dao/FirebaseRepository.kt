@@ -15,4 +15,6 @@ interface FirebaseRepository {
 
     suspend fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 
+    fun downloadSingleSongFile(context: Context, fileName: String, filePath: String, result: (UiState<String>) -> Unit)
+
 }

@@ -1,10 +1,7 @@
 package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.content.*
-import android.media.AudioManager
-import android.net.Uri
 import android.os.*
 import android.util.Log
 import android.view.View
@@ -27,15 +24,10 @@ import com.example.music.online.ui.fragments.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,15 +52,11 @@ class OnlineMainActivity: AppCompatActivity(),
 
     var songList: List<OnlineSong>? = null
     private var songPosition = -1
-
-    var audioManager: AudioManager? = null
-
-    private var playState = "Go"
+    private var playState = PlayState.GO
+    private var currentArtists: String = ""
 
     var musicPlayerService: OnlineMusicPlayerService? = null
-
     private var isServiceConnected = false
-
     private var iBinder: OnlineMusicPlayerService.MyBinder? = null
 
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
@@ -79,8 +67,6 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
-
-    private var currentArtists: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,27 +147,8 @@ class OnlineMainActivity: AppCompatActivity(),
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
-
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
-
-//        BottomSheetBehavior.from(binding.bottomSheet.playerLayout).apply {
-//
-//            this.state = BottomSheetBehavior.STATE_COLLAPSED
-//
-//            addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
-//                override fun onStateChanged(bottomSheet: View, newState: Int) {
-//
-//                }
-//
-//                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-//                    //begin animation
-//                    binding.bottomSheet.playerLayout.visibility = View.GONE
-//                    //end animation
-//                }
-//
-//            })
-//        }
 
     }
 
@@ -201,6 +168,8 @@ class OnlineMainActivity: AppCompatActivity(),
             val addToPlaylistBtn = bottomDialog.findViewById<LinearLayout>(R.id.add_to_playlist_layout)
             val commentsBtn = bottomDialog.findViewById<LinearLayout>(R.id.comment_layout)
             val downloadBtn = bottomDialog.findViewById<LinearLayout>(R.id.download_layout)
+            val playStateBtn = bottomDialog.findViewById<LinearLayout>(R.id.play_state_layout)
+            val playStateTxt = bottomDialog.findViewById<TextView>(R.id.play_state_txt)
 
             commentsBtn!!.setOnClickListener {
                 //create bottom sheet dialog
@@ -246,13 +215,13 @@ class OnlineMainActivity: AppCompatActivity(),
                             .setView(view)
                             .setPositiveButton("Save") { _, _ ->
 
-                                val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                                val titleTemp = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                                if (title.isEmpty()){
+                                if (titleTemp.isEmpty()){
                                     toast("Please type something...")
                                 }
                                 else {
-                                    comments[i].message = title
+                                    comments[i].message = titleTemp
                                     onlineCommentViewModel.updateComment(comments[i])
                                     onlineCommentViewModel.updateComment.observe(this){
                                         when(it){
@@ -335,7 +304,6 @@ class OnlineMainActivity: AppCompatActivity(),
                             is UiState.Success -> {
                                 toast(it.data)
                                 message.clearFocus()
-                                postBtn.requestFocus()
                             }
                         }
                     }
@@ -376,16 +344,37 @@ class OnlineMainActivity: AppCompatActivity(),
             }
 
             downloadBtn!!.setOnClickListener {
-                Firebase.storage
-                    .getReferenceFromUrl(songList!![songPosition].filePath!!)
-                    .downloadUrl
-                    .addOnSuccessListener { uri: Uri ->
-                        val url = uri.toString()
-                        downloadFile(this, songList!![songPosition].name!!.plus(" - $currentArtists"), "mp3", Environment.DIRECTORY_DOWNLOADS, url)
-                        toast("Downloading...")
-                    }.addOnFailureListener { e: Exception ->
-                        toast(e.toString())
+                firebaseViewModel.downloadSingleSongFile(this,
+                    songList!![songPosition].name!!.plus(" - $currentArtists"),
+                    songList!![songPosition].filePath!!){
+                    when(it){
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            toast(it.data)
+                        }
                     }
+                }
+            }
+
+            playStateBtn!!.setOnClickListener {
+                if (playState == PlayState.LOOP) {
+                    playState = PlayState.SHUFFLE
+                } else {
+                    if (playState == PlayState.SHUFFLE) {
+                        playState = PlayState.GO
+                    } else {
+                        if (playState == PlayState.GO) {
+                            playState = PlayState.LOOP
+                        }
+                    }
+                }
+                playStateTxt!!.text = "Current play state: $playState"
+                toast("Switched to $playState")
             }
 
             bottomDialog.show()
@@ -418,24 +407,6 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
-        binding.playerSheet.playStateBtn.setOnClickListener{
-            if (playState == "Loop") {
-                playState = "Shuffle"
-                binding.playerSheet.playStateBtn.setImageResource(R.drawable.ic_baseline_shuffle_24)
-            } else {
-                if (playState == "Shuffle") {
-                    playState = "Go"
-                    binding.playerSheet.playStateBtn.setImageResource(R.drawable.ic_baseline_arrow_forward_24)
-                } else {
-                    if (playState == "Go") {
-                        playState = "Loop"
-                        binding.playerSheet.playStateBtn.setImageResource(R.drawable.ic_baseline_repeat_24)
-                    }
-                }
-            }
-            toast("Switched to $playState")
-        }
-
         binding.playerSheet.nextBtn.setOnClickListener{ next() }
         binding.playerSheet.previousBtn.setOnClickListener{ previous() }
         binding.playerSheet.playPauseBtn.setOnClickListener{
@@ -453,31 +424,6 @@ class OnlineMainActivity: AppCompatActivity(),
                 updateProgress()
             }
         })
-//        try {
-//            audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-//            binding.bottomSheet.volumeSb.max = audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-////            audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2, 0)
-//            val handler = Handler(Looper.getMainLooper())
-//            handler.postDelayed(object : Runnable{
-//                override fun run() {
-//                    binding.bottomSheet.volumeSb.progress = audioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
-//                    handler.postDelayed(this, 500)
-//                }
-//
-//            }, 500)
-//
-//
-//            binding.bottomSheet.volumeSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-//                override fun onStopTrackingTouch(arg0: SeekBar) {}
-//                override fun onStartTrackingTouch(arg0: SeekBar) {}
-//                override fun onProgressChanged(arg0: SeekBar, progress: Int, arg2: Boolean) {
-//                    audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
-//                }
-//            })
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//        setCompleteListener()
     }
 
     private fun createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel) {
@@ -528,10 +474,10 @@ class OnlineMainActivity: AppCompatActivity(),
         if (songPosition < 0) {
             songPosition = maxLength - 1
         }
-        if (playState == "Shuffle") {
+        if (playState == PlayState.SHUFFLE) {
             createRandomTrackPosition()
         } else {
-            if (playState == "Loop") {
+            if (playState == PlayState.LOOP) {
                 songPosition += 1
                 musicPlayerService!!.reset()
             }
@@ -564,10 +510,10 @@ class OnlineMainActivity: AppCompatActivity(),
         if (songPosition > maxLength - 1) {
             songPosition = 0
         }
-        if (playState == "Shuffle") {
+        if (playState == PlayState.SHUFFLE) {
             createRandomTrackPosition()
         } else {
-            if (playState == "Loop") {
+            if (playState == PlayState.LOOP) {
                 songPosition -= 1
                 musicPlayerService!!.reset()
             }
@@ -620,7 +566,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private fun initState() {
         val intent = Intent(this, OnlineMusicPlayerService::class.java)
         intent.putExtra("songService", songList!![songPosition])
-        Log.i("TAG502", "initState: ${songList!![songPosition]}")
+//        Log.i("TAG502", "initState: ${songList!![songPosition]}")
         startService(intent)
         bindService(intent, this, BIND_AUTO_CREATE)
     }
@@ -720,12 +666,12 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun setCompleteListener(){
         musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
-            if (playState == "Loop"){
+            if (playState == PlayState.LOOP){
                 musicPlayerService!!.createMediaPlayer(songList!![songPosition])
                 musicPlayerService!!.start()
             }
             else {
-                if (playState == "Shuffle") {
+                if (playState == PlayState.SHUFFLE) {
                     createRandomTrackPosition()
                     try {
                         musicPlayerService!!.createMediaPlayer(songList!![songPosition])
@@ -734,7 +680,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         e.printStackTrace()
                     }
                 } else {
-                    if (playState == "Go") {
+                    if (playState == PlayState.GO) {
                         next()
                         musicPlayerService!!.start()
                     }

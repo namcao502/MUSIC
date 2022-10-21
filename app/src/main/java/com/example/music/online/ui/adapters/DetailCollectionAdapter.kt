@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
@@ -63,6 +64,7 @@ class DetailCollectionAdapter(
             with(songList[position]){
                 binding.titleTxt.text = this.name
                 binding.lengthTxt.visibility = View.GONE
+                Glide.with(context).load(this.imgFilePath).into(binding.imageView)
                 artistViewModel.getAllArtistFromSong(this, position)
                 artistViewModel.artistInSong[position].observe(lifecycle){
                     when(it){

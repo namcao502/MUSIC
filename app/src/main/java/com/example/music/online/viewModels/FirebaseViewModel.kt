@@ -1,5 +1,6 @@
 package com.example.music.online.viewModels
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,6 +49,11 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         viewModelScope.launch {
             repository.uploadSingleImageFile(directory, fileName, fileUri, result)
         }
+    }
+
+    fun downloadSingleSongFile(context: Context, fileName: String, filePath: String, result: (UiState<String>) -> Unit){
+        result.invoke(UiState.Loading)
+        repository.downloadSingleSongFile(context, fileName, filePath, result)
     }
 
 }
