@@ -11,6 +11,7 @@
     tools:context=".online.ui.fragments.OnlinePlaylistFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:minHeight="300dp"
         android:id="@+id/playlist_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

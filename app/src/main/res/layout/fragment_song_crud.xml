@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/layout_bg"
+    android:background="@drawable/mini_player_bg"
     tools:context=".online.ui.fragments.crud.SongCRUDFragment">
 
     <com.google.android.material.textfield.TextInputLayout

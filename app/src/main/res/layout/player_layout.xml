@@ -9,9 +9,9 @@
     android:id="@+id/player_layout">
 
     <ImageButton
-        android:id="@+id/comment_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/option_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
@@ -24,11 +24,11 @@
 
     <ImageButton
         android:id="@+id/back_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/circle_button"
         android:scaleType="centerInside"
         android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
@@ -38,8 +38,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_img"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="370dp"
+        android:layout_height="370dp"
         android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/main_color"
         app:cardCornerRadius="10dp"
@@ -57,12 +57,11 @@
 
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/title_txt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:clickable="true"
         android:ellipsize="marquee"
@@ -74,6 +73,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +88,7 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/rounded_button"
         android:scaleType="center"
+        android:contentDescription="Play/Pause"
         android:src="@drawable/ic_baseline_pause_24"
         app:layout_constraintEnd_toStartOf="@+id/next_btn"
         app:layout_constraintStart_toEndOf="@+id/previous_btn"
@@ -97,9 +98,7 @@
         android:id="@+id/song_sb"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_margin="5dp"
         android:progressBackgroundTint="#727477"
         android:progressTint="#01f0f0"
         android:thumbTint="#01f0f0"
@@ -135,7 +134,7 @@
     </TextView>
 
     <TextView
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:id="@+id/start_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -151,10 +150,9 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="48dp"
         android:background="@drawable/circle_button_light"
         android:src="@drawable/ic_baseline_skip_next_24"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/volume_btn"
         app:layout_constraintStart_toEndOf="@+id/play_pause_btn"
         app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
@@ -162,12 +160,33 @@
         android:id="@+id/previous_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="48dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/circle_button_light"
         android:src="@drawable/ic_baseline_skip_previous_24"
         app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
+        app:layout_constraintStart_toEndOf="@id/play_state_btn"
+        app:layout_constraintTop_toBottomOf="@+id/song_sb" />
+
+    <ImageButton
+        android:id="@+id/play_state_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/circle_button_light"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
+        app:layout_constraintEnd_toStartOf="@+id/previous_btn"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/song_sb" />
+
+    <ImageButton
+        android:id="@+id/volume_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/circle_button_light"
+        android:src="@drawable/ic_baseline_volume_up_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/next_btn"
         app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
     <TextView
@@ -191,7 +210,7 @@
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/card_img"
-        app:layout_constraintEnd_toStartOf="@+id/comment_btn"
+        app:layout_constraintEnd_toStartOf="@+id/option_btn"
         app:layout_constraintStart_toEndOf="@+id/back_btn"
         app:layout_constraintTop_toTopOf="parent" />
 

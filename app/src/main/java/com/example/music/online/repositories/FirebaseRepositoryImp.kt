@@ -1,16 +1,23 @@
 package com.example.music.online.repositories
 
+import android.app.ProgressDialog
+import android.content.Context
 import android.net.Uri
-import com.example.music.utils.UiState
+import android.os.Environment
+import android.widget.Toast
 import com.example.music.online.data.dao.FirebaseRepository
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
+import com.example.music.utils.UiState
+import com.example.music.utils.downloadFile
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class FirebaseRepositoryImp(val database: FirebaseFirestore,
                             private val storage: StorageReference): FirebaseRepository {
@@ -97,7 +104,8 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {
         try {
             val uri: Uri = withContext(Dispatchers.IO) {
-                storage.child("Songs/$fileName")
+                storage
+                    .child("Songs/$fileName")
                     .putFile(fileUri)
                     .await()
                     .storage
@@ -120,7 +128,8 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
     ) {
         try {
             val uri: Uri = withContext(Dispatchers.IO) {
-                storage.child("$directory/$fileName")
+                storage
+                    .child("$directory/$fileName")
                     .putFile(fileUri)
                     .await()
                     .storage

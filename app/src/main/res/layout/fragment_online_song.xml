@@ -9,10 +9,12 @@
     tools:context=".online.ui.fragments.OnlineSongFragment">
 
     <androidx.appcompat.widget.SearchView
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
         app:queryHint="Search here..."
         app:submitBackground="@null"
-        android:background="@drawable/shapebgsearch"
+        android:background="@drawable/shape_bg_search"
         app:iconifiedByDefault="false"
         android:queryHint="Search here..."
         android:id="@+id/searchView"
@@ -27,7 +29,9 @@
         android:id="@+id/song_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

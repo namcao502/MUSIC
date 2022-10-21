@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
@@ -61,8 +62,11 @@ class OnlineSongAdapter(
             }
 
             with(songList[position]){
-                binding.titleTxt.text = this.name
+                binding.titleTxt.text = name
                 binding.lengthTxt.visibility = View.GONE
+
+                Glide.with(context).load(imgFilePath).into(binding.imageView)
+
                 artistViewModel.getAllArtistFromSong(this, position)
                 artistViewModel.artistInSong[position].observe(lifecycleOwner){
                     when(it){

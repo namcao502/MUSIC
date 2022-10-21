@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,7 +19,7 @@
             android:layout_gravity="center"
             app:queryHint="Search here..."
             app:submitBackground="@null"
-            android:background="@drawable/shapebgsearch"
+            android:background="@drawable/shape_bg_search"
             app:iconifiedByDefault="false"
             android:queryHint="Search here..."
             android:id="@+id/searchView"
@@ -26,6 +27,7 @@
             android:layout_width="wrap_content"/>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/playlist_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,13 +40,12 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Playlists"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:id="@+id/playlist_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,6 +54,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/artist_layout"
             android:padding="10dp"
             android:layout_width="match_parent"
@@ -63,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Artists"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
@@ -78,6 +80,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/genre_layout"
             android:padding="10dp"
             android:layout_width="match_parent"
@@ -88,14 +91,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Genres"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:padding="5dp"
                 android:id="@+id/genre_rv"
                 android:layout_width="wrap_content"
@@ -103,6 +105,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/album_layout"
             android:padding="10dp"
             android:layout_width="match_parent"
@@ -113,14 +116,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Albums"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:padding="5dp"
                 android:id="@+id/album_rv"
                 android:layout_width="wrap_content"
@@ -128,6 +130,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/song_layout"
             android:padding="10dp"
             android:layout_width="match_parent"
@@ -138,14 +141,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Songs"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:padding="5dp"
                 android:id="@+id/song_rv"
                 android:layout_width="wrap_content"
@@ -153,8 +155,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
-            android:background="@drawable/player_bg"
+            android:visibility="gone"
+            android:id="@+id/country_layout"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -164,7 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Countries"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
@@ -172,7 +174,6 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:padding="5dp"
-                android:visibility="gone"
                 android:id="@+id/country_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />

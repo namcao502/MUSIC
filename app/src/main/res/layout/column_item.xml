@@ -5,22 +5,34 @@
     android:layout_width="160dp"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:padding="5dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    android:padding="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/button_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/item_img"
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="10dp"
+            android:id="@+id/card_img"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/item_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:textColor="@color/white"
@@ -37,6 +49,6 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_img" />
+            app:layout_constraintTop_toBottomOf="@+id/card_img" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

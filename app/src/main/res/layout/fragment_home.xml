@@ -15,12 +15,13 @@
         android:orientation="vertical">
 
         <TextView
+            android:padding="10dp"
+            android:layout_margin="10dp"
             android:textAlignment="center"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:background="@color/main_color"
             android:id="@+id/welcome_tv"
-            android:padding="15dp"
             android:text="Welcome"
             android:textSize="20sp"
             android:layout_width="match_parent"
@@ -29,6 +30,7 @@
         <androidx.cardview.widget.CardView
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             app:cardCornerRadius="10dp"
             android:layout_width="match_parent"
             android:layout_height="220dp">
@@ -45,7 +47,6 @@
 
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -57,7 +58,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Playlists"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textSize="21sp"
                 android:textStyle="bold" />
@@ -65,13 +66,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/playlist_rv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp" />
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -81,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Artists"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
@@ -90,12 +89,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/artist_rv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -105,21 +102,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Genres"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
                 android:id="@+id/genre_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -129,21 +124,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Albums"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
                 android:id="@+id/album_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginBottom="1dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -153,14 +146,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Countries"
-                android:textAlignment="textStart"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
                 android:id="@+id/country_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />

@@ -2,28 +2,27 @@ package com.example.music.utils
 
 import android.app.Activity
 import android.app.Dialog
+import android.app.DownloadManager
 import android.app.ProgressDialog
+import android.content.Context
+import android.net.Uri
 import android.view.Gravity
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+
 
 object DetailFragmentState{
     var isOn = false
@@ -42,6 +41,19 @@ fun changeEmailToXEmail(email: String): String {
     var first = splitEmail[0]
     first = first.replaceRange(1, first.length, "x")
     return first + "@" + splitEmail[1]
+}
+
+fun downloadFile(context: Context,
+                 fileName: String,
+                 fileExtension: String,
+                 destinationDirectory: String,
+                 url: String){
+    val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val uri: Uri = Uri.parse(url)
+    val request = DownloadManager.Request(uri)
+    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    request.setDestinationInExternalFilesDir(context, destinationDirectory, fileName + fileExtension)
+    downloadManager.enqueue(request)
 }
 
 fun Fragment.createProgressDialog(title: String): ProgressDialog{

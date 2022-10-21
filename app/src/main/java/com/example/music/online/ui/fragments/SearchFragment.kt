@@ -16,10 +16,8 @@ import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
-import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-
 
 @AndroidEntryPoint
 class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fragment(),
@@ -227,27 +225,25 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
                 filterCountry(text)
                 return false
             }
-
         })
     }
 
     private fun filterCountry(text: String) {
         val filter: MutableList<OnlineCountry> = mutableListOf()
-
         for (item in countries) {
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            binding.countryRv.visibility = View.GONE
+            binding.countryLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.countryRv.visibility = View.GONE
+            binding.countryLayout.visibility = View.GONE
         }
         else {
             onlineCountryAdapter.setData(filter)
-            binding.countryRv.visibility = View.VISIBLE
+            binding.countryLayout.visibility = View.VISIBLE
         }
     }
 
@@ -266,16 +262,16 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         if (filter.isEmpty()) {
             // if no item is added in filtered list we are
             // displaying a toast message as no data found.
-            binding.songRv.visibility = View.GONE
+            binding.songLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.songRv.visibility = View.GONE
+            binding.songLayout.visibility = View.GONE
         }
         else {
             // at last we are passing that filtered
             // list to our adapter class.
             onlineSongInSearchAdapter.setData(filter)
-            binding.songRv.visibility = View.VISIBLE
+            binding.songLayout.visibility = View.VISIBLE
         }
     }
 
@@ -288,14 +284,14 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
         if (filter.isEmpty()) {
-            binding.albumRv.visibility = View.GONE
+            binding.albumLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.albumRv.visibility = View.GONE
+            binding.albumLayout.visibility = View.GONE
         }
         else {
             onlineAlbumAdapter.setData(filter)
-            binding.albumRv.visibility = View.VISIBLE
+            binding.albumLayout.visibility = View.VISIBLE
         }
     }
 
@@ -308,14 +304,14 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
         if (filter.isEmpty()) {
-            binding.genreRv.visibility = View.GONE
+            binding.genreLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.genreRv.visibility = View.GONE
+            binding.genreLayout.visibility = View.GONE
         }
         else {
             onlineGenreAdapter.setData(filter)
-            binding.genreRv.visibility = View.VISIBLE
+            binding.genreLayout.visibility = View.VISIBLE
         }
     }
 
@@ -328,14 +324,14 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
         if (filter.isEmpty()) {
-            binding.artistRv.visibility = View.GONE
+            binding.artistLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.artistRv.visibility = View.GONE
+            binding.artistLayout.visibility = View.GONE
         }
         else {
             onlineArtistAdapter.setData(filter)
-            binding.artistRv.visibility = View.VISIBLE
+            binding.artistLayout.visibility = View.VISIBLE
         }
     }
 
@@ -348,14 +344,14 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
         if (filter.isEmpty()) {
-            binding.playlistRv.visibility = View.GONE
+            binding.playlistLayout.visibility = View.GONE
         }
         if (text.isEmpty()){
-            binding.playlistRv.visibility = View.GONE
+            binding.playlistLayout.visibility = View.GONE
         }
         else {
             onlinePlaylistInHomeAdapter.setData(filter)
-            binding.playlistRv.visibility = View.VISIBLE
+            binding.playlistLayout.visibility = View.VISIBLE
         }
     }
 
