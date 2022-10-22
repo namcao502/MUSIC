@@ -3,4 +3,4 @@ tối ưa giao diện
 
 làm lại phần comment cho trực quan hơn
 
-tìm kiếm trong phần crud (song manager)
+phần load song by id vẫn còn vấn đề khi load nhiều hơn 10, kiến nghị thêm biến load by id để phân tách giữa load và crud

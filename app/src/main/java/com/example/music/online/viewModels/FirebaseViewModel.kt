@@ -23,6 +23,19 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _songFromID = MutableLiveData<UiState<List<OnlineSong>>>()
     val songFromID: LiveData<UiState<List<OnlineSong>>> get() = _songFromID
 
+    private val _songFromID2 = MutableLiveData<UiState<List<OnlineSong>>>()
+    val songFromID2: LiveData<UiState<List<OnlineSong>>> get() = _songFromID2
+
+    private val _updateModel = MutableLiveData<UiState<String>>()
+    val updateModel: LiveData<UiState<String>> get() = _updateModel
+
+    fun updateModelById(name: String, id: String, listSong: ArrayList<String>){
+        _updateModel.value = UiState.Loading
+        repository.updateModelById(name, id, listSong){
+            _updateModel.value = it
+        }
+    }
+
     fun getAllSongs() {
         _songs.value = UiState.Loading
         repository.getAllSongs {
@@ -34,6 +47,13 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         _songFromID.value = UiState.Loading
         repository.getSongFromListSongID(songs){
             _songFromID.value = it
+        }
+    }
+
+    fun getSongFromListSongID2(songs: List<String>){
+        _songFromID2.value = UiState.Loading
+        repository.getSongFromListSongID(songs){
+            _songFromID2.value = it
         }
     }
 

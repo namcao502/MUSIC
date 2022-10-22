@@ -18,12 +18,10 @@ import com.example.music.R
 import com.example.music.databinding.FragmentCountryCrudBinding
 import com.example.music.online.data.models.OnlineCountry
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.ui.activities.SongManagerActivity
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineCountryViewModel
-import com.example.music.utils.UiState
-import com.example.music.utils.createDialog
-import com.example.music.utils.createProgressDialog
-import com.example.music.utils.toast
+import com.example.music.utils.*
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
@@ -77,7 +75,7 @@ class CountryCRUDFragment : Fragment() {
             }
         }
 
-        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
                 filterCountry(text)
                 return false
@@ -248,134 +246,15 @@ class CountryCRUDFragment : Fragment() {
         }
 
         binding.songMngBtn.setOnClickListener {
-
             if (currentCountry == null){
                 toast("Please pick an album...")
                 return@setOnClickListener
             }
-
-            val dialog = createDialog(R.layout.song_crud_dialog)
-
-            val allSongs = dialog.findViewById<ListView>(R.id.all_song_lv)
-            val currentSongs = dialog.findViewById<ListView>(R.id.this_lv)
-
-            var current: List<OnlineSong> = emptyList()
-
-            if (currentCountry!!.songs!!.isNotEmpty()){
-                firebaseViewModel.getSongFromListSongID(currentCountry!!.songs!!)
-                firebaseViewModel.songFromID.observe(viewLifecycleOwner){
-                    when(it) {
-                        is UiState.Loading -> {
-
-                        }
-                        is UiState.Failure -> {
-
-                        }
-                        is UiState.Success -> {
-                            current = it.data
-                            currentSongs.adapter = ArrayAdapter(requireContext(),
-                                androidx.appcompat.R.layout.
-                                support_simple_spinner_dropdown_item,
-                                current)
-                        }
-                    }
-                }
-            }
-
-            var all: List<OnlineSong> = emptyList()
-
-            firebaseViewModel.getAllSongs()
-            firebaseViewModel.song.observe(viewLifecycleOwner){
-                when(it) {
-                    is UiState.Loading -> {
-
-                    }
-                    is UiState.Failure -> {
-
-                    }
-                    is UiState.Success -> {
-                        all = it.data
-                        allSongs.adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, all)
-                    }
-                }
-            }
-
-            allSongs.setOnItemClickListener { _, _, i, _ ->
-                val temp = currentCountry!!.songs as ArrayList
-                temp.add(all[i].id!!)
-                currentCountry!!.songs = temp
-                updateCountry(currentCountry!!)
-
-                //reload
-                if (currentCountry!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentCountry!!.songs!!)
-                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
-                        when(it) {
-                            is UiState.Loading -> {
-
-                            }
-                            is UiState.Failure -> {
-
-                            }
-                            is UiState.Success -> {
-                                current = it.data
-                                Log.i("TAG502", "onViewCreated: $current")
-                                currentSongs.adapter = ArrayAdapter(requireContext(),
-                                    androidx.appcompat.R.layout.
-                                    support_simple_spinner_dropdown_item,
-                                    current)
-                            }
-                        }
-                    }
-                }
-                else {
-                    current = emptyList()
-                    currentSongs.adapter = ArrayAdapter(requireContext(),
-                        androidx.appcompat.R.layout.
-                        support_simple_spinner_dropdown_item,
-                        current)
-                }
-            }
-
-            currentSongs.setOnItemClickListener { _, _, i, _ ->
-
-                val temp = currentCountry!!.songs as ArrayList
-                temp.remove(current[i].id!!)
-                currentCountry!!.songs = temp
-                updateCountry(currentCountry!!)
-
-                //reload
-                if (currentCountry!!.songs!!.isNotEmpty()){
-                    firebaseViewModel.getSongFromListSongID(currentCountry!!.songs!!)
-                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
-                        when(it) {
-                            is UiState.Loading -> {
-
-                            }
-                            is UiState.Failure -> {
-
-                            }
-                            is UiState.Success -> {
-                                current = it.data
-                                currentSongs.adapter = ArrayAdapter(requireContext(),
-                                    androidx.appcompat.R.layout.
-                                    support_simple_spinner_dropdown_item,
-                                    current)
-                            }
-                        }
-                    }
-                }
-                else {
-                    current = emptyList()
-                    currentSongs.adapter = ArrayAdapter(requireContext(),
-                        androidx.appcompat.R.layout.
-                        support_simple_spinner_dropdown_item,
-                        current)
-                }
-            }
-
-            dialog.show()
+            val intent = Intent(requireContext(), SongManagerActivity::class.java)
+            intent.putExtra(FireStoreCollection.MODEL_NAME, FireStoreCollection.COUNTRY)
+            intent.putExtra(FireStoreCollection.MODEL_ID, currentCountry!!.id)
+            intent.putExtra(FireStoreCollection.MODEL_SONG_LIST, currentCountry!!.songs!! as ArrayList)
+            startActivity(intent)
         }
 
     }

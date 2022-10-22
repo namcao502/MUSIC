@@ -96,7 +96,7 @@ class AccountCRUDFragment : Fragment() {
             }
         }
 
-        binding.searchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener{
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
                 filterAccount(text)
                 return false

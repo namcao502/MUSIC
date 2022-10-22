@@ -11,10 +11,15 @@ interface FirebaseRepository {
 
     fun getSongFromListSongID(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit)
 
+    fun getSongFromListSongID2(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit)
+
     suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 
     suspend fun uploadSingleImageFile(directory: String, fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 
     fun downloadSingleSongFile(context: Context, fileName: String, filePath: String, result: (UiState<String>) -> Unit)
+
+    fun updateModelById(name: String, id: String, listSong: ArrayList<String>, result: (UiState<String>) -> Unit)
+
 
 }

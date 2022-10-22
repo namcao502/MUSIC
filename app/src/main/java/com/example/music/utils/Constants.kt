@@ -11,6 +11,9 @@ object FireStoreCollection{
     const val USER = "User"
     const val COUNTRY = "Country"
     const val ADMIN = "Admin"
+    const val MODEL_NAME = "modelName"
+    const val MODEL_ID = "modelId"
+    const val MODEL_SONG_LIST = "modelSongList"
 }
 
 object PlayState{

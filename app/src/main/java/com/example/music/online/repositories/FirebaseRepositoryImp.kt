@@ -1,26 +1,21 @@
 package com.example.music.online.repositories
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import android.widget.Toast
 import com.example.music.online.data.dao.FirebaseRepository
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.example.music.utils.downloadFile
-import com.example.music.utils.toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class FirebaseRepositoryImp(val database: FirebaseFirestore,
                             private val storage: StorageReference): FirebaseRepository {
@@ -48,7 +43,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
             return
         }
 
-        if (songs.size <= 10){
+        if (songs.size <= 9){
             database
                 .collection(FireStoreCollection.SONG)
                 .whereIn("id", songs)
@@ -67,7 +62,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
         }
         else {
             val songList: ArrayList<OnlineSong> = ArrayList()
-            for (list10ID in songs.chunked(10)){
+            for (list10ID in songs.chunked(9)){
                 database
                     .collection(FireStoreCollection.SONG)
                     .whereIn("id", list10ID)
@@ -102,6 +97,51 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 //                    UiState.Success(songList)
 //                )
 //            }
+    }
+
+    override fun getSongFromListSongID2(
+        songs: List<String>,
+        result: (UiState<List<OnlineSong>>) -> Unit
+    ) {
+        if (songs.isEmpty()){
+            return
+        }
+
+        val songList: ArrayList<OnlineSong> = ArrayList()
+
+        if (songs.size <= 9){
+            database
+                .collection(FireStoreCollection.SONG)
+                .whereIn("id", songs)
+                .addSnapshotListener { value, _ ->
+                    if (value != null) {
+                        for (document in value){
+                            val song = document.toObject(OnlineSong::class.java)
+                            songList.add(song)
+                        }
+                    }
+                    result.invoke(
+                        UiState.Success(songList)
+                    )
+                }
+        }
+        else {
+            for (list10ID in songs.chunked(9)){
+                database
+                    .collection(FireStoreCollection.SONG)
+                    .whereIn("id", list10ID)
+                    .addSnapshotListener { value, _ ->
+                        if (value != null) {
+                            for (document in value){
+                                val song = document.toObject(OnlineSong::class.java)
+                                songList.add(song)
+                            }
+                        }
+                    }
+            }
+            Thread.sleep(100)
+            result.invoke(UiState.Success(songList))
+        }
     }
 
     override suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit) {
@@ -162,6 +202,19 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
                 result.invoke(UiState.Success("Downloading..."))
             }.addOnFailureListener { e: Exception ->
                 result.invoke(UiState.Failure(e.toString()))
+            }
+    }
+
+    override fun updateModelById(name: String, id: String, listSong: ArrayList<String>, result: (UiState<String>) -> Unit) {
+        database
+            .collection(name)
+            .document(id)
+            .update("songs", listSong)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("Updated"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.message))
             }
     }
 

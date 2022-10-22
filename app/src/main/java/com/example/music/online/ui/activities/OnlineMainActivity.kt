@@ -39,7 +39,7 @@ class OnlineMainActivity: AppCompatActivity(),
     OnlineDialogPlaylistAdapter.ItemClickListener,
     HomeFragment.ClickSongFromDetail,
     SearchFragment.ClickSongFromDetail,
-    OnlinePlaylistFragment.ClickSongFromDetail{
+    OnlinePlaylistFragment.ClickSongFromDetail {
 
     private lateinit var binding: ActivityOnlineMainBinding
 

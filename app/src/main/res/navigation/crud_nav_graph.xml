@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_homeCRUDFragment_to_countryCRUDFragment"
             app:destination="@id/countryCRUDFragment" />
+        <action
+            android:id="@+id/action_homeCRUDFragment_to_albumCRUDFragment"
+            app:destination="@id/albumCRUDFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountCRUDFragment"
@@ -45,7 +48,11 @@
         android:id="@+id/albumCRUDFragment"
         android:name="com.example.music.online.ui.fragments.crud.AlbumCRUDFragment"
         android:label="Album"
-        tools:layout="@layout/fragment_album_crud" />
+        tools:layout="@layout/fragment_album_crud" >
+        <action
+            android:id="@+id/action_albumCRUDFragment_to_homeCRUDFragment"
+            app:destination="@id/homeCRUDFragment" />
+    </fragment>
     <fragment
         android:id="@+id/songCRUDFragment"
         android:name="com.example.music.online.ui.fragments.crud.SongCRUDFragment"
