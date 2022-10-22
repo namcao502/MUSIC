@@ -49,7 +49,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/mini_play_pause_btn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_skip_previous_24" />
+            app:srcCompat="@drawable/ic_baseline_skip_previous_24"
+            android:contentDescription="@string/todo" />
 
         <ImageView
             android:id="@+id/mini_play_pause_btn"
@@ -61,7 +62,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/mini_next_btn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_play_circle_outline_24" />
+            app:srcCompat="@drawable/ic_baseline_play_circle_outline_24"
+            android:contentDescription="@string/todo" />
 
         <ImageView
             android:id="@+id/mini_next_btn"
@@ -73,7 +75,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_skip_next_24" />
+            app:srcCompat="@drawable/ic_baseline_skip_next_24"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:id="@+id/mini_song_title"
@@ -84,7 +87,7 @@
             android:layout_marginEnd="24dp"
             android:gravity="start"
             android:singleLine="true"
-            android:text="Loading title..."
+            android:text="@string/loading_title"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="15sp"
@@ -102,7 +105,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="start"
             android:singleLine="true"
-            android:text="Loading artist(s)..."
+            android:text="@string/loading_artist_s"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="15sp"

@@ -13,6 +13,8 @@
         <item name="android:statusBarColor" >#191A2E</item>
         <!-- Customize your theme here. -->
         <item name="android:itemBackground">#191a2e</item>
+
+        <item name="android:fontFamily">@font/helvetica</item>
     </style>
 
 </resources>

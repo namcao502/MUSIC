@@ -7,41 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".online.ui.fragments.WelcomeFragment">
 
-<!--    <com.denzcoskun.imageslider.ImageSlider-->
-<!--        android:textAlignment="center"-->
-<!--        app:iss_auto_cycle="true"-->
-<!--        app:iss_delay="100"-->
-<!--        app:iss_period="1000"-->
-<!--        android:id="@+id/slider"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:id="@+id/card_txt"-->
-<!--        app:cardCornerRadius="20dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content">-->
-
-<!--        <TextView-->
-<!--            android:padding="10dp"-->
-<!--            android:id="@+id/welcome_txt"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="#02fbfb"-->
-<!--            android:fontFamily="sans-serif-medium"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textSize="24sp" />-->
-
-<!--    </androidx.cardview.widget.CardView>-->
-
     <ImageView
         android:scaleType="centerCrop"
         android:id="@+id/gif_img"
@@ -50,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/todo" />
 
     <Button
         android:id="@+id/signin_button"
@@ -59,7 +25,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="64dp"
-        android:text="Sign in for online"
+        android:text="@string/sign_in_for_online"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
@@ -71,7 +37,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="16dp"
-        android:text="Go to your collection"
+        android:text="@string/go_to_your_collection"
         app:layout_constraintBottom_toTopOf="@+id/signin_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -82,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Continue to online"
+        android:text="@string/continue_to_online"
         app:layout_constraintBottom_toTopOf="@+id/offline_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

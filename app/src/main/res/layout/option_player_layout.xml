@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:singleLine="true"
-            android:text="Author"
+            android:text="@string/artists"
             android:textColor="@color/white"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +41,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="Title"
+            android:text="@string/title"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/author_txt"
@@ -65,7 +66,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_music_note_24" />
+            app:srcCompat="@drawable/ic_baseline_music_note_24"
+            android:contentDescription="@string/todo" />
 
     </androidx.cardview.widget.CardView>
 
@@ -76,12 +78,14 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="10dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:src="@drawable/ic_baseline_airline_stops_24"/>
+            android:src="@drawable/ic_baseline_airline_stops_24"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:id="@+id/play_state_txt"
@@ -89,7 +93,7 @@
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current play state: Go"
+            android:text="@string/current_play_state_go"
             android:layout_marginStart="30dp"
             android:textSize="20sp"/>
 
@@ -100,19 +104,21 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="10dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:src="@drawable/ic_baseline_playlist_add_24"/>
+            android:src="@drawable/ic_baseline_playlist_add_24"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add to playlist"
+            android:text="@string/add_to_playlist"
             android:layout_marginStart="30dp"
             android:textSize="20sp"/>
 
@@ -123,20 +129,22 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="10dp"
+        tools:ignore="UseCompoundDrawables">
 
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_comment_24"/>
+            android:src="@drawable/ic_baseline_comment_24"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comments"
+            android:text="@string/comments"
             android:layout_marginStart="30dp"
             android:textSize="20sp"/>
 
@@ -147,20 +155,21 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
-
+        android:padding="10dp"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_file_download_24" />
+            android:src="@drawable/ic_baseline_file_download_24"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Download"
+            android:text="@string/download"
             android:layout_marginStart="30dp"
             android:textSize="20sp"/>
 

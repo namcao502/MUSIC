@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:minWidth="300dp"
     android:minHeight="400dp"
-    android:background="@drawable/gradient_background"
+    android:background="@color/main_color"
     tools:context=".online.ui.fragments.crud.SongCRUDFragment">
 
     <ListView
@@ -23,12 +23,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
+        android:textColor="@color/white"
         android:textSize="25sp"
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="All Songs"
+        android:text="@string/all_songs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -48,12 +49,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
+        android:textColor="@color/white"
         android:textSize="25sp"
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="This"
+        android:text="@string/this_songs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/all_song_lv" />

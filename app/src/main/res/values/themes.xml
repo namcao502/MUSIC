@@ -14,10 +14,8 @@
 
         <item name="android:itemBackground">#192841</item>
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/helvetica</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat">
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
 
 </resources>
