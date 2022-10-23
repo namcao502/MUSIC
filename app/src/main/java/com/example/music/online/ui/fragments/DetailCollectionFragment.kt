@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.databinding.FragmentDetailCollectionBinding
+import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.ui.adapters.DetailCollectionAdapter
@@ -35,8 +36,7 @@ class DetailCollectionFragment(
     val songs: List<String>,
     val imgFilePath: String,
     private val clickASongInDetail: ClickASongInDetail
-)
-    : Fragment(), DetailCollectionAdapter.ClickASong, OnlineDialogPlaylistAdapter.ItemClickListener {
+): Fragment(), DetailCollectionAdapter.ClickASong, OnlineDialogPlaylistAdapter.ItemClickListener {
 
     private var _binding: FragmentDetailCollectionBinding? = null
     // This property is only valid between onCreateView and
@@ -52,7 +52,7 @@ class DetailCollectionFragment(
     private val songViewModel: OnlineSongViewModel by viewModels()
 
     private val detailCollectionAdapter: DetailCollectionAdapter by lazy {
-        DetailCollectionAdapter(requireContext(), this, viewLifecycleOwner, artistViewModel)
+        DetailCollectionAdapter(requireContext(), this, artistViewModel, viewLifecycleOwner)
     }
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
@@ -135,8 +135,33 @@ class DetailCollectionFragment(
 
                 }
                 is UiState.Success -> {
-                    Log.i("TAG502", "onViewCreated: ${it.data}")
+
+                    //with each song, get its artists
+//                    val artistList: ArrayList<List<OnlineArtist>> = ArrayList()
+//                    for (i in 0 until it.data.size){
+//                        artistViewModel.getAllArtistFromSong2(it.data[i], i)
+//                        artistViewModel.artistInSong2[i].observe(viewLifecycleOwner){ artists ->
+//                            when(artists){
+//                                is UiState.Loading -> {
+//
+//                                }
+//                                is UiState.Failure -> {
+//
+//                                }
+//                                is UiState.Success -> {
+//                                    artistList.add(artists.data)
+//                                    Log.i("TAG502", "list: $artistList")
+//                                    Log.i("TAG502", "before set: $artistList")
+//                                    detailCollectionAdapter.setDataForArtist(artistList)
+//                                    Log.i("TAG502", "after set: $artistList")
+//                                }
+//                            }
+//                        }
+//                    }
                     detailCollectionAdapter.setData(it.data)
+//                    Log.i("TAG502", "before set: $artistList")
+//                    detailCollectionAdapter.setDataForArtist(artistList)
+//                    Log.i("TAG502", "after set: $artistList")
                 }
             }
         }

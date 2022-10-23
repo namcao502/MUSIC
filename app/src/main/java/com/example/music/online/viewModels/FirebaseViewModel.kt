@@ -52,7 +52,7 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
 
     fun getSongFromListSongID2(songs: List<String>){
         _songFromID2.value = UiState.Loading
-        repository.getSongFromListSongID(songs){
+        repository.getSongFromListSongID2(songs){
             _songFromID2.value = it
         }
     }

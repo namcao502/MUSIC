@@ -3,9 +3,11 @@ package com.example.music.online.repositories
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import com.example.music.online.data.dao.FirebaseRepository
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
+import com.example.music.utils.ListSongTemp
 import com.example.music.utils.UiState
 import com.example.music.utils.downloadFile
 import com.google.firebase.FirebaseException
@@ -62,10 +64,10 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
         }
         else {
             val songList: ArrayList<OnlineSong> = ArrayList()
-            for (list10ID in songs.chunked(9)){
+            for (listID in songs.chunked(9)){
                 database
                     .collection(FireStoreCollection.SONG)
-                    .whereIn("id", list10ID)
+                    .whereIn("id", listID)
                     .addSnapshotListener { value, _ ->
                         if (value != null) {
                             for (document in value){
@@ -75,7 +77,6 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
                         }
                     }
             }
-            Thread.sleep(100)
             result.invoke(
                 UiState.Success(songList)
             )
@@ -99,14 +100,11 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 //            }
     }
 
-    override fun getSongFromListSongID2(
-        songs: List<String>,
-        result: (UiState<List<OnlineSong>>) -> Unit
-    ) {
+    override fun getSongFromListSongID2(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit) {
+
         if (songs.isEmpty()){
             return
         }
-
         val songList: ArrayList<OnlineSong> = ArrayList()
 
         if (songs.size <= 9){
@@ -126,21 +124,43 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
                 }
         }
         else {
-            for (list10ID in songs.chunked(9)){
-                database
-                    .collection(FireStoreCollection.SONG)
-                    .whereIn("id", list10ID)
-                    .addSnapshotListener { value, _ ->
-                        if (value != null) {
-                            for (document in value){
-                                val song = document.toObject(OnlineSong::class.java)
-                                songList.add(song)
-                            }
+            Log.i("TAG502", "getSongFromListSongID2, before: $songList")
+            getSongById(songList, songs, songs.size)
+            Log.i("TAG502", "getSongFromListSongID2, after: $songList")
+            result.invoke(UiState.Success(songList))
+        }
+    }
+
+    private fun getSongById(result: ArrayList<OnlineSong>, songs: List<String>, size: Int) {
+        if (size == 0){
+            return
+        }
+        else {
+//            database
+//                .collection(FireStoreCollection.SONG)
+//                .whereIn("id", songs[size - 1])
+//                .addSnapshotListener { value, _ ->
+//                    if (value != null) {
+//                        for (document in value){
+//                            val song = document.toObject(OnlineSong::class.java)
+//                            result.add(song)
+//                        }
+//                    }
+//                }
+            database
+                .collection(FireStoreCollection.SONG)
+                .orderBy("name")
+                .whereEqualTo("id", songs[size - 1])
+                .addSnapshotListener { value, _ ->
+                    if (value != null) {
+                        for (document in value) {
+                            val song = document.toObject(OnlineSong::class.java)
+                            result.add(song)
+                            Log.i("TAG502", "getSongFromListSongID2, each: $song")
                         }
                     }
-            }
-            Thread.sleep(100)
-            result.invoke(UiState.Success(songList))
+                }
+            return getSongById(result, songs, size - 1)
         }
     }
 

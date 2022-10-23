@@ -47,6 +47,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -238,7 +239,26 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     @SuppressLint("SimpleDateFormat")
     private fun showGreeting(){
         val sdf = SimpleDateFormat("HH:mm:ss")
-        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
+
+        var name = ""
+
+        onlineAccountViewModel.getAccountByID(Firebase.auth.currentUser!!.uid)
+        onlineAccountViewModel.accountByID.observe(viewLifecycleOwner){
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    name = it.data.name.toString()
+                }
+            }
+        }
+
+//        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
+
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{
             override fun run() {

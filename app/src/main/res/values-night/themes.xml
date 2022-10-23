@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:itemBackground">#191a2e</item>
 
-        <item name="android:fontFamily">@font/helvetica</item>
+        <item name="android:fontFamily">@font/comfortaa_regular</item>
     </style>
 
 </resources>

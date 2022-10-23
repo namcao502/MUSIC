@@ -13,18 +13,19 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
+import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.OnlineArtistViewModel
 
 class DetailCollectionAdapter(
     private val context: Context,
     private val clickASong: ClickASong,
-    private val lifecycle: LifecycleOwner,
-    private val artistViewModel: OnlineArtistViewModel
-)
-    : RecyclerView.Adapter<DetailCollectionAdapter.ViewHolder>() {
+    private val artistViewModel: OnlineArtistViewModel,
+    private val lifecycleOwner: LifecycleOwner
+): RecyclerView.Adapter<DetailCollectionAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
+    private var artistList: ArrayList<List<OnlineArtist>> = ArrayList()
 
     inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -44,8 +45,6 @@ class DetailCollectionAdapter(
 
         with(holder){
             itemView.setOnClickListener {
-//                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
-                //click on a song
                 clickASong.callBackFromDetailClick(songList, position)
             }
 
@@ -56,17 +55,30 @@ class DetailCollectionAdapter(
                         clickASong.callBackFromMenuDetailClick(menuItem.title.toString(), songList, position)
                         true
                     }
-                    // Showing the popup menu
                     show()
                 }
             }
 
             with(songList[position]){
-                binding.titleTxt.text = this.name
+
+                binding.titleTxt.text = name
                 binding.lengthTxt.visibility = View.GONE
-                Glide.with(context).load(this.imgFilePath).into(binding.imageView)
-                artistViewModel.getAllArtistFromSong(this, position)
-                artistViewModel.artistInSong[position].observe(lifecycle){
+                Glide.with(context).load(imgFilePath).into(binding.imageView)
+
+//                var text = "Unknown"
+//                if (artistList.isEmpty()){
+//                    binding.authorTxt.text = text
+//                }
+//                else {
+//                    for (x in artistList[position]){
+//                        text = ""
+//                        text += x.name.plus(", ")
+//                    }
+//                    binding.authorTxt.text = text.dropLast(2)
+//                }
+
+                artistViewModel.getAllArtistFromSong2(this, position)
+                artistViewModel.artistInSong2[position].observe(lifecycleOwner){
                     when(it){
                         is UiState.Loading -> {
 
@@ -75,7 +87,6 @@ class DetailCollectionAdapter(
 
                         }
                         is UiState.Success -> {
-                            Log.i("TAG502", "onBindViewHolder: ${it.data}")
                             var text = ""
                             for (x in it.data){
                                 text += x.name.plus(", ")
@@ -86,7 +97,6 @@ class DetailCollectionAdapter(
                 }
             }
         }
-
     }
 
     interface ClickASong{
@@ -97,6 +107,12 @@ class DetailCollectionAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun setData(songList: List<OnlineSong>){
         this.songList = songList
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setDataForArtist(artistList: ArrayList<List<OnlineArtist>>){
+        this.artistList = artistList
         notifyDataSetChanged()
     }
 

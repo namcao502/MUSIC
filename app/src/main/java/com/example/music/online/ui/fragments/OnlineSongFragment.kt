@@ -2,6 +2,7 @@ package com.example.music.online.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.FragmentOnlineSongBinding
+import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
@@ -24,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
@@ -41,7 +44,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
 
     private val onlineSongAdapter: OnlineSongAdapter by lazy {
-        OnlineSongAdapter(requireContext(), viewLifecycleOwner, onlineArtistViewModel,this)
+        OnlineSongAdapter(requireContext(), this)
     }
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
@@ -81,6 +84,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             layoutManager = LinearLayoutManager(requireContext())
         }
 
+        //get all song
         onlineSongViewModel.getAllSongs()
         onlineSongViewModel.song.observe(viewLifecycleOwner){
             when(it){
@@ -91,7 +95,27 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
                 }
                 is UiState.Success -> {
+
+                    val artistList: ArrayList<List<OnlineArtist>> = ArrayList()
+                    for (i in 0 until it.data.size){
+                        onlineArtistViewModel.getAllArtistFromSong(it.data[i], i)
+                        onlineArtistViewModel.artistInSong[i].observe(viewLifecycleOwner){ artists ->
+                            when(artists){
+                                is UiState.Loading -> {
+
+                                }
+                                is UiState.Failure -> {
+
+                                }
+                                is UiState.Success -> {
+                                    artistList.add(artists.data)
+                                }
+                            }
+                        }
+                    }
+
                     onlineSongAdapter.setData(it.data)
+                    onlineSongAdapter.setDataForArtist(artistList)
                     initialList = it.data
                 }
             }
@@ -179,11 +203,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
                 }
                 is UiState.Success -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Song ${songSelected.name} added to ${playlist.name} playlist",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toast("Song ${songSelected.name} added to ${playlist.name} playlist")
                 }
             }
         }

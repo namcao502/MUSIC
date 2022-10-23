@@ -12,18 +12,18 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
+import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.OnlineArtistViewModel
 
 class OnlineSongAdapter(
     private val context: Context,
-    private val lifecycleOwner: LifecycleOwner,
-    private val artistViewModel: OnlineArtistViewModel,
     private val itemClickListener: ItemSongClickListener
 )
     : RecyclerView.Adapter<OnlineSongAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
+    private var artistList: ArrayList<List<OnlineArtist>> = ArrayList()
 
     inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -44,8 +44,6 @@ class OnlineSongAdapter(
         with(holder){
 
             itemView.setOnClickListener {
-//                Toast.makeText(itemView.context, "Clicked at $position", Toast.LENGTH_SHORT).show()
-                //click on a song
                 itemClickListener.callBackFromSongClick(songList, position)
             }
 
@@ -62,29 +60,41 @@ class OnlineSongAdapter(
             }
 
             with(songList[position]){
+
                 binding.titleTxt.text = name
                 binding.lengthTxt.visibility = View.GONE
-
                 Glide.with(context).load(imgFilePath).into(binding.imageView)
 
-                artistViewModel.getAllArtistFromSong(this, position)
-                artistViewModel.artistInSong[position].observe(lifecycleOwner){
-                    when(it){
-                        is UiState.Loading -> {
-
-                        }
-                        is UiState.Failure -> {
-
-                        }
-                        is UiState.Success -> {
-                            var text = ""
-                            for (x in it.data){
-                                text += x.name.plus(", ")
-                            }
-                            binding.authorTxt.text = text.dropLast(2)
-                        }
-                    }
+                var text = "Unknown"
+                if (artistList.isEmpty()){
+                    binding.authorTxt.text = text
                 }
+                else {
+                    for (x in artistList[position]){
+                        text = ""
+                        text += x.name.plus(", ")
+                    }
+                    binding.authorTxt.text = text.dropLast(2)
+                }
+
+//                artistViewModel.getAllArtistFromSong(this, position)
+//                artistViewModel.artistInSong[position].observe(lifecycleOwner){
+//                    when(it){
+//                        is UiState.Loading -> {
+//
+//                        }
+//                        is UiState.Failure -> {
+//
+//                        }
+//                        is UiState.Success -> {
+//                            var text = ""
+//                            for (x in it.data){
+//                                text += x.name.plus(", ")
+//                            }
+//                            binding.authorTxt.text = text.dropLast(2)
+//                        }
+//                    }
+//                }
             }
         }
 
@@ -93,6 +103,12 @@ class OnlineSongAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun setData(songList: List<OnlineSong>){
         this.songList = songList
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setDataForArtist(artistList: ArrayList<List<OnlineArtist>>){
+        this.artistList = artistList
         notifyDataSetChanged()
     }
 

@@ -4,19 +4,20 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.ActivitySongManagerBinding
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.ui.adapters.SongManagerAdapter
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class SongManagerActivity: AppCompatActivity() {
+class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
 
     // val name: String, private val modelId: String, var listSong: MutableList<String>
 
@@ -27,9 +28,13 @@ class SongManagerActivity: AppCompatActivity() {
     private var allSongs: List<OnlineSong> = emptyList()
     private var currentSongs: List<OnlineSong> = emptyList()
 
-    var name: String = ""
+    private val songManagerAdapter: SongManagerAdapter by lazy {
+        SongManagerAdapter(this)
+    }
+
+    private var name: String = ""
     private var modelId: String = ""
-    var listSong: ArrayList<String> = ArrayList()
+    private var listSong: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,7 @@ class SongManagerActivity: AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
+
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
 
@@ -47,7 +53,15 @@ class SongManagerActivity: AppCompatActivity() {
         modelId = intent.getStringExtra(FireStoreCollection.MODEL_ID).toString()
         listSong = intent.getStringArrayListExtra(FireStoreCollection.MODEL_SONG_LIST) as ArrayList<String>
 
-        binding.allSongsSv.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+        with(binding.thisSongsRv){
+            adapter = songManagerAdapter
+            layoutManager = LinearLayoutManager(this@SongManagerActivity)
+        }
+
+        //load current songs
+        loadCurrent()
+
+        binding.allSongsSv.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
                 filterAllSongs(text)
                 return false
@@ -59,8 +73,7 @@ class SongManagerActivity: AppCompatActivity() {
             }
 
         })
-
-        binding.thisSongsSv.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+        binding.thisSongsSv.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
                 filterThisSongs(text)
                 return false
@@ -91,17 +104,9 @@ class SongManagerActivity: AppCompatActivity() {
             }
         }
 
-        //load current songs
-        loadCurrent()
 
         binding.allSongsLv.setOnItemClickListener { _, _, i, _ ->
             listSong.add(allSongs[i].id!!)
-            update()
-            loadCurrent()
-        }
-
-        binding.thisSongsLv.setOnItemClickListener { _, _, i, _ ->
-            listSong.remove(currentSongs[i].id!!)
             update()
             loadCurrent()
         }
@@ -122,20 +127,14 @@ class SongManagerActivity: AppCompatActivity() {
                     }
                     is UiState.Success -> {
                         currentSongs = it.data
-                        binding.thisSongsLv.adapter = ArrayAdapter(this,
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item,
-                            currentSongs)
+                        songManagerAdapter.setData(currentSongs)
                     }
                 }
             }
         }
         else {
-            currentSongs = emptyList()
-            binding.thisSongsLv.adapter = ArrayAdapter(this,
-                androidx.appcompat.R.layout.
-                support_simple_spinner_dropdown_item,
-                currentSongs)
+            currentSongs = listOf(OnlineSong("", "empty", "", "", ""))
+            songManagerAdapter.setData(currentSongs)
         }
     }
 
@@ -193,16 +192,16 @@ class SongManagerActivity: AppCompatActivity() {
         }
         if (text.isEmpty()){
             toast("Not found")
-            binding.thisSongsLv.adapter = ArrayAdapter(this,
-                androidx.appcompat.R.layout.
-                support_simple_spinner_dropdown_item,
-                currentSongs)
+            songManagerAdapter.setData(currentSongs)
         }
         else {
-            binding.thisSongsLv.adapter = ArrayAdapter(this,
-                androidx.appcompat.R.layout.
-                support_simple_spinner_dropdown_item,
-                filter)
+            songManagerAdapter.setData(filter)
         }
+    }
+
+    override fun callBackFromClickASong(song: OnlineSong) {
+        listSong.remove(song.id)
+        update()
+        loadCurrent()
     }
 }
