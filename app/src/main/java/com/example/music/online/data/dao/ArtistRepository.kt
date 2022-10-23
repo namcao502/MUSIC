@@ -16,4 +16,6 @@ interface ArtistRepository {
 
     fun getAllArtistFromSong(song: OnlineSong, result: (UiState<List<OnlineArtist>>) -> Unit)
 
+    fun getAllArtistFromSongID(songId: String, result: (UiState<List<OnlineArtist>>) -> Unit)
+
 }

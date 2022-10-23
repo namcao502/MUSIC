@@ -2,3 +2,5 @@
 tối ưa giao diện
 
 làm lại phần comment cho trực quan hơn
+
+chuyển view sang bảng khác (collection mới)

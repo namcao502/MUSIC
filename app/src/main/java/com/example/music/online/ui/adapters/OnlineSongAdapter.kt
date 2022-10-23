@@ -18,9 +18,10 @@ import com.example.music.online.viewModels.OnlineArtistViewModel
 
 class OnlineSongAdapter(
     private val context: Context,
-    private val itemClickListener: ItemSongClickListener
-)
-    : RecyclerView.Adapter<OnlineSongAdapter.ViewHolder>() {
+    private val itemClickListener: ItemSongClickListener,
+    private val lifecycleOwner: LifecycleOwner,
+    private val artistViewModel: OnlineArtistViewModel
+): RecyclerView.Adapter<OnlineSongAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
     private var artistList: ArrayList<List<OnlineArtist>> = ArrayList()
@@ -65,36 +66,36 @@ class OnlineSongAdapter(
                 binding.lengthTxt.visibility = View.GONE
                 Glide.with(context).load(imgFilePath).into(binding.imageView)
 
-                var text = "Unknown"
-                if (artistList.isEmpty()){
-                    binding.authorTxt.text = text
-                }
-                else {
-                    for (x in artistList[position]){
-                        text = ""
-                        text += x.name.plus(", ")
-                    }
-                    binding.authorTxt.text = text.dropLast(2)
-                }
-
-//                artistViewModel.getAllArtistFromSong(this, position)
-//                artistViewModel.artistInSong[position].observe(lifecycleOwner){
-//                    when(it){
-//                        is UiState.Loading -> {
-//
-//                        }
-//                        is UiState.Failure -> {
-//
-//                        }
-//                        is UiState.Success -> {
-//                            var text = ""
-//                            for (x in it.data){
-//                                text += x.name.plus(", ")
-//                            }
-//                            binding.authorTxt.text = text.dropLast(2)
-//                        }
-//                    }
+//                var text = "Unknown"
+//                if (artistList.isEmpty()){
+//                    binding.authorTxt.text = text
 //                }
+//                else {
+//                    for (x in artistList[position]){
+//                        text = ""
+//                        text += x.name.plus(", ")
+//                    }
+//                    binding.authorTxt.text = text.dropLast(2)
+//                }
+
+                artistViewModel.getAllArtistFromSong(this, position)
+                artistViewModel.artistInSong[position].observe(lifecycleOwner){
+                    when(it){
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Failure -> {
+
+                        }
+                        is UiState.Success -> {
+                            var text = ""
+                            for (x in it.data){
+                                text += x.name.plus(", ")
+                            }
+                            binding.authorTxt.text = text.dropLast(2)
+                        }
+                    }
+                }
             }
         }
 

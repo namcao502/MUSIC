@@ -9,6 +9,6 @@ data class OnlinePlaylist(
     var imgFilePath: String? = ""
 ) : Serializable {
     override fun toString(): String {
-        return "ID = $id, name = $name"
+        return "$name"
     }
 }

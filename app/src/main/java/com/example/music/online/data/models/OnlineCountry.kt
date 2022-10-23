@@ -7,6 +7,6 @@ data class OnlineCountry(
     var imgFilePath: String? = ""
 ) {
     override fun toString(): String {
-        return "ID = $id, name = $name"
+        return "$name"
     }
 }

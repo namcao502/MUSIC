@@ -3,7 +3,6 @@ package com.example.music.online.ui.activities
 import android.annotation.SuppressLint
 import android.content.*
 import android.os.*
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -591,8 +590,8 @@ class OnlineMainActivity: AppCompatActivity(),
                 .into(binding.playerSheet.songImg)
         }
 
-        onlineArtistViewModel.getAllArtistFromSong(songList!![songPosition], 0)
-        onlineArtistViewModel.artistInSong[0].observe(this){
+        onlineArtistViewModel.getAllArtistFromSongID(songList!![songPosition].id!!)
+        onlineArtistViewModel.artistFromSongID.observe(this){
             when(it){
                 is UiState.Loading -> {
 
@@ -613,21 +612,22 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
-        songList!![songPosition].views = songList!![songPosition].views?.toInt()?.plus(1).toString()
-        onlineSongViewModel.updateViewForSong(songList!![songPosition])
-        onlineSongViewModel.updateView.observe(this){
-            when(it){
-                is UiState.Loading -> {
-
-                }
-                is UiState.Failure -> {
-
-                }
-                is UiState.Success -> {
-                    Log.i("TAG502", "loadUI: ${it.data}")
-                }
-            }
-        }
+        //update views
+//        songList!![songPosition].views = songList!![songPosition].views?.toInt()?.plus(1).toString()
+//        onlineSongViewModel.updateViewForSong(songList!![songPosition])
+//        onlineSongViewModel.updateView.observe(this){
+//            when(it){
+//                is UiState.Loading -> {
+//
+//                }
+//                is UiState.Failure -> {
+//
+//                }
+//                is UiState.Success -> {
+//                    Log.i("TAG502", "loadUI: ${it.data}")
+//                }
+//            }
+//        }
 
         updateProgress()
     }
@@ -830,7 +830,7 @@ class OnlineMainActivity: AppCompatActivity(),
         val currentSong = songList!![songPosition]
         FirebaseAuth.getInstance().currentUser?.let {
             onlineSongViewModel.addSongToPlaylist(currentSong, playlist, it)
-            Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
+            toast("Song ${currentSong.name} added to ${playlist.name} playlist")
         }
     }
 

@@ -96,4 +96,22 @@ class ArtistRepositoryImp(val database: FirebaseFirestore): ArtistRepository {
             }
     }
 
+    override fun getAllArtistFromSongID(songId: String, result: (UiState<List<OnlineArtist>>) -> Unit) {
+        database
+            .collection(FireStoreCollection.ARTIST)
+            .whereArrayContains("songs", songId)
+            .addSnapshotListener { value, _ ->
+                val artists: ArrayList<OnlineArtist> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val artist = document.toObject(OnlineArtist::class.java)
+                        artists.add(artist)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(artists)
+                )
+            }
+    }
+
 }

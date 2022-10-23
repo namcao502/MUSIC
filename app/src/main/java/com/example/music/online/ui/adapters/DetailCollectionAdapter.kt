@@ -25,7 +25,7 @@ class DetailCollectionAdapter(
 ): RecyclerView.Adapter<DetailCollectionAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
-    private var artistList: ArrayList<List<OnlineArtist>> = ArrayList()
+    private var artistList: ArrayList<String> = ArrayList()
 
     inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -111,7 +111,7 @@ class DetailCollectionAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setDataForArtist(artistList: ArrayList<List<OnlineArtist>>){
+    fun setDataForArtist(artistList: ArrayList<String>){
         this.artistList = artistList
         notifyDataSetChanged()
     }

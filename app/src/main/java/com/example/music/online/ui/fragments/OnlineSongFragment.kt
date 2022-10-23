@@ -1,19 +1,13 @@
 package com.example.music.online.ui.fragments
 
-import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.music.R
 import com.example.music.databinding.FragmentOnlineSongBinding
-import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
@@ -22,11 +16,9 @@ import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
 import com.example.music.utils.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
@@ -44,7 +36,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
 
     private val onlineSongAdapter: OnlineSongAdapter by lazy {
-        OnlineSongAdapter(requireContext(), this)
+        OnlineSongAdapter(requireContext(), this, viewLifecycleOwner, onlineArtistViewModel)
     }
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
@@ -96,26 +88,26 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
                 }
                 is UiState.Success -> {
 
-                    val artistList: ArrayList<List<OnlineArtist>> = ArrayList()
-                    for (i in 0 until it.data.size){
-                        onlineArtistViewModel.getAllArtistFromSong(it.data[i], i)
-                        onlineArtistViewModel.artistInSong[i].observe(viewLifecycleOwner){ artists ->
-                            when(artists){
-                                is UiState.Loading -> {
-
-                                }
-                                is UiState.Failure -> {
-
-                                }
-                                is UiState.Success -> {
-                                    artistList.add(artists.data)
-                                }
-                            }
-                        }
-                    }
+//                    val artistList: ArrayList<List<OnlineArtist>> = ArrayList()
+//                    for (i in 0 until it.data.size){
+//                        onlineArtistViewModel.getAllArtistFromSong(it.data[i], i)
+//                        onlineArtistViewModel.artistInSong[i].observe(viewLifecycleOwner){ artists ->
+//                            when(artists){
+//                                is UiState.Loading -> {
+//
+//                                }
+//                                is UiState.Failure -> {
+//
+//                                }
+//                                is UiState.Success -> {
+//                                    artistList.add(artists.data)
+//                                    onlineSongAdapter.setDataForArtist(artistList)
+//                                }
+//                            }
+//                        }
+//                    }
 
                     onlineSongAdapter.setData(it.data)
-                    onlineSongAdapter.setDataForArtist(artistList)
                     initialList = it.data
                 }
             }
@@ -123,29 +115,19 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun filterSong(text: String) {
-        //creating a new array list to filter our data.
-        val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
-
-        // running a for loop to compare elements.
+        val filter: ArrayList<OnlineSong> = ArrayList()
         for (item in onlineSongAdapter.songList) {
-            // checking if the entered string matched with any item of our recycler view.
             if (item.name!!.lowercase(Locale.getDefault()).contains(text.lowercase(Locale.getDefault()))) {
-                // if the item is matched we are
-                // adding it to our filtered list.
                 filter.add(item)
             }
         }
         if (filter.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
             toast("Not found")
         }
         if (text.isEmpty()){
             onlineSongAdapter.setData(initialList!!)
         }
         else {
-            // at last we are passing that filtered
-            // list to our adapter class.
             onlineSongAdapter.setData(filter)
         }
     }
