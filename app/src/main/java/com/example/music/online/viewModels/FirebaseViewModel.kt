@@ -6,9 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.music.utils.UiState
 import com.example.music.online.data.dao.FirebaseRepository
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.utils.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +23,10 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
     private val _songFromID = MutableLiveData<UiState<List<OnlineSong>>>()
     val songFromID: LiveData<UiState<List<OnlineSong>>> get() = _songFromID
 
-    private val _songFromID2 = MutableLiveData<UiState<List<OnlineSong>>>()
-    val songFromID2: LiveData<UiState<List<OnlineSong>>> get() = _songFromID2
+    private var _songFromID2: List<MutableLiveData<UiState<OnlineSong>>>
+            = List(100, init={MutableLiveData<UiState<OnlineSong>>()})
+
+    var songFromID2: List<LiveData<UiState<OnlineSong>>> = _songFromID2
 
     private val _updateModel = MutableLiveData<UiState<String>>()
     val updateModel: LiveData<UiState<String>> get() = _updateModel
@@ -50,10 +52,10 @@ class FirebaseViewModel @Inject constructor(val repository: FirebaseRepository):
         }
     }
 
-    fun getSongFromListSongID2(songs: List<String>){
-        _songFromID2.value = UiState.Loading
-        repository.getSongFromListSongID2(songs){
-            _songFromID2.value = it
+    fun getSongFromSongID(songId: String, position: Int){
+        _songFromID2[position].value = UiState.Loading
+        repository.getSongFromSongID(songId){
+            _songFromID2[position].value = it
         }
     }
 

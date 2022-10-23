@@ -11,7 +11,7 @@ interface FirebaseRepository {
 
     fun getSongFromListSongID(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit)
 
-    fun getSongFromListSongID2(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit)
+    fun getSongFromSongID(songId: String, result: (UiState<OnlineSong>) -> Unit)
 
     suspend fun uploadSingleSongFile(fileName: String, fileUri: Uri, result: (UiState<Uri>) -> Unit)
 

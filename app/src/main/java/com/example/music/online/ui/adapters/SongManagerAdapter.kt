@@ -15,9 +15,14 @@ import com.example.music.databinding.SongManagerRowItemBinding
 import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineArtistViewModel
 
-class SongManagerAdapter(private val clickASong: ClickASong): RecyclerView.Adapter<SongManagerAdapter.ViewHolder>() {
+class SongManagerAdapter(
+    private val clickASong: ClickASong,
+    val lifecycleOwner: LifecycleOwner,
+    val firebaseViewModel: FirebaseViewModel
+): RecyclerView.Adapter<SongManagerAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
 
@@ -40,12 +45,27 @@ class SongManagerAdapter(private val clickASong: ClickASong): RecyclerView.Adapt
         with(holder){
 
             itemView.setOnClickListener {
-                //click on a
                 clickASong.callBackFromClickASong(songList[position])
             }
 
             with(songList[position]){
+
                 binding.titleTxt.text = name
+
+//                firebaseViewModel.getSongFromSongID(id!!, position)
+//                firebaseViewModel.songFromID2[position].observe(lifecycleOwner){
+//                    when(it) {
+//                        is UiState.Loading -> {
+//
+//                        }
+//                        is UiState.Failure -> {
+//
+//                        }
+//                        is UiState.Success -> {
+//                            binding.titleTxt.text = it.data.name
+//                        }
+//                    }
+//                }
             }
         }
 

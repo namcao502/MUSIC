@@ -2,5 +2,3 @@
 tối ưa giao diện
 
 làm lại phần comment cho trực quan hơn
-
-phần load song by id vẫn còn vấn đề khi load nhiều hơn 10 (kiến nghị vứt viewmodel vào adapter cho nó load)

@@ -7,11 +7,11 @@ import android.util.Log
 import com.example.music.online.data.dao.FirebaseRepository
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.FireStoreCollection
-import com.example.music.utils.ListSongTemp
 import com.example.music.utils.UiState
 import com.example.music.utils.downloadFile
 import com.google.firebase.FirebaseException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -100,35 +100,32 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 //            }
     }
 
-    override fun getSongFromListSongID2(songs: List<String>, result: (UiState<List<OnlineSong>>) -> Unit) {
-
-        if (songs.isEmpty()){
-            return
-        }
-        val songList: ArrayList<OnlineSong> = ArrayList()
-
-        if (songs.size <= 9){
-            database
-                .collection(FireStoreCollection.SONG)
-                .whereIn("id", songs)
-                .addSnapshotListener { value, _ ->
-                    if (value != null) {
-                        for (document in value){
-                            val song = document.toObject(OnlineSong::class.java)
-                            songList.add(song)
-                        }
+    override fun getSongFromSongID(songId: String, result: (UiState<OnlineSong>) -> Unit) {
+//        database
+//            .collection(FireStoreCollection.SONG)
+//            .whereEqualTo("id", songId)
+//            .addSnapshotListener { value, _ ->
+//                if (value != null) {
+//                    for (document in value) {
+//                        val song = document.toObject(OnlineSong::class.java)
+//                        Log.i("TAG502", "getSongFromSongID: $song")
+//                        result.invoke(UiState.Success(song))
+//                        break
+//                    }
+//                }
+//            }
+        database
+            .collection(FireStoreCollection.SONG)
+            .whereEqualTo("id", songId).get()
+            .addOnSuccessListener {
+                if (it != null) {
+                    for (document in it) {
+                        val song = document.toObject(OnlineSong::class.java)
+                        result.invoke(UiState.Success(song))
+                        break
                     }
-                    result.invoke(
-                        UiState.Success(songList)
-                    )
                 }
-        }
-        else {
-            Log.i("TAG502", "getSongFromListSongID2, before: $songList")
-            getSongById(songList, songs, songs.size)
-            Log.i("TAG502", "getSongFromListSongID2, after: $songList")
-            result.invoke(UiState.Success(songList))
-        }
+            }
     }
 
     private fun getSongById(result: ArrayList<OnlineSong>, songs: List<String>, size: Int) {

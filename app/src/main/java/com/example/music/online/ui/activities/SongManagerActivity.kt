@@ -1,6 +1,7 @@
 package com.example.music.online.ui.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.example.music.utils.UiState
 import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
@@ -29,7 +31,7 @@ class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
     private var currentSongs: List<OnlineSong> = emptyList()
 
     private val songManagerAdapter: SongManagerAdapter by lazy {
-        SongManagerAdapter(this)
+        SongManagerAdapter(this, this, firebaseViewModel)
     }
 
     private var name: String = ""
@@ -115,22 +117,47 @@ class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
 
     private fun loadCurrent(){
         //reload
-        if (listSong.isNotEmpty()){
-            firebaseViewModel.getSongFromListSongID(listSong)
-            firebaseViewModel.songFromID.observe(this){
-                when(it) {
-                    is UiState.Loading -> {
+        if (listSong.isNotEmpty()) {
+            val songList: ArrayList<OnlineSong> = ArrayList()
+            for (i in 0 until listSong.size) {
+                firebaseViewModel.getSongFromSongID(listSong[i], i)
+                firebaseViewModel.songFromID2[i].observe(this) {
+                    when(it) {
+                        is UiState.Loading -> {
 
-                    }
-                    is UiState.Failure -> {
+                        }
+                        is UiState.Failure -> {
 
-                    }
-                    is UiState.Success -> {
-                        currentSongs = it.data
-                        songManagerAdapter.setData(currentSongs)
+                        }
+                        is UiState.Success -> {
+//                            Log.i("TAG502", "loadCurrent: ${it.data}")
+                            songList.add(it.data)
+                            currentSongs = songList
+                            songManagerAdapter.setData(currentSongs)
+                        }
                     }
                 }
             }
+//            toast(songList.toString())
+//            currentSongs = songList
+//            songManagerAdapter.setData(currentSongs)
+
+//            firebaseViewModel.getSongFromListSongID(listSong)
+//            firebaseViewModel.songFromID.observe(this){
+//                when(it) {
+//                    is UiState.Loading -> {
+//
+//                    }
+//                    is UiState.Failure -> {
+//
+//                    }
+//                    is UiState.Success -> {
+//                        currentSongs = it.data
+//                        toast(listSong.toString())
+//                        songManagerAdapter.setData(currentSongs)
+//                    }
+//                }
+//            }
         }
         else {
             currentSongs = listOf(OnlineSong("", "empty", "", "", ""))
