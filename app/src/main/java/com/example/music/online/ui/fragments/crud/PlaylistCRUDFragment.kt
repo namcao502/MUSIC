@@ -89,11 +89,27 @@ class PlaylistCRUDFragment : Fragment() {
                 }
                 is UiState.Success -> {
                     playlists = it.data
-                    with(binding.listView){
-                        adapter = ArrayAdapter(requireContext(),
-                            androidx.appcompat.R.layout.
-                            support_simple_spinner_dropdown_item, playlists)
-                    }
+                    binding.listView.adapter = ArrayAdapter(requireContext(),
+                        androidx.appcompat.R.layout.
+                        support_simple_spinner_dropdown_item, playlists)
+
+//                    for (x in playlists){
+//                        val viewTemp = OnlineView(x.id, FireStoreCollection.ALBUM, 0)
+//                        onlineViewViewModel.addView(viewTemp)
+//                        onlineViewViewModel.addView.observe(viewLifecycleOwner){
+//                            when(it){
+//                                is UiState.Loading -> {
+//
+//                                }
+//                                is UiState.Failure -> {
+//
+//                                }
+//                                is UiState.Success -> {
+//                                    Log.i("TAG502", "add view for ${x.name}: ")
+//                                }
+//                            }
+//                        }
+//                    }
                 }
             }
         }

@@ -31,7 +31,7 @@ class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
     private var currentSongs: List<OnlineSong> = emptyList()
 
     private val songManagerAdapter: SongManagerAdapter by lazy {
-        SongManagerAdapter(this, this, firebaseViewModel)
+        SongManagerAdapter(this)
     }
 
     private var name: String = ""
@@ -75,6 +75,7 @@ class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
             }
 
         })
+
         binding.thisSongsSv.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
                 filterThisSongs(text)

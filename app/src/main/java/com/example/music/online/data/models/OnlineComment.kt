@@ -7,6 +7,6 @@ data class OnlineComment(
     val userId: String? = ""
 ) {
     override fun toString(): String {
-        return "$message"
+        return "$message, $id"
     }
 }

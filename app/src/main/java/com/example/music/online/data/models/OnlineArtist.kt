@@ -7,6 +7,6 @@ data class OnlineArtist(
     var imgFilePath: String? = ""
 ) {
     override fun toString(): String {
-        return "$name"
+        return "$name, $id"
     }
 }

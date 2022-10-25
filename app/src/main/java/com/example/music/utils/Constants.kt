@@ -10,6 +10,7 @@ object FireStoreCollection{
     const val ALBUM = "Album"
     const val USER = "User"
     const val COUNTRY = "Country"
+    const val VIEW = "View"
     const val ADMIN = "Admin"
     const val MODEL_NAME = "modelName"
     const val MODEL_ID = "modelId"

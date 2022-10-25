@@ -3,6 +3,7 @@ package com.example.music.online.repositories
 import com.example.music.utils.UiState
 import com.example.music.online.data.dao.GenreRepository
 import com.example.music.online.data.models.OnlineGenre
+import com.example.music.online.data.models.OnlineView
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -34,6 +35,20 @@ class GenreRepositoryImp(val database: FirebaseFirestore): GenreRepository {
         doc.set(genre)
             .addOnSuccessListener {
                 result.invoke(UiState.Success("Genre ${genre.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+        val viewTemp = OnlineView("", doc.id, FireStoreCollection.GENRE, 0)
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .document()
+
+        viewTemp.id = viewRef.id
+        viewRef.set(viewTemp)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("View Added!"))
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))

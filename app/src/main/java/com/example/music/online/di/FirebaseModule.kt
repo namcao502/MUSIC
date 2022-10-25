@@ -99,4 +99,10 @@ object FirebaseModule {
         return CountryRepositoryImp(database)
     }
 
+    @Singleton
+    @Provides
+    fun provideViewRepository(database: FirebaseFirestore): ViewRepository{
+        return ViewRepositoryImp(database)
+    }
+
 }

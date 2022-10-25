@@ -8,26 +8,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.online.data.models.OnlineGenre
-import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.FragmentGenreCrudBinding
-import com.example.music.online.data.models.OnlinePlaylist
+import com.example.music.online.data.models.OnlineGenre
 import com.example.music.online.ui.activities.SongManagerActivity
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineGenreViewModel
-import com.example.music.utils.*
+import com.example.music.utils.FireStoreCollection
+import com.example.music.utils.UiState
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.toast
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
 import java.util.*
-import kotlin.collections.ArrayList
-
 
 @AndroidEntryPoint
 class GenreCRUDFragment : Fragment() {

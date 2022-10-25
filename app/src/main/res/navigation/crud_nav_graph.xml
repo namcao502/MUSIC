@@ -100,7 +100,7 @@
     <fragment
         android:id="@+id/countryCRUDFragment"
         android:name="com.example.music.online.ui.fragments.crud.CountryCRUDFragment"
-        android:label="CountryCRUDFragment" >
+        android:label="Country" >
         <action
             android:id="@+id/action_countryCRUDFragment_to_homeCRUDFragment"
             app:destination="@id/homeCRUDFragment" />

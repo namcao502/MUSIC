@@ -59,8 +59,8 @@ class AlbumCRUDFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         onlineAlbumViewModel.getAllAlbums()
-        onlineAlbumViewModel.album.observe(viewLifecycleOwner){
-            when(it){
+        onlineAlbumViewModel.album.observe(viewLifecycleOwner){ album ->
+            when(album){
                 is UiState.Loading -> {
 
                 }
@@ -68,10 +68,12 @@ class AlbumCRUDFragment : Fragment() {
 
                 }
                 is UiState.Success -> {
-                    albums = it.data
+
+                    albums = album.data
                     binding.listView.adapter = ArrayAdapter(requireContext(),
                         androidx.appcompat.R.layout.
                         support_simple_spinner_dropdown_item, albums)
+
                 }
             }
         }

@@ -4,6 +4,7 @@ import com.example.music.utils.UiState
 import com.example.music.online.data.dao.PlaylistRepository
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.data.models.OnlineView
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -148,6 +149,20 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
         doc.set(playlist)
             .addOnSuccessListener {
                 result.invoke(UiState.Success("Playlist ${playlist.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+        val viewTemp = OnlineView("", doc.id, FireStoreCollection.PLAYLIST, 0)
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .document()
+
+        viewTemp.id = viewRef.id
+        viewRef.set(viewTemp)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("View Added!"))
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))

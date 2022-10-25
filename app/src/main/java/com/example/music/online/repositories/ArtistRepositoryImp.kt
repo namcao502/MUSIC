@@ -4,6 +4,7 @@ import com.example.music.utils.UiState
 import com.example.music.online.data.dao.ArtistRepository
 import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.data.models.OnlineView
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -36,6 +37,20 @@ class ArtistRepositoryImp(val database: FirebaseFirestore): ArtistRepository {
         doc.set(artist)
             .addOnSuccessListener {
                 result.invoke(UiState.Success("Artist ${artist.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+        val viewTemp = OnlineView("", doc.id, FireStoreCollection.ARTIST, 0)
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .document()
+
+        viewTemp.id = viewRef.id
+        viewRef.set(viewTemp)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("View Added!"))
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))

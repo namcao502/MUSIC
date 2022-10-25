@@ -6,6 +6,7 @@ import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.view.Gravity
 import android.view.Window
 import android.view.WindowManager
@@ -18,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.data.models.OnlineView
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
+import com.example.music.online.viewModels.OnlineViewViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth

@@ -5,6 +5,7 @@ import com.example.music.online.data.dao.AlbumRepository
 import com.example.music.online.data.dao.CountryRepository
 import com.example.music.online.data.models.OnlineAlbum
 import com.example.music.online.data.models.OnlineCountry
+import com.example.music.online.data.models.OnlineView
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -37,6 +38,20 @@ class CountryRepositoryImp(val database: FirebaseFirestore): CountryRepository {
         doc.set(country)
             .addOnSuccessListener {
                 result.invoke(UiState.Success("Country ${country.name} added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
+        val viewTemp = OnlineView("", doc.id, FireStoreCollection.COUNTRY, 0)
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .document()
+
+        viewTemp.id = viewRef.id
+        viewRef.set(viewTemp)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("View Added!"))
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))

@@ -3,6 +3,7 @@ package com.example.music.online.repositories
 import com.example.music.utils.UiState
 import com.example.music.online.data.dao.AlbumRepository
 import com.example.music.online.data.models.OnlineAlbum
+import com.example.music.online.data.models.OnlineView
 import com.example.music.utils.FireStoreCollection
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -39,6 +40,21 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
             }
+
+        val viewTemp = OnlineView("", doc.id, FireStoreCollection.ALBUM, 0)
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .document()
+
+        viewTemp.id = viewRef.id
+        viewRef.set(viewTemp)
+            .addOnSuccessListener {
+                result.invoke(UiState.Success("View Added!"))
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.localizedMessage))
+            }
+
     }
 
     override fun updateAlbum(album: OnlineAlbum, result: (UiState<String>) -> Unit) {
@@ -75,6 +91,31 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
             }
+
+        //delete view
+        val viewRef = database
+            .collection(FireStoreCollection.VIEW)
+            .whereEqualTo("modelId", album.id)
+
+        viewRef.get()
+            .addOnSuccessListener { value ->
+                if (value != null){
+                    for (doc in value){
+                        doc.reference.delete()
+                            .addOnSuccessListener {
+                                result.invoke(UiState.Success("View deleted!!!"))
+                            }
+                            .addOnFailureListener {
+                                result.invoke(UiState.Failure(it.toString()))
+                            }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.toString()))
+            }
+
+
     }
 
 }
