@@ -93,11 +93,10 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
             }
 
         //delete view
-        val viewRef = database
+        database
             .collection(FireStoreCollection.VIEW)
             .whereEqualTo("modelId", album.id)
-
-        viewRef.get()
+            .get()
             .addOnSuccessListener { value ->
                 if (value != null){
                     for (doc in value){
@@ -114,8 +113,6 @@ class AlbumRepositoryImp(val database: FirebaseFirestore): AlbumRepository {
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.toString()))
             }
-
-
     }
 
 }

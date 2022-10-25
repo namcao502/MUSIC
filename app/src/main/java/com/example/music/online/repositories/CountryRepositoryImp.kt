@@ -92,6 +92,28 @@ class CountryRepositoryImp(val database: FirebaseFirestore): CountryRepository {
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
             }
+
+        //delete view
+        database
+            .collection(FireStoreCollection.VIEW)
+            .whereEqualTo("modelId", country.id)
+            .get()
+            .addOnSuccessListener { value ->
+                if (value != null){
+                    for (doc in value){
+                        doc.reference.delete()
+                            .addOnSuccessListener {
+                                result.invoke(UiState.Success("View deleted!!!"))
+                            }
+                            .addOnFailureListener {
+                                result.invoke(UiState.Failure(it.toString()))
+                            }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.toString()))
+            }
     }
 
 }

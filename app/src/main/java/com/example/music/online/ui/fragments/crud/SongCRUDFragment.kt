@@ -4,23 +4,22 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
-import com.example.music.online.data.models.OnlineSong
 import com.example.music.databinding.FragmentSongCrudBinding
-import com.example.music.utils.createProgressDialog
-import com.example.music.utils.toast
+import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineSongViewModel
-import com.example.music.online.viewModels.OnlineViewViewModel
+import com.example.music.utils.UiState
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.toast
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
@@ -93,6 +92,7 @@ class SongCRUDFragment : Fragment() {
                     with(binding.listView){
                         adapter = ArrayAdapter(requireContext(),
                             androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, songs)
+
                     }
                 }
             }

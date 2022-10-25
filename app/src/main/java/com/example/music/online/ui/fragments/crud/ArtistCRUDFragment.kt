@@ -91,6 +91,7 @@ class ArtistCRUDFragment : Fragment() {
                     artists = it.data
                     binding.listView.adapter = ArrayAdapter(requireContext(),
                         androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, artists)
+
                 }
             }
         }

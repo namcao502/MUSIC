@@ -203,6 +203,28 @@ class PlaylistRepositoryImp(val database: FirebaseFirestore): PlaylistRepository
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.localizedMessage))
             }
+
+        //delete view
+        database
+            .collection(FireStoreCollection.VIEW)
+            .whereEqualTo("modelId", playlist.id)
+            .get()
+            .addOnSuccessListener { value ->
+                if (value != null){
+                    for (doc in value){
+                        doc.reference.delete()
+                            .addOnSuccessListener {
+                                result.invoke(UiState.Success("View deleted!!!"))
+                            }
+                            .addOnFailureListener {
+                                result.invoke(UiState.Failure(it.toString()))
+                            }
+                    }
+                }
+            }
+            .addOnFailureListener {
+                result.invoke(UiState.Failure(it.toString()))
+            }
     }
 
 }

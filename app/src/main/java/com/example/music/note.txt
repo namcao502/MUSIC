@@ -2,3 +2,5 @@
 tối ưa giao diện
 
 làm lại phần comment cho trực quan hơn
+
+thêm phần cập nhật view cho album, artist, country, genre, playlist, song

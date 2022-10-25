@@ -39,6 +39,7 @@ class GenreCRUDFragment : Fragment() {
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
+
     private var imgUri: Uri? = null
 
     private var currentGenre: OnlineGenre? = null

@@ -3,6 +3,7 @@ package com.example.music.online.ui.activities
 import android.annotation.SuppressLint
 import android.content.*
 import android.os.*
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
@@ -63,6 +64,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private val onlineArtistViewModel: OnlineArtistViewModel by viewModels()
     private val onlineCommentViewModel: OnlineCommentViewModel by viewModels()
     private val firebaseViewModel: FirebaseViewModel by viewModels()
+    private val onlineViewViewModel: OnlineViewViewModel by viewModels()
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
@@ -612,22 +614,20 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
-        //update views
-//        songList!![songPosition].views = songList!![songPosition].views?.toInt()?.plus(1).toString()
-//        onlineSongViewModel.updateViewForSong(songList!![songPosition])
-//        onlineSongViewModel.updateView.observe(this){
-//            when(it){
-//                is UiState.Loading -> {
-//
-//                }
-//                is UiState.Failure -> {
-//
-//                }
-//                is UiState.Success -> {
-//                    Log.i("TAG502", "loadUI: ${it.data}")
-//                }
-//            }
-//        }
+        onlineViewViewModel.updateView(songList!![songPosition].id!!)
+        onlineViewViewModel.updateView.observe(this){
+            when(it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    Log.i("TAG502", "view updated for ${songList!![songPosition].name}")
+                }
+            }
+        }
 
         updateProgress()
     }

@@ -27,14 +27,26 @@ class ViewRepositoryImp(val database: FirebaseFirestore): ViewRepository {
     override fun updateViewForModel(modelId: String, result: (UiState<String>) -> Unit) {
         database
             .collection(FireStoreCollection.VIEW)
-            .document(modelId)
-            .update("quantity", FieldValue.increment(1))
-            .addOnSuccessListener {
-                result.invoke(UiState.Success("Updated"))
+            .whereEqualTo("modelId", modelId)
+            .get()
+            .addOnSuccessListener { value ->
+                if (value != null){
+                    for (doc in value){
+                        doc.reference.update("quantity", FieldValue.increment(1))
+                            .addOnSuccessListener {
+                                result.invoke(UiState.Success("View updated!!!"))
+                            }
+                            .addOnFailureListener {
+                                result.invoke(UiState.Failure(it.toString()))
+                            }
+                    }
+                }
+
             }
             .addOnFailureListener {
                 result.invoke(UiState.Failure(it.toString()))
             }
+
     }
 
     override fun deleteViewForModel(modelId: String, result: (UiState<String>) -> Unit) {
@@ -56,6 +68,7 @@ class ViewRepositoryImp(val database: FirebaseFirestore): ViewRepository {
             .collection(FireStoreCollection.VIEW)
             .document()
 
+        view.id = doc.id
         doc.set(view)
             .addOnSuccessListener {
                 result.invoke(UiState.Success("Added!"))

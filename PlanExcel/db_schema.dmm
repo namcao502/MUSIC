@@ -514,7 +514,7 @@
 			],
 			"relations": [
 				"2801f5eb-4bc5-481f-a7b9-63c7f2eb6a61",
-				"0f9f7461-2a72-4eeb-b8ff-4f41a4ef2281"
+				"423a8dd1-7156-453f-af12-5ba7323eb889"
 			],
 			"lines": [],
 			"keys": [
@@ -664,7 +664,7 @@
 				"5a565c0d-efd7-48f6-9633-af1cca89f661",
 				"3d0b6f7a-ee1b-4eff-b343-81aaba664fe9",
 				"ba1fb719-9b89-4184-95be-85efd3a86c3d",
-				"0f9f7461-2a72-4eeb-b8ff-4f41a4ef2281"
+				"423a8dd1-7156-453f-af12-5ba7323eb889"
 			],
 			"lines": [],
 			"keys": [
@@ -855,19 +855,19 @@
 			"generate": true,
 			"generateCustomCode": true
 		},
-		"0f9f7461-2a72-4eeb-b8ff-4f41a4ef2281": {
-			"id": "0f9f7461-2a72-4eeb-b8ff-4f41a4ef2281",
+		"423a8dd1-7156-453f-af12-5ba7323eb889": {
+			"id": "423a8dd1-7156-453f-af12-5ba7323eb889",
 			"visible": true,
-			"name": "View_Comment",
+			"name": "Comment_View",
 			"desc": "",
 			"type": "identifying",
-			"parent_key": "cae4b2a2-f937-45c7-9fa6-aaac81848cd6",
-			"parent": "f96728d3-b096-4d75-b254-5d0d9856456c",
-			"child": "6fa74d8c-b7dc-45b0-8c9a-eaa7c3c613d1",
+			"parent_key": "a9bd7f07-b6a1-4657-ba58-b55c394e1927",
+			"parent": "6fa74d8c-b7dc-45b0-8c9a-eaa7c3c613d1",
+			"child": "f96728d3-b096-4d75-b254-5d0d9856456c",
 			"c_mp": "true",
 			"c_mch": "true",
 			"c_p": "one",
-			"c_ch": "one",
+			"c_ch": "many",
 			"c_cp": "",
 			"c_cch": "",
 			"cols": [],
@@ -903,7 +903,7 @@
 		"writeFileParam": false,
 		"currentDisplayMode": "metadata",
 		"def_coltopk": false,
-		"lastSaved": "Tue Oct 25 2022 19:04:23 GMT+0700 (Indochina Time)"
+		"lastSaved": "Tue Oct 25 2022 19:06:14 GMT+0700 (Indochina Time)"
 	},
 	"otherObjects": {},
 	"diagrams": {
@@ -932,8 +932,8 @@
 				},
 				"35c55c7e-9ba5-41df-a028-ab3318afcc65": {
 					"referencedItemId": "35c55c7e-9ba5-41df-a028-ab3318afcc65",
-					"x": 429,
-					"y": 818,
+					"x": 384,
+					"y": 659,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -943,8 +943,8 @@
 				},
 				"28b76977-5caa-4de7-b53b-ebb275fe2c09": {
 					"referencedItemId": "28b76977-5caa-4de7-b53b-ebb275fe2c09",
-					"x": 449,
-					"y": 704,
+					"x": 383,
+					"y": 521,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -954,8 +954,8 @@
 				},
 				"2e027513-6a48-4ab9-ab42-4ff44a76dd0b": {
 					"referencedItemId": "2e027513-6a48-4ab9-ab42-4ff44a76dd0b",
-					"x": 1023,
-					"y": 834,
+					"x": 1016,
+					"y": 652,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -965,8 +965,8 @@
 				},
 				"6033c767-0bd6-43fe-88b2-f321cc9757a3": {
 					"referencedItemId": "6033c767-0bd6-43fe-88b2-f321cc9757a3",
-					"x": 433,
-					"y": 949,
+					"x": 385,
+					"y": 799,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -976,8 +976,8 @@
 				},
 				"59f8776b-f0ed-45b2-8869-ad0f394ff9b1": {
 					"referencedItemId": "59f8776b-f0ed-45b2-8869-ad0f394ff9b1",
-					"x": 1024,
-					"y": 947,
+					"x": 1016,
+					"y": 787,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -987,8 +987,8 @@
 				},
 				"6fa74d8c-b7dc-45b0-8c9a-eaa7c3c613d1": {
 					"referencedItemId": "6fa74d8c-b7dc-45b0-8c9a-eaa7c3c613d1",
-					"x": 1026,
-					"y": 714,
+					"x": 1012,
+					"y": 521,
 					"gHeight": 98,
 					"gWidth": 189,
 					"color": "#ffffff",
@@ -998,8 +998,8 @@
 				},
 				"bf1a9f8c-0ae7-4877-ab9a-8b321b9b8d02": {
 					"referencedItemId": "bf1a9f8c-0ae7-4877-ab9a-8b321b9b8d02",
-					"x": 725,
-					"y": 820,
+					"x": 687,
+					"y": 651,
 					"gHeight": 98,
 					"gWidth": 205,
 					"color": "#ffffff",
@@ -1009,8 +1009,8 @@
 				},
 				"f96728d3-b096-4d75-b254-5d0d9856456c": {
 					"referencedItemId": "f96728d3-b096-4d75-b254-5d0d9856456c",
-					"x": 344,
-					"y": 431,
+					"x": 353,
+					"y": 320,
 					"gHeight": 98,
 					"gWidth": 209,
 					"color": "#ffffff",
