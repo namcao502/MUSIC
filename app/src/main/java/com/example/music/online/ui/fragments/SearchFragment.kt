@@ -16,6 +16,7 @@ import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.UiState
+import com.example.music.utils.updateViewForModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -40,6 +41,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
+    private val onlineViewViewModel: OnlineViewViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -369,18 +371,22 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
     override fun callBackFromPlaylistClick(playlist: OnlinePlaylist) {
         sendDataToDetailFragment(playlist.name!!, playlist.songs!!, playlist.imgFilePath!!)
+        updateViewForModel(playlist.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromArtistClick(artist: OnlineArtist) {
         sendDataToDetailFragment(artist.name!!, artist.songs!!, artist.imgFilePath!!)
+        updateViewForModel(artist.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromGenreClick(genre: OnlineGenre) {
         sendDataToDetailFragment(genre.name!!, genre.songs!!, genre.imgFilePath!!)
+        updateViewForModel(genre.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromAlbumClick(album: OnlineAlbum) {
         sendDataToDetailFragment(album.name!!, album.songs!!, album.imgFilePath!!)
+        updateViewForModel(album.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromClickASongInDetail(songList: List<OnlineSong>, position: Int) {
@@ -397,6 +403,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
     override fun callBackFromCountryClick(country: OnlineCountry) {
         sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
+        updateViewForModel(country.id!!, onlineViewViewModel)
     }
 
 }

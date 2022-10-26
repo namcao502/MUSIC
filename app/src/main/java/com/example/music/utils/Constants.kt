@@ -12,6 +12,7 @@ object FireStoreCollection{
     const val COUNTRY = "Country"
     const val VIEW = "View"
     const val ADMIN = "Admin"
+    const val TRENDING = "Trending"
     const val MODEL_NAME = "modelName"
     const val MODEL_ID = "modelId"
     const val MODEL_SONG_LIST = "modelSongList"

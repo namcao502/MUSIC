@@ -20,8 +20,10 @@ import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
+import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.example.music.utils.WelcomeText
+import com.example.music.utils.updateViewForModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +50,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
     private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
+    private val onlineViewViewModel: OnlineViewViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -68,7 +71,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineCountryAdapter: OnlineCountryAdapter by lazy {
         OnlineCountryAdapter(requireContext(), this)
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -98,7 +100,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                 is UiState.Success -> {
 //                    onlinePlaylistInHomeAdapter.setData(playlist.data)
                     for (x in playlist.data){
-                        if (x.name == "Trending"){
+                        if (x.name == FireStoreCollection.TRENDING){
                             //update trending songs
                             onlineSongViewModel.getTrendingSong()
                             onlineSongViewModel.trendingSong.observe(viewLifecycleOwner){
@@ -291,18 +293,23 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     override fun callBackFromPlaylistClick(playlist: OnlinePlaylist) {
         sendDataToDetailFragment(playlist.name!!, playlist.songs!!, playlist.imgFilePath!!)
+        updateViewForModel(playlist.id!!, onlineViewViewModel)
+
     }
 
     override fun callBackFromArtistClick(artist: OnlineArtist) {
         sendDataToDetailFragment(artist.name!!, artist.songs!!, artist.imgFilePath!!)
+        updateViewForModel(artist.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromGenreClick(genre: OnlineGenre) {
         sendDataToDetailFragment(genre.name!!, genre.songs!!, genre.imgFilePath!!)
+        updateViewForModel(genre.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromAlbumClick(album: OnlineAlbum) {
         sendDataToDetailFragment(album.name!!, album.songs!!, album.imgFilePath!!)
+        updateViewForModel(album.id!!, onlineViewViewModel)
     }
 
     override fun callBackFromClickASongInDetail(songList: List<OnlineSong>, position: Int) {
@@ -315,6 +322,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     override fun callBackFromCountryClick(country: OnlineCountry) {
         sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
+        updateViewForModel(country.id!!, onlineViewViewModel)
     }
 
 }

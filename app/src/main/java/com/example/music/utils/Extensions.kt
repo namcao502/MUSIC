@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
@@ -21,6 +22,7 @@ import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.data.models.OnlineView
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
+import com.example.music.online.ui.fragments.DetailCollectionFragment
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineViewViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,6 +46,23 @@ fun changeEmailToXEmail(email: String): String {
     var first = splitEmail[0]
     first = first.replaceRange(1, first.length, "x")
     return first + "@" + splitEmail[1]
+}
+
+fun Fragment.updateViewForModel(modelId: String, onlineViewViewModel: OnlineViewViewModel){
+    onlineViewViewModel.updateView(modelId)
+    onlineViewViewModel.updateView.observe(this){
+        when(it) {
+            is UiState.Loading -> {
+
+            }
+            is UiState.Failure -> {
+
+            }
+            is UiState.Success -> {
+                Log.i("TAG502", "view updated for $modelId")
+            }
+        }
+    }
 }
 
 fun downloadFile(context: Context,

@@ -10,7 +10,7 @@ import com.example.music.R
 import com.example.music.databinding.ColumnItemBinding
 import com.example.music.online.data.models.OnlineAlbum
 
-class OnlineAlbumAdapter(val context: Context, val clickAnAlbum: ClickAnAlbum)
+class OnlineAlbumAdapter(val context: Context, private val clickAnAlbum: ClickAnAlbum)
     : RecyclerView.Adapter<OnlineAlbumAdapter.ViewHolder>() {
 
     var album = emptyList<OnlineAlbum>()
