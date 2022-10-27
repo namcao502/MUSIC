@@ -160,19 +160,45 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
 
     override fun getTrendingSong(result: (UiState<List<String>>) -> Unit) {
         database
-            .collection(FireStoreCollection.SONG).orderBy("views", Query.Direction.DESCENDING).limit(10)
+            .collection(FireStoreCollection.VIEW)
+            .whereEqualTo("modelName", FireStoreCollection.SONG).limit(10)
             .addSnapshotListener { value, _ ->
-                val songs: ArrayList<String> = ArrayList()
-                if (value != null) {
+                if (value != null){
                     for (document in value){
-                        val song = document.toObject(OnlineSong::class.java)
-                        songs.add(song.id!!)
+                        val view = document.toObject(OnlineView::class.java)
+                        database
+                            .collection(FireStoreCollection.SONG)
+                            .whereEqualTo("id", view.modelId)
+                            .addSnapshotListener { value2, _ ->
+                                val songs: ArrayList<String> = ArrayList()
+                                if (value2 != null) {
+                                    for (document2 in value2){
+                                        val song = document.toObject(OnlineSong::class.java)
+                                        songs.add(song.id!!)
+                                    }
+                                }
+                                result.invoke(
+                                    UiState.Success(songs)
+                                )
+                            }
                     }
                 }
-                result.invoke(
-                    UiState.Success(songs)
-                )
             }
+
+//        database
+//            .collection(FireStoreCollection.SONG).orderBy("views", Query.Direction.DESCENDING).limit(10)
+//            .addSnapshotListener { value, _ ->
+//                val songs: ArrayList<String> = ArrayList()
+//                if (value != null) {
+//                    for (document in value){
+//                        val song = document.toObject(OnlineSong::class.java)
+//                        songs.add(song.id!!)
+//                    }
+//                }
+//                result.invoke(
+//                    UiState.Success(songs)
+//                )
+//            }
     }
 
     override fun updateViewForSong(song: OnlineSong, result: (UiState<String>) -> Unit) {

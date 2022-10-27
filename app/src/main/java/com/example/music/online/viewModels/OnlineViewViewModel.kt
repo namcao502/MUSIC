@@ -7,6 +7,7 @@ import com.example.music.utils.UiState
 import com.example.music.online.data.dao.AlbumRepository
 import com.example.music.online.data.dao.ViewRepository
 import com.example.music.online.data.models.OnlineAlbum
+import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.data.models.OnlineView
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,6 +27,12 @@ class OnlineViewViewModel @Inject constructor(val repository: ViewRepository): V
 
     private val _deleteView = MutableLiveData<UiState<String>>()
     val deleteView: LiveData<UiState<String>> get() = _deleteView
+
+    private val _getAllModelIDByName = MutableLiveData<UiState<List<String>>>()
+    val getAllModelIDByName: LiveData<UiState<List<String>>> get() = _getAllModelIDByName
+
+    private val _getTrendingSong = MutableLiveData<UiState<List<OnlineSong>>>()
+    val getTrendingSong: LiveData<UiState<List<OnlineSong>>> get() = _getTrendingSong
 
     fun getViewForModel(modelId: String) {
         _getView.value = UiState.Loading
@@ -52,6 +59,20 @@ class OnlineViewViewModel @Inject constructor(val repository: ViewRepository): V
         _deleteView.value = UiState.Loading
         repository.deleteViewForModel(modelId){
             _deleteView.value = it
+        }
+    }
+
+    fun getAllModelIDByName(modelName: String){
+        _getAllModelIDByName.value = UiState.Loading
+        repository.getAllModelIDByName(modelName){
+            _getAllModelIDByName.value = it
+        }
+    }
+
+    fun getTrendingSong(listID: List<String>){
+        _getTrendingSong.value = UiState.Loading
+        repository.getTrendingSong(listID){
+            _getTrendingSong.value = it
         }
     }
 

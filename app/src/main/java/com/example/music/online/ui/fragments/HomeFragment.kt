@@ -48,7 +48,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineGenreViewModel: OnlineGenreViewModel by viewModels()
     private val onlineAlbumViewModel: OnlineAlbumViewModel by viewModels()
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
-    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
     private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
     private val onlineViewViewModel: OnlineViewViewModel by viewModels()
 
@@ -88,6 +87,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             adapter = onlinePlaylistInHomeAdapter
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         }
+
         onlinePlaylistViewModel.getAllPlaylists()
         onlinePlaylistViewModel.playlist2.observe(viewLifecycleOwner){ playlist ->
             when(playlist){
@@ -98,13 +98,13 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
                 }
                 is UiState.Success -> {
-//                    onlinePlaylistInHomeAdapter.setData(playlist.data)
+
                     for (x in playlist.data){
                         if (x.name == FireStoreCollection.TRENDING){
-                            //update trending songs
-                            onlineSongViewModel.getTrendingSong()
-                            onlineSongViewModel.trendingSong.observe(viewLifecycleOwner){
-                                when(it){
+                            //get top 10 song's ids by views
+                            onlineViewViewModel.getAllModelIDByName(FireStoreCollection.SONG)
+                            onlineViewViewModel.getAllModelIDByName.observe(viewLifecycleOwner){ listID ->
+                                when(listID) {
                                     is UiState.Loading -> {
 
                                     }
@@ -112,8 +112,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
                                     }
                                     is UiState.Success -> {
-                                        x.songs = it.data
-                                        updatePlaylist(x)
+                                        x.songs = listID.data
+                                        Log.i("TAG502", "onViewCreated: ${listID.data}")
                                         onlinePlaylistInHomeAdapter.setData(playlist.data)
                                     }
                                 }
@@ -121,7 +121,32 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                             break
                         }
                     }
-                    onlinePlaylistInHomeAdapter.setData(playlist.data)
+
+
+//                    onlinePlaylistInHomeAdapter.setData(playlist.data)
+//                    for (x in playlist.data){
+//                        if (x.name == FireStoreCollection.TRENDING){
+//                            //update trending songs
+//                            onlineSongViewModel.getTrendingSong()
+//                            onlineSongViewModel.trendingSong.observe(viewLifecycleOwner){
+//                                when(it){
+//                                    is UiState.Loading -> {
+//
+//                                    }
+//                                    is UiState.Failure -> {
+//
+//                                    }
+//                                    is UiState.Success -> {
+//                                        x.songs = it.data
+//                                        updatePlaylist(x)
+//                                        onlinePlaylistInHomeAdapter.setData(playlist.data)
+//                                    }
+//                                }
+//                            }
+//                            break
+//                        }
+//                    }
+
                 }
             }
         }
