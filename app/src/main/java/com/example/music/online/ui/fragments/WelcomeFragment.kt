@@ -23,7 +23,6 @@ import com.example.music.online.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class WelcomeFragment: Fragment() {
 
@@ -33,6 +32,7 @@ class WelcomeFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+
         getUser()
         registerObserver()
         listenToChannels()
@@ -94,7 +94,7 @@ class WelcomeFragment: Fragment() {
 //                welcomeTxt.isVisible = false
                 signinButton.text = "Sign in for online"
                 signinButton.setOnClickListener {
-                    findNavController().navigate(R.id.action_homeFragment_to_signInFragment)
+//                    findNavController().navigate(R.id.action_homeFragment_to_signInFragment)
                 }
                 onlineButton.visibility = View.GONE
             }

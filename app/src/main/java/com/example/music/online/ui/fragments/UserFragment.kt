@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -16,7 +17,10 @@ import com.example.music.R
 import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlineAccount
 import com.example.music.databinding.FragmentUserBinding
+import com.example.music.offline.ui.activities.MainActivity
+import com.example.music.online.ui.activities.AccountActivity
 import com.example.music.online.ui.activities.CRUDActivity
+import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
 import com.example.music.online.viewModels.FirebaseViewModel
@@ -41,6 +45,8 @@ class UserFragment: Fragment() {
 
     private val firebaseViewModel: FirebaseViewModel by viewModels()
 
+    private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
+
     private var isEditing = false
 
     private lateinit var currentAccount: OnlineAccount
@@ -58,6 +64,17 @@ class UserFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.signOutBtn.setOnClickListener {
+            firebaseAuthViewModel.signOut()
+            startActivity(Intent(requireContext(), AccountActivity::class.java))
+            super.onDestroy()
+        }
+
+        binding.libraryBtn.setOnClickListener {
+            startActivity(Intent(requireContext(), MainActivity::class.java))
+            super.onDestroy()
+        }
 
         val currentUserID = Firebase.auth.currentUser!!.uid
         accountViewModel.getAccountByID(currentUserID)

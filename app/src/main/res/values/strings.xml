@@ -52,4 +52,5 @@
     <string name="all_songs">All songs</string>
     <string name="this_songs">This songs</string>
     <string name="length">Length</string>
+    <string name="sign_out">Sign out</string>
 </resources>

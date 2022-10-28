@@ -1,5 +1,6 @@
 package com.example.music.online.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentSignupBinding
+import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,10 +25,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
     private val viewModel: FirebaseAuthViewModel by activityViewModels()
+    private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
     private var _binding: FragmentSignupBinding? = null
-    private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
     private val binding get()  = _binding
-    private val TAG = "SignUpFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +35,10 @@ class SignUpFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSignupBinding.inflate(inflater , container , false)
+
+        getUser()
+        listenToChannels2()
+        registerObserver2()
 
         registerObservers()
         listenToChannels()
@@ -65,7 +70,8 @@ class SignUpFragment : Fragment() {
     private fun registerObservers() {
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
-                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+//                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
             }
         }
     }
@@ -103,12 +109,32 @@ class SignUpFragment : Fragment() {
                                 progressBarSignup.isInvisible = true
                             }
                     }
-
-                    else ->{
-                        Log.d(TAG, "listenToChannels: No event received so far")
-                    }
                 }
 
+            }
+        }
+    }
+    private fun getUser() {
+        firebaseAuthViewModel.getCurrentUser()
+    }
+
+    private fun listenToChannels2() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            firebaseAuthViewModel.allEventsFlow.collect { event ->
+                when(event){
+                    is FirebaseAuthViewModel.AllEvents.Message ->{
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun registerObserver2() {
+        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
             }
         }
     }

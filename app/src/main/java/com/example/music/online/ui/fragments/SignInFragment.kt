@@ -1,6 +1,7 @@
 package com.example.music.online.ui.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,29 +18,40 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentSigninBinding
+import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SignInFragment : Fragment() {
+class SignInFragment: Fragment() {
 
     private val viewModel : FirebaseAuthViewModel by activityViewModels()
-    private var _binding : FragmentSigninBinding? = null
-    private val binding get() = _binding
-    private val TAG = "SignInFragment"
+    private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
+    private var _binding: FragmentSigninBinding? = null
+    private val binding get() = _binding!!
     private lateinit var rememberSP: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSigninBinding.inflate(inflater , container , false)
+
+
+        if ((activity as AppCompatActivity?)!!.supportActionBar != null) {
+            (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+        }
+
+        getUser()
+        listenToChannels2()
+        registerObserver2()
+
         listenToChannels()
         registerObservers()
 
-        binding?.apply {
+        binding.apply {
 
             signInButton.setOnClickListener {
                 progressBarSignin.isVisible = true
@@ -61,13 +74,14 @@ class SignInFragment : Fragment() {
             rememberCb.isChecked = rememberSP.getBoolean("check", false)
         }
 
-        return binding?.root
+        return binding.root
     }
 
     private fun registerObservers() {
         viewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
-                findNavController().navigate(R.id.action_signInFragment_to_homeFragment2)
+//                findNavController().navigate(R.id.action_signInFragment_to_homeFragment2)
+                startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
             }
         }
     }
@@ -77,7 +91,7 @@ class SignInFragment : Fragment() {
             viewModel.allEventsFlow.collect { event ->
                 when(event){
                     is FirebaseAuthViewModel.AllEvents.Error -> {
-                        binding?.apply {
+                        binding.apply {
                             errorTxt.text =  event.error
                             progressBarSignin.isInvisible = true
                         }
@@ -86,39 +100,59 @@ class SignInFragment : Fragment() {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                         //sign in success
                         val editor = rememberSP.edit()
-                        if (binding!!.rememberCb.isChecked){
-                            editor.putString("email", binding!!.userEmailEtv.text.toString())
-                            editor.putString("password", binding!!.userPasswordEtv.text.toString())
+                        if (binding.rememberCb.isChecked){
+                            editor.putString("email", binding.userEmailEtv.text.toString())
+                            editor.putString("password", binding.userPasswordEtv.text.toString())
                             editor.putBoolean("check", true)
-                            editor.commit()
+                            editor.apply()
                         }
                         else {
                             editor.putString("email", "")
                             editor.putString("password", "")
                             editor.putBoolean("check", false)
-                            editor.commit()
+                            editor.apply()
                         }
                     }
                     is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if (event.code == 1)
-                            binding?.apply {
+                            binding.apply {
                                 userEmailEtvl.error = "email should not be empty"
                                 progressBarSignin.isInvisible = true
                             }
 
 
                         if(event.code == 2)
-                            binding?.apply {
+                            binding.apply {
                                 userPasswordEtvl.error = "password should not be empty"
                                 progressBarSignin.isInvisible = true
                             }
                     }
-
-                    else ->{
-                        Log.d(TAG, "listenToChannels: No event received so far")
-                    }
                 }
+            }
+        }
+    }
 
+    private fun getUser() {
+        firebaseAuthViewModel.getCurrentUser()
+    }
+
+    private fun listenToChannels2() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            firebaseAuthViewModel.allEventsFlow.collect { event ->
+                when(event){
+                    is FirebaseAuthViewModel.AllEvents.Message ->{
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun registerObserver2() {
+        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
             }
         }
     }
