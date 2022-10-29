@@ -1,6 +1,4 @@
 
 tối ưa giao diện
 
-làm lại phần comment cho trực quan hơn
-
-đưa nút sign out và go to collection vào phần thông tin cá nhân
+chỉnh lại giao diện bên offine

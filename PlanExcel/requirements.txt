@@ -1,0 +1,45 @@
+1. Danh sách các yêu cầu chức năng và phi chức năng
+Yêu cầu chức năng: 
+- Đăng nhập, đăng ký, đăng xuất, ghi nhớ tài khoản đăng nhập, quên mật khẩu, đổi mật khẩu.
+- Quản lý danh sách phát.
+- Quản lý nghệ sĩ.
+- Quản lý thể loại.
+- Quản lý album.
+- Quản lý quốc gia.
+- Quản lý bài hát.
+- Quản lý bình luận.
+- Quản lý thông tin cá nhân của người dùng.
+- Quản lý tài khoản.
+- Tìm kiếm bài hát, tìm kiếm danh sách phát, tìm kiếm nghệ sĩ, tìm kiếm thể loại, tìm kiếm album, tìm kiếm quốc gia.
+- Phát bài hát, tải bài hát.
+- Phát hiện, phát các bài hát có trên thiết bị, thêm bài hát vào danh sách phát và quản lý danh sách phát (ngoại tuyến).
+
+Yêu cầu phi chức năng: 
+- Giao diện người dùng thân thiện, đẹp và dễ thao tác.
+- Bảo mật thông tin của người dùng.
+- Hiệu suất nhanh (các tác vụ phản hồi dưới 0,5s).
+- Dễ dàng bảo trì và nâng cấp.
+
+2. Các tác nhân với chức năng tương ứng
+
+- Người dùng: 
++ Đăng nhập, đăng ký, đăng xuất, ghi nhớ tài khoản đăng nhập, quên mật khẩu, đổi mật khẩu.
++ Quản lý danh sách phát của chính họ.
++ Thêm bài hát vào danh sách phát, thêm danh sách phát của hệ thống thành của họ.
++ Quản lý thông tin cá nhân.
++ Quản lý bình luận.
++ Tìm kiếm bài hát, tìm kiếm danh sách phát, tìm kiếm nghệ sĩ, tìm kiếm thể loại, tìm kiếm album, tìm kiếm quốc gia.
++ Phát bài hát trực tuyến, tải bài hát trực tuyến.
++ Phát các bài hát có trên thiết bị, thêm bài hát vào danh sách phát và quản lý danh sách phát (ngoại tuyến).
+
+- Người quản trị (có tất cả các chức năng của người dùng):
++ Quản lý danh sách phát hệ thống.
++ Quản lý nghệ sĩ.
++ Quản lý thể loại.
++ Quản lý album.
++ Quản lý quốc gia.
++ Quản lý bài hát.
++ Quản lý tài khoản.
+
+
+

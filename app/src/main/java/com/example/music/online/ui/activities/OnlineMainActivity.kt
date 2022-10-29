@@ -19,6 +19,7 @@ import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.services.OnlineMusicPlayerService
+import com.example.music.online.ui.adapters.CommentDialogAdapter
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.*
 import com.example.music.online.viewModels.*
@@ -39,7 +40,8 @@ class OnlineMainActivity: AppCompatActivity(),
     OnlineDialogPlaylistAdapter.ItemClickListener,
     HomeFragment.ClickSongFromDetail,
     SearchFragment.ClickSongFromDetail,
-    OnlinePlaylistFragment.ClickSongFromDetail {
+    OnlinePlaylistFragment.ClickSongFromDetail,
+    CommentDialogAdapter.ClickAComment{
 
     private lateinit var binding: ActivityOnlineMainBinding
 
@@ -51,6 +53,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private var activeFragment: Fragment = homeFragment
 
     var songList: List<OnlineSong>? = null
+    var comments: List<OnlineComment> = emptyList()
     private var songPosition = -1
     private var playState = PlayState.GO
     private var currentArtists: String = ""
@@ -176,11 +179,18 @@ class OnlineMainActivity: AppCompatActivity(),
                 //create bottom sheet dialog
                 val bottomSheetDialog = createBottomSheetDialog(R.layout.comment_dialog)
 
-                val commentLv = bottomSheetDialog.findViewById<ListView>(R.id.comment_lv)
+                val commentRv = bottomSheetDialog.findViewById<RecyclerView>(R.id.comment_rv)
                 val postBtn = bottomSheetDialog.findViewById<Button>(R.id.post_cmt_btn)
                 val message = bottomSheetDialog.findViewById<EditText>(R.id.message_et_cmt_dialog)
 
-                var comments: List<OnlineComment> = emptyList()
+                val commentDialogAdapter: CommentDialogAdapter by lazy {
+                    CommentDialogAdapter(this, this)
+                }
+
+                with(commentRv!!){
+                    adapter = commentDialogAdapter
+                    layoutManager = LinearLayoutManager(this@OnlineMainActivity)
+                }
 
                 //prepare data for listView
                 onlineCommentViewModel.getAllCommentForSong(songList!![songPosition])
@@ -194,94 +204,9 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                         is UiState.Success -> {
                             comments = comment.data
-//                        for (x in comments){
-//                            x.message = Firebase.auth.currentUser!!.email.toString() + ": " + x.message
-//                        }
-                            commentLv!!.adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, comments)
+                            commentDialogAdapter.setData(comments)
                         }
                     }
-                }
-
-                commentLv!!.setOnItemClickListener { _, _, i, _ ->
-                    //update
-                    if (comments[i].userId!! == Firebase.auth.currentUser!!.uid){
-                        val builder = AlertDialog.Builder(this)
-                        val inflater = layoutInflater
-                        val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
-
-                        view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(comments[i].message)
-
-                        builder.setMessage("Edit this comment...")
-                            .setTitle("")
-                            .setView(view)
-                            .setPositiveButton("Save") { _, _ ->
-
-                                val titleTemp = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
-
-                                if (titleTemp.isEmpty()){
-                                    toast("Please type something...")
-                                }
-                                else {
-                                    comments[i].message = titleTemp
-                                    onlineCommentViewModel.updateComment(comments[i])
-                                    onlineCommentViewModel.updateComment.observe(this){
-                                        when(it){
-                                            is UiState.Loading -> {
-
-                                            }
-                                            is UiState.Failure -> {
-
-                                            }
-                                            is UiState.Success -> {
-                                                toast("Updated!!!")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .setNegativeButton("Cancel") { _, _ ->
-                                // User cancelled the dialog
-                            }
-                        // Create the AlertDialog object and return it
-                        builder.create().show()
-                    }
-                    else {
-                        toast("You can't edit this comment!")
-                    }
-                }
-
-                commentLv.setOnItemLongClickListener { _, _, i, l ->
-                    val builder = AlertDialog.Builder(this)
-                    builder.setMessage("Delete this comment?")
-                        .setTitle("")
-                        .setPositiveButton("Delete") { _, _ ->
-                            if (comments[i].userId!! == Firebase.auth.currentUser!!.uid) {
-                                onlineCommentViewModel.deleteComment(comments[i])
-                                onlineCommentViewModel.deleteComment.observe(this) {
-                                    when (it) {
-                                        is UiState.Loading -> {
-
-                                        }
-                                        is UiState.Failure -> {
-
-                                        }
-                                        is UiState.Success -> {
-                                            toast(it.data)
-                                        }
-                                    }
-                                }
-                            } else {
-                                toast("You can't delete this comment")
-                            }
-
-                        }
-                        .setNegativeButton("Cancel") { _, _ ->
-                            // User cancelled the dialog
-                        }
-                    // Create the AlertDialog object and return it
-                    builder.create().show()
-
-                    return@setOnItemLongClickListener false
                 }
 
                 postBtn!!.setOnClickListener {
@@ -844,6 +769,87 @@ class OnlineMainActivity: AppCompatActivity(),
         this.songList = songs
         this.songPosition = position
         preparePlayer()
+    }
+
+    override fun callBackFromMenuClickComment(action: String, comment: OnlineComment) {
+        if (action == "Edit"){
+            if (comment.userId!! == Firebase.auth.currentUser!!.uid){
+
+                val builder = AlertDialog.Builder(this)
+                val inflater = layoutInflater
+                val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
+
+                view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).setText(comment.message)
+
+                builder.setMessage("Edit this comment...")
+                    .setTitle("")
+                    .setView(view)
+                    .setPositiveButton("Save") { _, _ ->
+
+                        val titleTemp = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+
+                        if (titleTemp.isEmpty()){
+                            toast("Please type something...")
+                        }
+                        else {
+                            comment.message = titleTemp
+                            onlineCommentViewModel.updateComment(comment)
+                            onlineCommentViewModel.updateComment.observe(this){
+                                when(it){
+                                    is UiState.Loading -> {
+
+                                    }
+                                    is UiState.Failure -> {
+
+                                    }
+                                    is UiState.Success -> {
+                                        toast("Comment updated!!!")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .setNegativeButton("Cancel") { _, _ ->
+                        // User cancelled the dialog
+                    }
+                // Create the AlertDialog object and return it
+                builder.create().show()
+            }
+            else {
+                toast("You can't edit this comment!")
+            }
+        }
+        if (action == "Delete"){
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Delete this comment?")
+                .setTitle("")
+                .setPositiveButton("Delete") { _, _ ->
+                    if (comment.userId!! == Firebase.auth.currentUser!!.uid) {
+                        onlineCommentViewModel.deleteComment(comment)
+                        onlineCommentViewModel.deleteComment.observe(this) {
+                            when (it) {
+                                is UiState.Loading -> {
+
+                                }
+                                is UiState.Failure -> {
+
+                                }
+                                is UiState.Success -> {
+                                    toast(it.data)
+                                }
+                            }
+                        }
+                    } else {
+                        toast("You can't delete this comment")
+                    }
+
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    // User cancelled the dialog
+                }
+            // Create the AlertDialog object and return it
+            builder.create().show()
+        }
     }
 
 }
