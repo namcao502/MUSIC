@@ -121,31 +121,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                             break
                         }
                     }
-
-
-//                    onlinePlaylistInHomeAdapter.setData(playlist.data)
-//                    for (x in playlist.data){
-//                        if (x.name == FireStoreCollection.TRENDING){
-//                            //update trending songs
-//                            onlineSongViewModel.getTrendingSong()
-//                            onlineSongViewModel.trendingSong.observe(viewLifecycleOwner){
-//                                when(it){
-//                                    is UiState.Loading -> {
-//
-//                                    }
-//                                    is UiState.Failure -> {
-//
-//                                    }
-//                                    is UiState.Success -> {
-//                                        x.songs = it.data
-//                                        updatePlaylist(x)
-//                                        onlinePlaylistInHomeAdapter.setData(playlist.data)
-//                                    }
-//                                }
-//                            }
-//                            break
-//                        }
-//                    }
+                    onlinePlaylistInHomeAdapter.setData(playlist.data)
 
                 }
             }
