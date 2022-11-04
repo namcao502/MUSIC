@@ -2,7 +2,6 @@ package com.example.music.offline.ui.fragments
 
 import android.Manifest
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
@@ -27,6 +26,7 @@ import com.example.music.offline.viewModels.PlaylistViewModel
 import com.example.music.offline.viewModels.ScanSongInStorage
 import com.example.music.offline.viewModels.SongInPlaylistViewModel
 import com.example.music.offline.viewModels.SongViewModel
+import com.example.music.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,7 +57,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         _binding = FragmentSongBinding.inflate(layoutInflater, container, false)
 
         requestRead()
-        Toast.makeText(requireContext(), "Scan completed", Toast.LENGTH_SHORT).show()
+        toast("Scan completed")
 
         return binding.root
     }
@@ -67,9 +67,9 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             adapter = songAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-        songViewModel.readAllSongs().observe(viewLifecycleOwner, Observer {
+        songViewModel.readAllSongs().observe(viewLifecycleOwner) {
             songAdapter.setData(it)
-        })
+        }
 
     }
 
@@ -153,14 +153,12 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
         builder.setMessage("Delete ${song.name}?")
             .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-                    songViewModel.deleteSong(song)
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+            .setPositiveButton("Delete") { _, _ ->
+                songViewModel.deleteSong(song)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -184,23 +182,22 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         builder.setMessage("Create")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Create",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Create") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val playlist = Playlist(0, title)
-                        playlistViewModel.addPlaylist(playlist)
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                if (title.isEmpty()) {
+                    Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val playlist = Playlist(0, title)
+                    playlistViewModel.addPlaylist(playlist)
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -216,23 +213,21 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         builder.setMessage("Rename")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Rename",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Rename") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
-                        playlistViewModel.updatePlaylist(updatedPlaylist)
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                if (title.isEmpty()) {
+                    toast("Name can't be empty")
+                } else {
+                    val updatedPlaylist = Playlist(playlist.playlist_id, title)
+                    playlistViewModel.updatePlaylist(updatedPlaylist)
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -242,20 +237,18 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-                    playlistViewModel.deletePlaylist(playlist)
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+            .setPositiveButton("Delete") { _, _ ->
+                playlistViewModel.deletePlaylist(playlist)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
 
         builder.create().show()
     }
 
-    fun requestRead() {
+    private fun requestRead() {
         if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED
@@ -277,6 +270,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == permission) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

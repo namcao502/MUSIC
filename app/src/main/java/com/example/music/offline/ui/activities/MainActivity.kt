@@ -135,6 +135,10 @@ class MainActivity:
 
     private fun listener() {
 
+        binding.miniPlayerLayout.setOnClickListener {
+            BottomSheetBehavior.from(binding.bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         binding.addToPlaylistBtn.setOnClickListener {
             val dialog = Dialog(this)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)

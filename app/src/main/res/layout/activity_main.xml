@@ -42,9 +42,9 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/song_img"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_marginTop="75dp"
+            android:layout_width="370dp"
+            android:layout_height="370dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/music_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,13 +54,12 @@
             android:id="@+id/mini_player_layout"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:background="@color/main_color"
+            android:background="@drawable/mini_player_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ProgressBar
-                android:max="100"
                 android:indeterminate="false"
                 android:indeterminateTintMode="src_atop"
                 android:indeterminateTint="#e88275"
@@ -69,7 +68,7 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:id="@+id/mini_pb"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -110,17 +109,16 @@
                 android:contentDescription="@string/todo" />
 
             <TextView
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:id="@+id/mini_song_title"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/title"
-                android:textAlignment="textStart"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/mini_song_artist"
                 app:layout_constraintEnd_toStartOf="@+id/mini_previous_btn"
@@ -128,17 +126,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:id="@+id/mini_song_artist"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="8dp"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/artists"
-                android:textAlignment="textStart"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/mini_previous_btn"
@@ -151,22 +148,26 @@
 
 
         <ImageView
+            android:scaleType="centerInside"
             android:id="@+id/play_state_btn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="48dp"
+            android:background="@drawable/circle_button_light"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_baseline_arrow_forward_24"
             app:layout_constraintEnd_toStartOf="@+id/previous_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/song_sb"
-            android:contentDescription="@string/todo" />
+            app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
         <ImageView
+            android:scaleType="centerInside"
+            android:background="@drawable/circle_button_light"
             android:id="@+id/add_to_playlist_btn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="48dp"
-            android:src="@drawable/ic_baseline_playlist_add_24"
+            android:src="@drawable/ic_baseline_add_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/next_btn"
             app:layout_constraintTop_toBottomOf="@+id/song_sb"
@@ -284,9 +285,11 @@
             app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
         <ImageView
+            android:scaleType="centerInside"
+            android:background="@drawable/circle_button_light"
             android:id="@+id/next_btn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="48dp"
             android:src="@drawable/ic_baseline_skip_next_24"
             app:layout_constraintEnd_toStartOf="@+id/add_to_playlist_btn"
@@ -295,15 +298,17 @@
             android:contentDescription="@string/todo" />
 
         <ImageView
+            android:scaleType="centerInside"
             android:id="@+id/previous_btn"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="48dp"
+            android:background="@drawable/circle_button_light"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_baseline_skip_previous_24"
             app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
             app:layout_constraintStart_toEndOf="@+id/play_state_btn"
-            app:layout_constraintTop_toBottomOf="@+id/song_sb"
-            android:contentDescription="@string/todo" />
+            app:layout_constraintTop_toBottomOf="@+id/song_sb" />
 
         <ImageView
             android:id="@+id/imageViewMin"
