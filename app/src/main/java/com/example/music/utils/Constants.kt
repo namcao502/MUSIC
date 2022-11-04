@@ -30,3 +30,7 @@ object WelcomeText{
     const val EVENING = "Good evening"
 }
 
+object ConnectionType{
+    const val NOT_CONNECT = 0
+}
+

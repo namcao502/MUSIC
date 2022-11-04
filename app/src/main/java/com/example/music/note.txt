@@ -2,3 +2,5 @@
 tối ưa giao diện
 
 chỉnh lại giao diện bên offine
+
+kiểm tra mạng ở các activity, nếu k thấy thì hiện alert dialog

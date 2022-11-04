@@ -17,27 +17,24 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
+        //hide status bar
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
 
+        //set color for status bar and navigation bar
         window.navigationBarColor = resources.getColor(R.color.nav_color, this.theme)
-
         window.statusBarColor = resources.getColor(R.color.nav_color, this.theme)
 
-        // This is used to hide the status bar and make
-        // the splash screen as a full screen activity.
-//        window.setFlags(
-//            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//            WindowManager.LayoutParams.FLAG_FULLSCREEN
-//        )
-
-        // we used the postDelayed(Runnable, time) method
-        // to send a message with a delayed time.
-        Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, AccountActivity::class.java)
-            startActivity(intent)
-            finish()
-        }, 1000) // 2000 is the delayed time in milliseconds.
+        if (getConnectionType(this) == ConnectionType.NOT_CONNECT){
+            //switch to library
+            showOfflineAlertDialog()
+        }
+        else {
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this, AccountActivity::class.java))
+                finish()
+            }, 100)
+        }
     }
 }

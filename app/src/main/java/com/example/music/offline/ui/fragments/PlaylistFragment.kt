@@ -61,9 +61,10 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
             playlistAdapter.setData(it)
         })
 
-//        binding.addBtn.setOnClickListener {
-//            createDialogForAddPlaylist()
-//        }
+        binding.addBtn.setOnClickListener {
+            createDialogForAddPlaylist()
+        }
+
     }
 
     override fun onDestroyView() {

@@ -2,7 +2,10 @@ package com.example.music.online.di
 
 import com.example.music.online.data.dao.*
 import com.example.music.online.repositories.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.Module
@@ -22,7 +25,7 @@ object FirebaseModule {
     @Singleton
     @Provides
     fun provideAuthenticator(): BaseAuthenticator {
-        return  FirebaseAuthenticator()
+        return FirebaseAuthenticator()
     }
 
     //this just takes the same idea as the authenticator. If we create another repository class
@@ -37,6 +40,12 @@ object FirebaseModule {
     @Provides
     fun provideFirestoreInstance(): FirebaseFirestore{
         return FirebaseFirestore.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun provideAuthInstance(): FirebaseAuth{
+        return Firebase.auth
     }
 
     @Singleton
@@ -105,4 +114,9 @@ object FirebaseModule {
         return ViewRepositoryImp(database)
     }
 
+    @Singleton
+    @Provides
+    fun provideAuthenticationRepository(auth: FirebaseAuth, database: FirebaseFirestore): AuthenticationRepository{
+        return AuthenticationRepositoryImp(auth, database)
+    }
 }

@@ -17,23 +17,28 @@ import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentSignupBinding
 import com.example.music.online.ui.activities.OnlineMainActivity
+import com.example.music.online.viewModels.AuthenticationViewModel
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
+import com.example.music.utils.UiState
+import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
+
     private val viewModel: FirebaseAuthViewModel by activityViewModels()
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
+//    private val authViewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentSignupBinding? = null
-    private val binding get()  = _binding
+    private val binding get()  = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSignupBinding.inflate(inflater , container , false)
 
         getUser()
@@ -43,12 +48,55 @@ class SignUpFragment : Fragment() {
         registerObservers()
         listenToChannels()
 
-        binding?.apply {
+        binding.apply {
             signUpButton.setOnClickListener {
                 progressBarSignup.isVisible = true
                 val email = userEmailEtv.text.toString()
                 val password = userPasswordEtv.text.toString()
                 val confirmPass = confirmPasswordEtv.text.toString()
+
+//                if (email.isEmpty() || password.isEmpty()){
+//                    toast("Please fill them all!!!")
+//                    return@setOnClickListener
+//                }
+//
+//                if (password != confirmPass){
+//                    toast("Confirm password is wrong!!!")
+//                    return@setOnClickListener
+//                }
+
+//                authViewModel.signUpWithEmailPassword(email, password)
+//                authViewModel.signUp.observe(viewLifecycleOwner){
+//                    when (it) {
+//                        is UiState.Loading -> {
+//
+//                        }
+//                        is UiState.Failure -> {
+//                            toast(it.toString())
+//                        }
+//                        is UiState.Success -> {
+//                            toast(it.data)
+//                            progressBarSignup.isVisible = false
+//
+//                            toast("Signing you in...")
+//                            authViewModel.signInWithEmailPassword(email, password)
+//                            authViewModel.signIn.observe(viewLifecycleOwner){ signIn ->
+//                                when (signIn) {
+//                                    is UiState.Loading -> {
+//
+//                                    }
+//                                    is UiState.Failure -> {
+//                                        toast(signIn.toString())
+//                                    }
+//                                    is UiState.Success -> {
+//                                        toast("Welcome back!!!")
+//                                        startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
                 viewModel.signUpUser(email , password , confirmPass)
             }
 
@@ -58,7 +106,7 @@ class SignUpFragment : Fragment() {
 
         }
 
-        return binding?.root
+        return binding.root
     }
 
     override fun onDestroy() {
@@ -81,31 +129,31 @@ class SignUpFragment : Fragment() {
             viewModel.allEventsFlow.collect { event ->
                 when(event){
                     is FirebaseAuthViewModel.AllEvents.Error -> {
-                        binding?.apply {
+                        binding.apply {
                             errorTxt.text = event.error
                             progressBarSignup.isInvisible = true
                         }
                     }
                     is FirebaseAuthViewModel.AllEvents.Message -> {
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                        toast(event.message)
                     }
                     is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if (event.code == 1)
-                            binding?.apply {
-                                userEmailEtvl.error = "email should not be empty"
+                            binding.apply {
+                                userEmailEtvl.error = "Email should not be empty"
                                 progressBarSignup.isInvisible = true
                             }
 
 
                         if(event.code == 2)
-                            binding?.apply {
-                                userPasswordEtvl.error = "password should not be empty"
+                            binding.apply {
+                                userPasswordEtvl.error = "Password should not be empty"
                                 progressBarSignup.isInvisible = true
                             }
 
                         if(event.code == 3)
-                            binding?.apply {
-                                confirmPasswordEtvl.error = "passwords do not match"
+                            binding.apply {
+                                confirmPasswordEtvl.error = "Passwords do not match"
                                 progressBarSignup.isInvisible = true
                             }
                     }
@@ -123,7 +171,7 @@ class SignUpFragment : Fragment() {
             firebaseAuthViewModel.allEventsFlow.collect { event ->
                 when(event){
                     is FirebaseAuthViewModel.AllEvents.Message ->{
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                        toast(event.message)
                     }
                     else -> {}
                 }

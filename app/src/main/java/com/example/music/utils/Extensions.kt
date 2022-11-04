@@ -5,7 +5,13 @@ import android.app.Dialog
 import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Gravity
 import android.view.Window
@@ -18,9 +24,11 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
+import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.data.models.OnlineView
+import com.example.music.online.ui.activities.AccountActivity
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.DetailCollectionFragment
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
@@ -31,6 +39,62 @@ import com.google.firebase.auth.FirebaseAuth
 
 object DetailFragmentState{
     var isOn = false
+}
+
+fun Activity.checkNetwork(){
+    Handler(Looper.getMainLooper()).postDelayed({
+        showOfflineAlertDialog()
+    }, 1000)
+}
+
+fun Activity.showOfflineAlertDialog(){
+    val builder = AlertDialog.Builder(this)
+
+    builder.setMessage("Switch to offline mode?")
+        .setTitle("No internet connection")
+        .setPositiveButton("Yes") { _, _ ->
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        .setNegativeButton("Retry") { _, _ ->
+            this.recreate()
+        }
+    // Create the AlertDialog object and return it
+    builder.create().show()
+}
+
+fun getConnectionType(context: Context): Int {
+    var result = 0 // Returns connection type. 0: none; 1: mobile data; 2: wifi; 3: vpn
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        cm?.run {
+            cm.getNetworkCapabilities(cm.activeNetwork)?.run {
+                if (hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    result = 2
+                } else if (hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    result = 1
+                } else if (hasTransport(NetworkCapabilities.TRANSPORT_VPN)){
+                    result = 3
+                }
+            }
+        }
+    } else {
+        cm?.run {
+            cm.activeNetworkInfo?.run {
+                when (type) {
+                    ConnectivityManager.TYPE_WIFI -> {
+                        result = 2
+                    }
+                    ConnectivityManager.TYPE_MOBILE -> {
+                        result = 1
+                    }
+                    ConnectivityManager.TYPE_VPN -> {
+                        result = 3
+                    }
+                }
+            }
+        }
+    }
+    return result
 }
 
 fun Fragment.toast(message: String?){
