@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -72,6 +73,22 @@ class OnlineMainActivity: AppCompatActivity(),
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
 
+    private var doubleBackToExitPressedOnce = false
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        this.doubleBackToExitPressedOnce = true
+        toast("Please click BACK again to exit")
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false }
+            , 2000)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOnlineMainBinding.inflate(layoutInflater)
@@ -82,7 +99,7 @@ class OnlineMainActivity: AppCompatActivity(),
             when (it.itemId) {
                 R.id.online_home_menu -> {
                     if (DetailFragmentState.isOn){
-                        onBackPressed()
+                        supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
@@ -93,7 +110,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 }
                 R.id.online_search_menu -> {
                     if (DetailFragmentState.isOn){
-                        onBackPressed()
+                        supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
@@ -104,7 +121,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 }
                 R.id.online_song_menu -> {
                     if (DetailFragmentState.isOn){
-                        onBackPressed()
+                        supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
@@ -115,7 +132,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 }
                 R.id.online_collection_menu -> {
                     if (DetailFragmentState.isOn){
-                        onBackPressed()
+                        supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
@@ -126,7 +143,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 }
                 R.id.online_user_menu -> {
                     if (DetailFragmentState.isOn){
-                        onBackPressed()
+                        supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()

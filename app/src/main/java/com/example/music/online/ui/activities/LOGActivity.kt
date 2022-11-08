@@ -9,12 +9,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.music.R
-import com.example.music.utils.checkNetwork
 import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AccountActivity : AppCompatActivity() {
+class LOGActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 

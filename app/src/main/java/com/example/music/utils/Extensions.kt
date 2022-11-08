@@ -20,15 +20,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlinePlaylist
-import com.example.music.online.data.models.OnlineSong
-import com.example.music.online.data.models.OnlineView
-import com.example.music.online.ui.activities.AccountActivity
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.DetailCollectionFragment
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
@@ -39,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 object DetailFragmentState{
     var isOn = false
+    var instance: DetailCollectionFragment? = null
 }
 
 fun Activity.checkNetwork(){

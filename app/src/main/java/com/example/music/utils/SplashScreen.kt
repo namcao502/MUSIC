@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.R
-import com.example.music.online.ui.activities.AccountActivity
+import com.example.music.online.ui.activities.LOGActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("CustomSplashScreen")
@@ -32,9 +32,9 @@ class SplashScreen : AppCompatActivity() {
         }
         else {
             Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this, AccountActivity::class.java))
+                startActivity(Intent(this, LOGActivity::class.java))
                 finish()
-            }, 100)
+            }, 1000)
         }
     }
 }

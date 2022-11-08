@@ -74,6 +74,7 @@ class DetailCollectionFragment(
         super.onViewCreated(view, savedInstanceState)
 
         DetailFragmentState.isOn = true
+        DetailFragmentState.instance = this
 
         binding.addImg.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
@@ -106,8 +107,7 @@ class DetailCollectionFragment(
         }
 
         binding.backImg.setOnClickListener {
-            //back press
-            requireActivity().onBackPressed()
+            parentFragmentManager.popBackStack()
             DetailFragmentState.isOn = false
         }
 

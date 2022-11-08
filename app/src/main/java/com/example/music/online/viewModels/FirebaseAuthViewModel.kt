@@ -47,7 +47,7 @@ class FirebaseAuthViewModel @Inject constructor(
                 eventsChannel.send(AllEvents.ErrorCode(2))
             }
             else -> {
-                actualSignInUser(email , password)
+                actualSignInUser(email, password)
             }
         }
     }
@@ -61,7 +61,7 @@ class FirebaseAuthViewModel @Inject constructor(
             password.isEmpty() -> {
                 eventsChannel.send(AllEvents.ErrorCode(2))
             }
-            password != confirmPass ->{
+            password != confirmPass -> {
                 eventsChannel.send(AllEvents.ErrorCode(3))
             }
             else -> {

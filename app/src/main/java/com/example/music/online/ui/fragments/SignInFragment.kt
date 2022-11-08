@@ -12,16 +12,15 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentSigninBinding
 import com.example.music.online.ui.activities.OnlineMainActivity
-import com.example.music.online.viewModels.AuthenticationViewModel
 import com.example.music.online.viewModels.FirebaseAuthViewModel
-import com.example.music.utils.UiState
 import com.example.music.utils.toast
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -45,7 +44,7 @@ class SignInFragment: Fragment() {
 
         getUser()
         listenToChannels2()
-        registerObserver2()
+
         listenToChannels()
         registerObservers()
 
@@ -117,6 +116,9 @@ class SignInFragment: Fragment() {
 //                    }
 //                }
                 viewModel.signInUser(email, password)
+                if (Firebase.auth.currentUser != null){
+                    startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
+                }
             }
 
             signUpTxt.setOnClickListener {

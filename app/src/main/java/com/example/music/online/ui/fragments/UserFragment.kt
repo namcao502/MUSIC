@@ -18,7 +18,7 @@ import com.example.music.utils.UiState
 import com.example.music.online.data.models.OnlineAccount
 import com.example.music.databinding.FragmentUserBinding
 import com.example.music.offline.ui.activities.MainActivity
-import com.example.music.online.ui.activities.AccountActivity
+import com.example.music.online.ui.activities.LOGActivity
 import com.example.music.online.ui.activities.CRUDActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.utils.createProgressDialog
@@ -67,7 +67,8 @@ class UserFragment: Fragment() {
 
         binding.signOutBtn.setOnClickListener {
             firebaseAuthViewModel.signOut()
-            startActivity(Intent(requireContext(), AccountActivity::class.java))
+            startActivity(Intent(requireContext(), LOGActivity::class.java))
+            requireActivity().finish()
             super.onDestroy()
         }
 
