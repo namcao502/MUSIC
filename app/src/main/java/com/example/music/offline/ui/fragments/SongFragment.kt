@@ -1,7 +1,6 @@
 package com.example.music.offline.ui.fragments
 
 import android.Manifest
-import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
@@ -26,6 +25,7 @@ import com.example.music.offline.viewModels.PlaylistViewModel
 import com.example.music.offline.viewModels.ScanSongInStorage
 import com.example.music.offline.viewModels.SongInPlaylistViewModel
 import com.example.music.offline.viewModels.SongViewModel
+import com.example.music.utils.createDialog
 import com.example.music.utils.toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -109,18 +109,8 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun createDialogForAddToPlaylist() {
-        val dialog = Dialog(requireContext())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.fragment_playlist)
 
-        //set size for dialog
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(dialog.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.gravity = Gravity.CENTER
-        dialog.window!!.attributes = lp
+        val dialog = createDialog(R.layout.fragment_playlist)
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
         recyclerView.adapter = dialogPlaylistAdapter
