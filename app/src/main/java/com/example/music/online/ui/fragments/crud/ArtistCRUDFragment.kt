@@ -97,13 +97,13 @@ class ArtistCRUDFragment : Fragment() {
         }
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                filterArtist(p0)
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterArtist(text.trim())
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterArtist(text)
+                filterArtist(text.trim())
                 return false
             }
 

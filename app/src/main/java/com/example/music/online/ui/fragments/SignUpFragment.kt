@@ -1,6 +1,7 @@
 package com.example.music.online.ui.fragments
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,7 +29,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
-    private val viewModel: FirebaseAuthViewModel by activityViewModels()
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
 //    private val authViewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentSignupBinding? = null
@@ -42,7 +42,7 @@ class SignUpFragment : Fragment() {
         _binding = FragmentSignupBinding.inflate(inflater , container , false)
 
         getUser()
-        listenToChannels2()
+//        listenToChannels2()
         registerObserver2()
 
         registerObservers()
@@ -97,7 +97,7 @@ class SignUpFragment : Fragment() {
 //                        }
 //                    }
 //                }
-                viewModel.signUpUser(email , password , confirmPass)
+                firebaseAuthViewModel.signUpUser(email , password , confirmPass)
             }
 
             signInTxt.setOnClickListener {
@@ -116,7 +116,7 @@ class SignUpFragment : Fragment() {
 
 
     private fun registerObservers() {
-        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
 //                findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
                 startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
@@ -126,7 +126,7 @@ class SignUpFragment : Fragment() {
 
     private fun listenToChannels() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.allEventsFlow.collect { event ->
+            firebaseAuthViewModel.allEventsFlow.collect { event ->
                 when(event){
                     is FirebaseAuthViewModel.AllEvents.Error -> {
                         binding.apply {
@@ -143,7 +143,6 @@ class SignUpFragment : Fragment() {
                                 userEmailEtvl.error = "Email should not be empty"
                                 progressBarSignup.isInvisible = true
                             }
-
 
                         if(event.code == 2)
                             binding.apply {

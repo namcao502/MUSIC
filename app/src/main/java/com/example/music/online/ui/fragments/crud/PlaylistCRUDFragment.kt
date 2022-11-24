@@ -98,13 +98,13 @@ class PlaylistCRUDFragment : Fragment() {
         }
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                filterPlaylist(p0)
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterPlaylist(text.trim())
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterPlaylist(text)
+                filterPlaylist(text.trim())
                 return false
             }
 

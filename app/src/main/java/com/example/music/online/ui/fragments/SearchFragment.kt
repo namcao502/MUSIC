@@ -209,22 +209,24 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(text: String): Boolean {
-                filterPlaylist(text)
-                filterArtist(text)
-                filterGenre(text)
-                filterAlbum(text)
-                filterSong(text)
-                filterCountry(text)
+                val trimText = text.trim()
+                filterPlaylist(trimText)
+                filterArtist(trimText)
+                filterGenre(trimText)
+                filterAlbum(trimText)
+                filterSong(trimText)
+                filterCountry(trimText)
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterPlaylist(text)
-                filterArtist(text)
-                filterGenre(text)
-                filterAlbum(text)
-                filterSong(text)
-                filterCountry(text)
+                val trimText = text.trim()
+                filterPlaylist(trimText)
+                filterArtist(trimText)
+                filterGenre(trimText)
+                filterAlbum(trimText)
+                filterSong(trimText)
+                filterCountry(trimText)
                 return false
             }
         })

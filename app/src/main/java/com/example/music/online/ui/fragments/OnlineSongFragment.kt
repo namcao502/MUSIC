@@ -60,12 +60,14 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
-                filterSong(query)
+                val trimText = query.trim()
+                filterSong(trimText)
                 return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                filterSong(newText)
+                val trimText = newText.trim()
+                filterSong(trimText)
                 return false
             }
 

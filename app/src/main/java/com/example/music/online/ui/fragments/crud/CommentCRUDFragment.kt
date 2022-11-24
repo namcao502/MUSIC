@@ -86,13 +86,13 @@ class CommentCRUDFragment : Fragment() {
         }
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                filterComment(p0)
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterComment(text.trim())
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterComment(text)
+                filterComment(text.trim())
                 return false
             }
 

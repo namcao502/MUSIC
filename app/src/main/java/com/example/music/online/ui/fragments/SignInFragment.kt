@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignInFragment: Fragment() {
 
-    private val viewModel: FirebaseAuthViewModel by activityViewModels()
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
 //    private val authViewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentSigninBinding? = null
@@ -43,7 +42,7 @@ class SignInFragment: Fragment() {
         }
 
         getUser()
-        listenToChannels2()
+//        listenToChannels2()
 
         listenToChannels()
         registerObservers()
@@ -115,10 +114,10 @@ class SignInFragment: Fragment() {
 //                        }
 //                    }
 //                }
-                viewModel.signInUser(email, password)
-                if (Firebase.auth.currentUser != null){
-                    startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
-                }
+                firebaseAuthViewModel.signInUser(email, password)
+//                if (Firebase.auth.currentUser != null){
+//                    startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
+//                }
             }
 
             signUpTxt.setOnClickListener {
@@ -133,7 +132,7 @@ class SignInFragment: Fragment() {
     }
 
     private fun registerObservers() {
-        viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
 //                findNavController().navigate(R.id.action_signInFragment_to_homeFragment2)
                 startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
@@ -143,12 +142,12 @@ class SignInFragment: Fragment() {
 
     private fun listenToChannels() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.allEventsFlow.collect { event ->
+            firebaseAuthViewModel.allEventsFlow.collect { event ->
                 when(event){
                     is FirebaseAuthViewModel.AllEvents.Error -> {
                         binding.apply {
                             errorTxt.text =  event.error
-                            progressBarSignin.isInvisible = true
+                            progressBarSignin.visibility = View.GONE
                         }
                     }
                     is FirebaseAuthViewModel.AllEvents.Message -> {
@@ -172,14 +171,14 @@ class SignInFragment: Fragment() {
                         if (event.code == 1)
                             binding.apply {
                                 userEmailEtvl.error = "email should not be empty"
-                                progressBarSignin.isInvisible = true
+                                progressBarSignin.visibility = View.GONE
                             }
 
 
                         if(event.code == 2)
                             binding.apply {
                                 userPasswordEtvl.error = "password should not be empty"
-                                progressBarSignin.isInvisible = true
+                                progressBarSignin.visibility = View.GONE
                             }
                     }
                 }

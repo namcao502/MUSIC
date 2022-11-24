@@ -80,12 +80,12 @@ class AlbumCRUDFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(text: String): Boolean {
-                filterAlbum(text)
+                filterAlbum(text.trim())
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterAlbum(text)
+                filterAlbum(text.trim())
                 return false
             }
 

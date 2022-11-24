@@ -100,13 +100,13 @@ class GenreCRUDFragment : Fragment() {
         }
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(p0: String): Boolean {
-                filterGenre(p0)
+            override fun onQueryTextSubmit(text: String): Boolean {
+                filterGenre(text.trim())
                 return false
             }
 
             override fun onQueryTextChange(text: String): Boolean {
-                filterGenre(text)
+                filterGenre(text.trim())
                 return false
             }
 
