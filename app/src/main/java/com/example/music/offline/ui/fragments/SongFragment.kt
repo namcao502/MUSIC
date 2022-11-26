@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -57,7 +58,6 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         _binding = FragmentSongBinding.inflate(layoutInflater, container, false)
 
         requestRead()
-        toast("Scan completed")
 
         return binding.root
     }
@@ -239,13 +239,9 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun requestRead() {
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                permission)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            startLocationPermissionRequest()
+//            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), permission)
         } else {
             readFile()
         }
@@ -260,18 +256,34 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == permission) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readFile()
-            } else {
-                // Permission Denied
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-            return
+//    @Deprecated("Deprecated in Java")
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+//        if (requestCode == permission) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                readFile()
+//            } else {
+//                // Permission Denied
+//                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+//            }
+//            return
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // PERMISSION GRANTED
+            readFile()
+        } else {
+            // PERMISSION NOT GRANTED
+            toast("Permission Denied")
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun startLocationPermissionRequest() {
+        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
     interface SongFromAdapterClick{

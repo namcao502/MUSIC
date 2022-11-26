@@ -142,7 +142,7 @@ class OnlineMusicPlayerService: Service() {
     private fun pendingIntent(context: Context, action: Int): PendingIntent{
         val intent = Intent(this, MusicPlayerReceiver::class.java)
         intent.putExtra("action_music", action)
-        return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun getBitmapFromURL(src: String?): Bitmap? {

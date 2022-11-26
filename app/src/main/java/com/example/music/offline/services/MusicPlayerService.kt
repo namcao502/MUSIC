@@ -32,10 +32,6 @@ class MusicPlayerService: Service() {
     private var initialSong: Song? = null
     private var currentSong: Song? = null
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     inner class MyBinder : Binder() {
         fun getService(): MusicPlayerService = this@MusicPlayerService
     }
@@ -126,7 +122,7 @@ class MusicPlayerService: Service() {
     private fun pendingIntent(context: Context, action: Int): PendingIntent{
         val intent = Intent(this, MusicPlayerReceiver::class.java)
         intent.putExtra("action_music", action)
-        return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     fun pause() {

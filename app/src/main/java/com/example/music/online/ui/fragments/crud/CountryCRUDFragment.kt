@@ -1,14 +1,20 @@
 package com.example.music.online.ui.fragments.crud
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -26,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.FileNotFoundException
 import java.util.*
+
 
 @AndroidEntryPoint
 class CountryCRUDFragment : Fragment() {
@@ -54,6 +61,7 @@ class CountryCRUDFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -124,14 +132,14 @@ class CountryCRUDFragment : Fragment() {
             else {
                 binding.imgFile.setImageResource(R.drawable.icons8_artist_100)
             }
-
         }
 
         binding.imgFile.setOnClickListener {
-            val intent = Intent()
-            intent.type = "Song Images/"
-            intent.action = Intent.ACTION_GET_CONTENT
-            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
+//            val intent = Intent()
+//            intent.type = "Song Images/"
+//            intent.action = Intent.ACTION_GET_CONTENT
+//            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
+            imageChooser()
         }
 
         binding.addBtn.setOnClickListener {
@@ -330,6 +338,29 @@ class CountryCRUDFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun imageChooser() {
+        val i = Intent()
+        i.type = "image/*"
+        i.action = Intent.ACTION_GET_CONTENT
+        launchSomeActivity.launch(i)
+    }
+
+    private var launchSomeActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            // do your operation from here....
+            if (data != null && data.data != null) {
+                try {
+                    imgUri = data.data
+                    binding.imgFile.setImageURI(imgUri)
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
 }

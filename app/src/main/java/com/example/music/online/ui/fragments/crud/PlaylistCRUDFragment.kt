@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -150,10 +151,11 @@ class PlaylistCRUDFragment : Fragment() {
         }
 
         binding.imgFile.setOnClickListener {
-            val intent = Intent()
-            intent.type = "Song Images/"
-            intent.action = Intent.ACTION_GET_CONTENT
-            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
+//            val intent = Intent()
+//            intent.type = "Song Images/"
+//            intent.action = Intent.ACTION_GET_CONTENT
+//            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
+            imageChooser()
         }
 
         binding.addBtn.setOnClickListener {
@@ -308,6 +310,29 @@ class PlaylistCRUDFragment : Fragment() {
                 binding.imgFile.setImageURI(imgUri)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    private fun imageChooser() {
+        val i = Intent()
+        i.type = "image/*"
+        i.action = Intent.ACTION_GET_CONTENT
+        launchSomeActivity.launch(i)
+    }
+
+    private var launchSomeActivity = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            // do your operation from here....
+            if (data != null && data.data != null) {
+                try {
+                    imgUri = data.data
+                    binding.imgFile.setImageURI(imgUri)
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
