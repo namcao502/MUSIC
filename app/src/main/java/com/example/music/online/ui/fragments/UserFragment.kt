@@ -4,29 +4,30 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
-import com.example.music.online.data.models.OnlineAccount
 import com.example.music.databinding.FragmentUserBinding
 import com.example.music.offline.ui.activities.MainActivity
-import com.example.music.online.ui.activities.LOGActivity
+import com.example.music.online.data.models.OnlineAccount
 import com.example.music.online.ui.activities.CRUDActivity
+import com.example.music.online.ui.activities.LOGActivity
+import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
-import com.example.music.utils.createProgressDialog
-import com.example.music.utils.toast
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
 import com.example.music.utils.FireStoreCollection
+import com.example.music.utils.UiState
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.toast
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -70,12 +71,11 @@ class UserFragment: Fragment() {
             firebaseAuthViewModel.signOut()
             startActivity(Intent(requireContext(), LOGActivity::class.java))
             requireActivity().finish()
-            super.onDestroy()
         }
 
         binding.libraryBtn.setOnClickListener {
             startActivity(Intent(requireContext(), MainActivity::class.java))
-            super.onDestroy()
+            (activity as OnlineMainActivity).stopService()
         }
 
         val currentUserID = Firebase.auth.currentUser!!.uid

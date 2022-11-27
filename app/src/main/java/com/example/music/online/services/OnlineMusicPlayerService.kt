@@ -6,24 +6,16 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.os.*
+import android.os.Binder
+import android.os.Bundle
+import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.utils.MusicPlayerReceiver
-import kotlinx.coroutines.coroutineScope
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 
 class OnlineMusicPlayerService: Service() {
@@ -39,10 +31,6 @@ class OnlineMusicPlayerService: Service() {
     private val myBinder = MyBinder()
     private var initialSong: OnlineSong? = null
     private var currentSong: OnlineSong? = null
-
-    override fun onCreate() {
-        super.onCreate()
-    }
 
     inner class MyBinder : Binder() {
         fun getService(): OnlineMusicPlayerService = this@OnlineMusicPlayerService
@@ -86,7 +74,6 @@ class OnlineMusicPlayerService: Service() {
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .build()
             )
-            Log.i("TAG502", "createMediaPlayer: ${song.filePath}")
             setDataSource(song.filePath)
             prepare()
             start()
@@ -96,14 +83,7 @@ class OnlineMusicPlayerService: Service() {
 
     private fun sendNotification(song: OnlineSong) {
 
-        val channelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel(CHANNEL_ID_1, "My Background Service")
-            } else {
-                // If earlier version channel ID is not used
-                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                ""
-            }
+        val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
 
         val mediaSessionCompat = MediaSessionCompat(this, "tag")
 
@@ -119,9 +99,9 @@ class OnlineMusicPlayerService: Service() {
 //            .setLargeIcon(Glide.with(this).asBitmap().load(song.imgFilePath).submit().get())
             .setSmallIcon(R.drawable.ic_baseline_music_note_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0, 1, 2)
-                .setMediaSession(mediaSessionCompat.sessionToken))
+//            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+//                .setShowActionsInCompactView(0, 1, 2)
+//                .setMediaSession(mediaSessionCompat.sessionToken))
 
         if (isPlaying()){
             notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
@@ -130,7 +110,7 @@ class OnlineMusicPlayerService: Service() {
         }
         else {
             notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
+                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Play", pendingIntent(this, ACTION_PAUSE))
                 .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
         }
 
@@ -143,20 +123,6 @@ class OnlineMusicPlayerService: Service() {
         val intent = Intent(this, MusicPlayerReceiver::class.java)
         intent.putExtra("action_music", action)
         return PendingIntent.getBroadcast(context.applicationContext, action, intent, PendingIntent.FLAG_IMMUTABLE)
-    }
-
-    private fun getBitmapFromURL(src: String?): Bitmap? {
-        return try {
-            val url = URL(src)
-            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            BitmapFactory.decodeStream(input)
-        } catch (e: IOException) {
-            // Log exception
-            null
-        }
     }
 
     fun pause() {
@@ -198,7 +164,6 @@ class OnlineMusicPlayerService: Service() {
         return mediaPlayer!!.isPlaying
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(channelId: String, channelName: String): String{
         val channel = NotificationChannel(channelId,
             channelName, NotificationManager.IMPORTANCE_NONE)

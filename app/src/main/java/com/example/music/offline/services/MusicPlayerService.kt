@@ -99,9 +99,9 @@ class MusicPlayerService: Service() {
             .setContentText(song.artists)
             .setSmallIcon(R.drawable.ic_baseline_music_note_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0, 1, 2)
-                .setMediaSession(mediaSessionCompat.sessionToken))
+//            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+//                .setShowActionsInCompactView(0, 1, 2)
+//                .setMediaSession(mediaSessionCompat.sessionToken))
 
         if (isPlaying()){
             notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
@@ -110,7 +110,7 @@ class MusicPlayerService: Service() {
         }
         else {
             notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
+                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Play", pendingIntent(this, ACTION_PAUSE))
                 .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
         }
 

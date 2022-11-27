@@ -509,7 +509,6 @@ class OnlineMainActivity: AppCompatActivity(),
     private fun initState() {
         val intent = Intent(this, OnlineMusicPlayerService::class.java)
         intent.putExtra("songService", songList!![songPosition])
-//        Log.i("TAG502", "initState: ${songList!![songPosition]}")
         startService(intent)
         bindService(intent, this, BIND_AUTO_CREATE)
     }
@@ -604,6 +603,18 @@ class OnlineMainActivity: AppCompatActivity(),
             unbindService(this)
             isServiceConnected = false
         }
+    }
+
+    fun stopService(){
+        if (musicPlayerService != null){
+            musicPlayerService!!.pause()
+        }
+        stopService(Intent(this, OnlineMusicPlayerService::class.java))
+        if (isServiceConnected){
+            unbindService(this)
+            isServiceConnected = false
+        }
+        binding.miniPlayerLayout.visibility = View.GONE
     }
 
     private fun setCompleteListener(){
