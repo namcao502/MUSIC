@@ -162,7 +162,7 @@ class SongManagerActivity: AppCompatActivity(), SongManagerAdapter.ClickASong {
 //            }
         }
         else {
-            currentSongs = listOf(OnlineSong("", "empty", "", "", ""))
+            currentSongs = listOf(OnlineSong("", "empty", "", ""))
             songManagerAdapter.setData(currentSongs)
         }
     }

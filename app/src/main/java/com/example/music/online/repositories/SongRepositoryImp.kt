@@ -205,7 +205,7 @@ class SongRepositoryImp(val database: FirebaseFirestore): SongRepository {
         database
             .collection(FireStoreCollection.SONG)
             .document(song.id!!)
-            .update("views", song.views)
+            .update("views", "")
             .addOnSuccessListener {
                 result.invoke(UiState.Success("${song.name}'s view updated"))
             }

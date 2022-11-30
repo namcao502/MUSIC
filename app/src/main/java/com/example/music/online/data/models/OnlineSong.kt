@@ -6,12 +6,11 @@ data class OnlineSong(
     var id: String? = "",
     var name: String? = "",
     var imgFilePath: String? = "",
-    var filePath: String? = "",
-    var views: String? = "0"
+    var filePath: String? = ""
 ) : Serializable {
 
     override fun toString(): String {
-        return "$name, views = $views"
+        return "$name"
     }
 
 }

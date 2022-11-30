@@ -41,7 +41,7 @@ class SongManagerAdapter(
 
             with(songList[position]){
 
-                binding.titleTxt.text = name.plus(", views = $views")
+                binding.titleTxt.text = name
 
 //                firebaseViewModel.getSongFromSongID(id!!, position)
 //                firebaseViewModel.songFromID2[position].observe(lifecycleOwner){
