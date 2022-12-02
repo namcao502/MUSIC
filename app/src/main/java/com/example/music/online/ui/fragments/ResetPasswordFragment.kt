@@ -9,13 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.music.R
 import com.example.music.databinding.FragmentPasswordResetBinding
-import com.example.music.online.viewModels.AuthenticationViewModel
 import com.example.music.online.viewModels.FirebaseAuthViewModel
-import com.example.music.utils.UiState
 import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -26,13 +23,8 @@ class ResetPasswordFragment : Fragment() {
     private var _binding : FragmentPasswordResetBinding? = null
     private val binding get() = _binding!!
     private val viewModel : FirebaseAuthViewModel by activityViewModels()
-//    private val authViewModel: AuthenticationViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPasswordResetBinding.inflate(inflater , container , false)
 
         setUpWidgets()
@@ -42,28 +34,6 @@ class ResetPasswordFragment : Fragment() {
             buttonResendPassword.setOnClickListener {
                 resetPassProgressBar.isVisible = true
                 val email = userEmailEtv.text.toString()
-
-//                if (email.isEmpty()){
-//                    toast("Please type an email...")
-//                    return@setOnClickListener
-//                }
-//
-//                authViewModel.sendPasswordReset(email)
-//                authViewModel.reset.observe(viewLifecycleOwner){
-//                    when (it) {
-//                        is UiState.Loading -> {
-//
-//                        }
-//                        is UiState.Failure -> {
-//                            toast(it.toString())
-//                        }
-//                        is UiState.Success -> {
-//                            toast(it.data)
-//                            resetPassProgressBar.isVisible = false
-//                        }
-//                    }
-//                }
-
                 viewModel.verifySendPasswordReset(email)
             }
         }

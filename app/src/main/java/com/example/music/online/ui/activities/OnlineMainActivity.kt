@@ -10,7 +10,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -30,6 +29,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,6 +106,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
                         .hide(activeFragment)
                         .show(homeFragment).commit()
                     activeFragment = homeFragment
@@ -114,6 +118,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
                         .hide(activeFragment)
                         .show(searchFragment).commit()
                     activeFragment = searchFragment
@@ -125,6 +130,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
                         .hide(activeFragment)
                         .show(songFragment).commit()
                     activeFragment = songFragment
@@ -136,6 +142,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
                         .hide(activeFragment)
                         .show(playlistFragment).commit()
                     activeFragment = playlistFragment
@@ -147,6 +154,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
                         .hide(activeFragment)
                         .show(userFragment).commit()
                     activeFragment = userFragment
@@ -316,7 +324,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                     }
                 }
-                playStateTxt!!.text = "Current play state: $playState"
+                playStateTxt!!.text = "Mode: $playState"
                 toast("Switched to $playState")
             }
 
@@ -324,14 +332,16 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniPlayerLayout.setOnClickListener {
-            binding.miniPlayerLayout.visibility = View.VISIBLE
-            binding.playerSheet.playerLayout.visibility = View.VISIBLE
-            binding.bottomCard.visibility = View.GONE
+//            binding.miniPlayerLayout.visibility = View.VISIBLE
+            binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
+            binding.bottomCard.fadeVisibility(View.GONE)
         }
 
         binding.playerSheet.backBtn.setOnClickListener {
-            binding.playerSheet.playerLayout.visibility = View.GONE
-            binding.bottomCard.visibility = View.VISIBLE
+//            binding.playerSheet.playerLayout.visibility = View.GONE
+//            binding.bottomCard.visibility = View.VISIBLE
+            binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
+            binding.bottomCard.fadeVisibility(View.VISIBLE)
         }
 
         binding.miniNextBtn.setOnClickListener {

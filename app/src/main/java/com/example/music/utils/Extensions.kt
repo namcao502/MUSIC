@@ -13,15 +13,16 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import com.example.music.R
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlinePlaylist
@@ -32,6 +33,14 @@ import com.example.music.online.viewModels.OnlineViewViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+
+fun View.fadeVisibility(visibility: Int, duration: Long = 400) {
+    val transition: Transition = Fade()
+    transition.duration = duration
+    transition.addTarget(this)
+    TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
+    this.visibility = visibility
+}
 
 object DetailFragmentState{
     var isOn = false

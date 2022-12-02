@@ -13,19 +13,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FirebaseAuthViewModel @Inject constructor(
-    private val repository : BaseAuthRepository
-) : ViewModel() {
+class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuthRepository): ViewModel() {
 
-    private val TAG = "MainViewModel"
+    private val TAG = "AuthViewModel"
 
-    /**This is a ViewModel class and is responsible for the logic of all ui.
-     * It shall be shared with the three fragments.
-     * Only share ViewModels when the fragments share a feature or functionality */
-
-    //create the auth state livedata object that will be passed to
-    //the home fragment and shall be used to control the ui i.e show authentication state
-    //control behaviour of sign in and sign up button
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val currentUser get() = _firebaseUser
 

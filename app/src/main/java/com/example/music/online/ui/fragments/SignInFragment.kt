@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 class SignInFragment: Fragment() {
 
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
-//    private val authViewModel: AuthenticationViewModel by viewModels()
     private var _binding: FragmentSigninBinding? = null
     private val binding get() = _binding!!
     private lateinit var rememberSP: SharedPreferences
@@ -42,7 +41,6 @@ class SignInFragment: Fragment() {
         }
 
         getUser()
-//        listenToChannels2()
 
         listenToChannels()
         registerObservers()
@@ -55,69 +53,12 @@ class SignInFragment: Fragment() {
             val stillSignIn = rememberSP.getBoolean("check", false)
             rememberCb.isChecked = stillSignIn
 
-//            if (stillSignIn){
-//                toast("Signing you in...")
-//                authViewModel.signInWithEmailPassword(rememberSP.getString("email", "")!!, rememberSP.getString("password", "")!!)
-//                authViewModel.signIn.observe(viewLifecycleOwner){
-//                    when (it) {
-//                        is UiState.Loading -> {
-//
-//                        }
-//                        is UiState.Failure -> {
-//                            toast(it.toString())
-//                        }
-//                        is UiState.Success -> {
-//                            toast("Welcome back!!!")
-//                            startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
-//                        }
-//                    }
-//                }
-//            }
-
             signInButton.setOnClickListener {
 
                 progressBarSignin.isVisible = true
                 val email = userEmailEtv.text.toString()
                 val password = userPasswordEtv.text.toString()
-
-//                if (email.isEmpty() || password.isEmpty()){
-//                    toast("Please fill them all!!!")
-//                    return@setOnClickListener
-//                }
-
-//                authViewModel.signInWithEmailPassword(email, password)
-//                authViewModel.signIn.observe(viewLifecycleOwner){
-//                    when (it) {
-//                        is UiState.Loading -> {
-//
-//                        }
-//                        is UiState.Failure -> {
-//                            toast(it.toString())
-//                        }
-//                        is UiState.Success -> {
-//                            val editor = rememberSP.edit()
-//                            if (binding.rememberCb.isChecked){
-//                                editor.putString("email", binding.userEmailEtv.text.toString())
-//                                editor.putString("password", binding.userPasswordEtv.text.toString())
-//                                editor.putBoolean("check", true)
-//                                editor.apply()
-//                            }
-//                            else {
-//                                editor.putString("email", "")
-//                                editor.putString("password", "")
-//                                editor.putBoolean("check", false)
-//                                editor.apply()
-//                            }
-//                            toast(it.data)
-//                            progressBarSignin.isVisible = false
-//                            startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
-//                        }
-//                    }
-//                }
                 firebaseAuthViewModel.signInUser(email, password)
-//                if (Firebase.auth.currentUser != null){
-//                    startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
-//                }
             }
 
             signUpTxt.setOnClickListener {
@@ -134,7 +75,6 @@ class SignInFragment: Fragment() {
     private fun registerObservers() {
         firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             user?.let {
-//                findNavController().navigate(R.id.action_signInFragment_to_homeFragment2)
                 startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
             }
         }
@@ -188,27 +128,6 @@ class SignInFragment: Fragment() {
 
     private fun getUser() {
         firebaseAuthViewModel.getCurrentUser()
-    }
-
-    private fun listenToChannels2() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            firebaseAuthViewModel.allEventsFlow.collect { event ->
-                when(event){
-                    is FirebaseAuthViewModel.AllEvents.Message ->{
-                        toast(event.message)
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
-    private fun registerObserver2() {
-        firebaseAuthViewModel.currentUser.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                startActivity(Intent(requireContext(), OnlineMainActivity::class.java))
-            }
-        }
     }
 
     override fun onDestroy() {

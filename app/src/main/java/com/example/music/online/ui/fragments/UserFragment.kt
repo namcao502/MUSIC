@@ -44,9 +44,7 @@ class UserFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val accountViewModel: OnlineAccountViewModel by viewModels()
-
     private val firebaseViewModel: FirebaseViewModel by viewModels()
-
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
 
     private var isEditing = false
@@ -55,10 +53,7 @@ class UserFragment: Fragment() {
 
     private var imgUri: Uri? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentUserBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -108,6 +103,7 @@ class UserFragment: Fragment() {
 
         binding.manageBtn.setOnClickListener {
             startActivity(Intent(requireContext(), CRUDActivity::class.java))
+            (activity as OnlineMainActivity).stopService()
         }
 
         binding.editBtn.setOnClickListener {
