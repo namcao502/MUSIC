@@ -287,6 +287,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     private fun sendDataToDetailFragment(name: String, songs: List<String>, imgFilePath: String){
         val fragmentTransaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(R.anim.fade, 0, 0, 0)
         fragmentTransaction.add(R.id.fragment_container, DetailCollectionFragment(name, songs, imgFilePath, this))
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()

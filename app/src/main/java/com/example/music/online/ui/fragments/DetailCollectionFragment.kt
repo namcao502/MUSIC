@@ -135,38 +135,7 @@ class DetailCollectionFragment(
 
                 }
                 is UiState.Success -> {
-
-                    //with each song, get its artists
-//                    val artistList: ArrayList<String> = ArrayList()
-//                    for (i in 0 until it.data.size){
-//                        artistViewModel.getAllArtistFromSong2(it.data[i], i)
-//                        artistViewModel.artistInSong2[i].observe(viewLifecycleOwner){ artists ->
-//                            when(artists){
-//                                is UiState.Loading -> {
-//
-//                                }
-//                                is UiState.Failure -> {
-//
-//                                }
-//                                is UiState.Success -> {
-//                                    Log.i("TAG502", "onViewCreated - $i: ${it.data}")
-//                                    var text = ""
-//                                    for (x in artists.data){
-//                                        text += x.name.plus(", ")
-//                                    }
-//                                    artistList.add(text.dropLast(2))
-//                                    Log.i("TAG502", "onViewCreated - $i: $artistList")
-////                                    Log.i("TAG502", "before - $i: $artistList")
-//                                    detailCollectionAdapter.setDataForArtist(artistList)
-////                                    Log.i("TAG502", "after - $i: $artistList")
-//                                }
-//                            }
-//                        }
-//                    }
                     detailCollectionAdapter.setData(it.data)
-//                    Log.i("TAG502", "before set: $artistList")
-//                    detailCollectionAdapter.setDataForArtist(artistList)
-//                    Log.i("TAG502", "after set: $artistList")
                 }
             }
         }

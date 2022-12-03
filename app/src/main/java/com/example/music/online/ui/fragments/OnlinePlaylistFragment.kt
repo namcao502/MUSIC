@@ -98,7 +98,9 @@ class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetai
         val args = Bundle()
         args.putSerializable(FireStoreCollection.PLAYLIST, playlist)
         detailCollectionFragment.arguments = args
+
         val fragmentTransaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+        fragmentTransaction.setCustomAnimations(R.anim.fade, R.anim.fade, R.anim.fade, R.anim.fade)
         fragmentTransaction.add(R.id.fragment_container, detailCollectionFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()

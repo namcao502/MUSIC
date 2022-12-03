@@ -676,16 +676,20 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-        val myBinder = p1 as OnlineMusicPlayerService.MyBinder
-        iBinder = myBinder
-        musicPlayerService = myBinder.getService()
-        isServiceConnected = true
-        setTime()
-        loadUI()
-        musicPlayerService!!.start()
-        setCompleteListener()
-        listener()
-        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+        GlobalScope.launch {
+            val myBinder = p1 as OnlineMusicPlayerService.MyBinder
+            iBinder = myBinder
+            musicPlayerService = myBinder.getService()
+            isServiceConnected = true
+            musicPlayerService!!.start()
+            registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+            runOnUiThread {
+                setTime()
+                loadUI()
+                listener()
+                setCompleteListener()
+            }
+        }
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
