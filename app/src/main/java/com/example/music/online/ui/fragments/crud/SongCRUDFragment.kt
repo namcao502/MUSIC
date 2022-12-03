@@ -162,19 +162,11 @@ class SongCRUDFragment : Fragment() {
 
         binding.imgFile.setOnClickListener {
             isSong = false
-//            val intent = Intent()
-//            intent.type = "Song Images/"
-//            intent.action = Intent.ACTION_GET_CONTENT
-//            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
             imageChooser()
         }
 
         binding.songFile.setOnClickListener {
             isSong = true
-//            val intent = Intent()
-//            intent.type = "Songs/"
-//            intent.action = Intent.ACTION_GET_CONTENT
-//            resultLauncher.launch(Intent.createChooser(intent, "Select Song"))
             songChooser()
         }
 
@@ -366,26 +358,6 @@ class SongCRUDFragment : Fragment() {
                 is UiState.Success -> {
                     toast(it.data)
                 }
-            }
-        }
-    }
-
-
-    private var resultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            try {
-                if (isSong){
-                    songUri = result.data?.data
-                    binding.songFile.setImageResource(R.drawable.icons8_audio_file_100)
-                }
-                else {
-                    imgUri = result.data?.data
-                    binding.imgFile.setImageURI(imgUri)
-                }
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
             }
         }
     }

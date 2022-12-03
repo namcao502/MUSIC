@@ -1,16 +1,13 @@
 package com.example.music.online.ui.fragments.crud
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.music.R
-import com.example.music.databinding.FragmentAlbumCrudBinding
 import com.example.music.databinding.FragmentCommentCrudBinding
-import com.example.music.online.data.models.OnlineAlbum
 import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.viewModels.OnlineCommentViewModel
 import com.example.music.utils.UiState
@@ -18,7 +15,6 @@ import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class CommentCRUDFragment : Fragment() {

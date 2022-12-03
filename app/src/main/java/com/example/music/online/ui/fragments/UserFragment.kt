@@ -107,21 +107,16 @@ class UserFragment: Fragment() {
         }
 
         binding.editBtn.setOnClickListener {
-            if (isEditing){
+            isEditing = if (isEditing){
                 showUI(false)
-                isEditing = false
-            }
-            else {
+                false
+            } else {
                 showUI(true)
-                isEditing = true
+                true
             }
         }
 
         binding.userImg.setOnClickListener {
-//            val intent = Intent()
-//            intent.type = "Song Images/"
-//            intent.action = Intent.ACTION_GET_CONTENT
-//            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
             imageChooser()
         }
 
@@ -283,19 +278,6 @@ class UserFragment: Fragment() {
                 is UiState.Success -> {
                     toast(it.data)
                 }
-            }
-        }
-    }
-
-    private var resultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            try {
-                imgUri = result.data?.data
-                binding.userImg.setImageURI(imgUri)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
             }
         }
     }

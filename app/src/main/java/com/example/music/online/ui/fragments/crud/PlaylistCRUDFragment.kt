@@ -151,10 +151,6 @@ class PlaylistCRUDFragment : Fragment() {
         }
 
         binding.imgFile.setOnClickListener {
-//            val intent = Intent()
-//            intent.type = "Song Images/"
-//            intent.action = Intent.ACTION_GET_CONTENT
-//            resultLauncher.launch(Intent.createChooser(intent, "Select Picture"))
             imageChooser()
         }
 
@@ -297,19 +293,6 @@ class PlaylistCRUDFragment : Fragment() {
                 is UiState.Success -> {
                     toast(it.data)
                 }
-            }
-        }
-    }
-
-    private var resultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            try {
-                imgUri = result.data?.data
-                binding.imgFile.setImageURI(imgUri)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
             }
         }
     }

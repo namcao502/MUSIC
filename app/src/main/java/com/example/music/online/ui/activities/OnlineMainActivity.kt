@@ -29,11 +29,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.IOException
+import java.lang.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -332,41 +330,58 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniPlayerLayout.setOnClickListener {
-//            binding.miniPlayerLayout.visibility = View.VISIBLE
             binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
             binding.bottomCard.fadeVisibility(View.GONE)
         }
 
         binding.playerSheet.backBtn.setOnClickListener {
-//            binding.playerSheet.playerLayout.visibility = View.GONE
-//            binding.bottomCard.visibility = View.VISIBLE
             binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
             binding.bottomCard.fadeVisibility(View.VISIBLE)
         }
 
         binding.miniNextBtn.setOnClickListener {
-            next()
+            GlobalScope.launch {
+                next()
+            }
         }
 
         binding.miniPreviousBtn.setOnClickListener {
-            previous()
+            GlobalScope.launch {
+                previous()
+            }
         }
 
         binding.miniPlayPauseBtn.setOnClickListener {
             if (musicPlayerService!!.isPlaying()) {
-                pause()
+                GlobalScope.launch{
+                    pause()
+                }
             } else {
-                play()
+                GlobalScope.launch {
+                    play()
+                }
             }
         }
 
-        binding.playerSheet.nextBtn.setOnClickListener{ next() }
-        binding.playerSheet.previousBtn.setOnClickListener{ previous() }
+        binding.playerSheet.nextBtn.setOnClickListener{
+            GlobalScope.launch {
+                next()
+            }
+        }
+        binding.playerSheet.previousBtn.setOnClickListener{
+            GlobalScope.launch {
+                previous()
+            }
+        }
         binding.playerSheet.playPauseBtn.setOnClickListener{
             if (musicPlayerService!!.isPlaying()) {
-                pause()
+                GlobalScope.launch{
+                    pause()
+                }
             } else {
-                play()
+                GlobalScope.launch {
+                    play()
+                }
             }
         }
         binding.playerSheet.songSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -451,10 +466,12 @@ class OnlineMainActivity: AppCompatActivity(),
                 e.printStackTrace()
             }
         }
-        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        setTime()
-        loadUI()
+        runOnUiThread {
+            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            setTime()
+            loadUI()
+        }
     }
 
     private fun next() {
@@ -487,10 +504,12 @@ class OnlineMainActivity: AppCompatActivity(),
                 e.printStackTrace()
             }
         }
-        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        setTime()
-        loadUI()
+        runOnUiThread {
+            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            setTime()
+            loadUI()
+        }
     }
 
     private fun createRandomTrackPosition() {
@@ -502,18 +521,22 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun play(){
         musicPlayerService!!.start()
-        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        setTime()
-        updateProgress()
+        runOnUiThread {
+            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            setTime()
+            updateProgress()
+        }
     }
 
     private fun pause(){
         musicPlayerService!!.pause()
-        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
-        setTime()
-        updateProgress()
+        runOnUiThread {
+            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
+            setTime()
+            updateProgress()
+        }
     }
 
     private fun initState() {
@@ -687,21 +710,26 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun preparePlayer(){
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        runOnUiThread {
+            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        }
         if (!isServiceConnected){
             initState()
-            binding.miniPlayerLayout.visibility = View.VISIBLE
+            runOnUiThread{
+                binding.miniPlayerLayout.visibility = View.VISIBLE
+            }
         }
         else{
             musicPlayerService!!.stop()
             musicPlayerService!!.release()
             musicPlayerService!!.createMediaPlayer(songList!![songPosition])
             musicPlayerService!!.start()
-            setTime()
-            loadUI()
-            setCompleteListener()
-            listener()
+            runOnUiThread {
+                setTime()
+                loadUI()
+                setCompleteListener()
+            }
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
@@ -800,13 +828,19 @@ class OnlineMainActivity: AppCompatActivity(),
     override fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int) {
         this.songList = songList
         this.songPosition = position
-        preparePlayer()
+        GlobalScope.launch {
+            preparePlayer()
+        }
+//        preparePlayer()
     }
 
     override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
         this.songList = songs
         this.songPosition = position
-        preparePlayer()
+        GlobalScope.launch {
+            preparePlayer()
+        }
+//        preparePlayer()
     }
 
     override fun callBackFromMenuClickComment(action: String, comment: OnlineComment) {
