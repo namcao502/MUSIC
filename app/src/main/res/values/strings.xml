@@ -42,7 +42,7 @@
     <string name="sign_in_for_online">Sign in for online</string>
     <string name="go_to_your_collection">Go to your collection</string>
     <string name="continue_to_online">Continue to online</string>
-    <string name="current_play_state_go">Current play state: Go</string>
+    <string name="current_play_state_go">Mode: Go</string>
     <string name="add_to_playlist">Add to playlist</string>
     <string name="download">Download</string>
     <string name="play_pause">Play/Pause</string>

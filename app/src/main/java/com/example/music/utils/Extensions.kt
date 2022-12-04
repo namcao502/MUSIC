@@ -42,11 +42,6 @@ fun View.fadeVisibility(visibility: Int, duration: Long = 400) {
     this.visibility = visibility
 }
 
-object DetailFragmentState{
-    var isOn = false
-    var instance: DetailCollectionFragment? = null
-}
-
 fun Activity.checkNetwork(){
     Handler(Looper.getMainLooper()).postDelayed({
         showOfflineAlertDialog()

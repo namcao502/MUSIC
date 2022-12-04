@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -107,7 +109,8 @@ class DetailCollectionFragment(
         }
 
         binding.backImg.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            parentFragmentManager.beginTransaction().remove(this).commit()
+//            parentFragmentManager.popBackStack()
             DetailFragmentState.isOn = false
         }
 
@@ -235,12 +238,13 @@ class DetailCollectionFragment(
                 }
             }
         }
+
     }
 
     private fun deleteSongInPlaylistForUser(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
         playlistViewModel.deleteSongInPlaylist(song, playlist, user)
-        playlistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner){
-            when (it) {
+        playlistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner){ result ->
+            when (result) {
                 is UiState.Loading -> {
 
                 }
@@ -248,10 +252,26 @@ class DetailCollectionFragment(
 
                 }
                 is UiState.Success -> {
-                    toast(it.data)
+                    toast(result.data)
+                    firebaseViewModel.getSongFromListSongID(songs)
+                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                        when(it){
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                detailCollectionAdapter.setData(it.data)
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+
+
 
 }

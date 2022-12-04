@@ -1,5 +1,7 @@
 package com.example.music.utils
 
+import com.example.music.online.ui.fragments.DetailCollectionFragment
+
 object FireStoreCollection{
     const val SONG = "Song"
     const val ARTIST = "Artist"
@@ -22,6 +24,15 @@ object PlayState{
     const val GO = "Go"
     const val LOOP = "Loop"
     const val SHUFFLE = "Shuffle"
+}
+
+object DetailFragmentState{
+    var isOn = false
+    var instance: DetailCollectionFragment? = null
+}
+
+object PlayerState{
+    var isOn = false
 }
 
 object WelcomeText{

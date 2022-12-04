@@ -77,6 +77,21 @@ class OnlineMainActivity: AppCompatActivity(),
     private var doubleBackToExitPressedOnce = false
 
     override fun onBackPressed() {
+
+        if (DetailFragmentState.isOn){
+            DetailFragmentState.isOn = false
+            supportFragmentManager.beginTransaction().remove(DetailFragmentState.instance!!).commit()
+            super.onBackPressed()
+            return
+        }
+
+        if (PlayerState.isOn){
+            PlayerState.isOn = false
+            binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
+            binding.bottomCard.fadeVisibility(View.VISIBLE)
+            return
+        }
+
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
             return
@@ -174,9 +189,9 @@ class OnlineMainActivity: AppCompatActivity(),
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
+
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
-
     }
 
     private fun listener() {
@@ -330,11 +345,13 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniPlayerLayout.setOnClickListener {
+            PlayerState.isOn = true
             binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
             binding.bottomCard.fadeVisibility(View.GONE)
         }
 
         binding.playerSheet.backBtn.setOnClickListener {
+            PlayerState.isOn = false
             binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
             binding.bottomCard.fadeVisibility(View.VISIBLE)
         }
