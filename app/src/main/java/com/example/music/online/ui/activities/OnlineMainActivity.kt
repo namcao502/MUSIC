@@ -488,6 +488,7 @@ class OnlineMainActivity: AppCompatActivity(),
             binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
             setTime()
             loadUI()
+            setCompleteListener()
         }
     }
 
@@ -526,6 +527,7 @@ class OnlineMainActivity: AppCompatActivity(),
             binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
             setTime()
             loadUI()
+            setCompleteListener()
         }
     }
 
@@ -543,6 +545,7 @@ class OnlineMainActivity: AppCompatActivity(),
             binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
             setTime()
             updateProgress()
+            setCompleteListener()
         }
     }
 
@@ -553,6 +556,7 @@ class OnlineMainActivity: AppCompatActivity(),
             binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
             setTime()
             updateProgress()
+            setCompleteListener()
         }
     }
 
@@ -634,13 +638,13 @@ class OnlineMainActivity: AppCompatActivity(),
                     binding.playerSheet.startTxt.text = sdf.format(currentPosition)
                     binding.playerSheet.songSb.progress = currentPosition
                     binding.miniPb.progress = currentPosition
-                    handler.postDelayed(this, 1000)
+                    handler.postDelayed(this, 500)
                 }
                 catch (error: IllegalStateException){
                     handler.removeCallbacksAndMessages(null)
                 }
             }
-        }, 1000)
+        }, 500)
     }
 
     override fun onDestroy() {
@@ -670,22 +674,15 @@ class OnlineMainActivity: AppCompatActivity(),
     private fun setCompleteListener(){
         musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
             if (playState == PlayState.LOOP){
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                musicPlayerService!!.start()
+                preparePlayer()
             }
             else {
                 if (playState == PlayState.SHUFFLE) {
                     createRandomTrackPosition()
-                    try {
-                        musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                        musicPlayerService!!.start()
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
+                    preparePlayer()
                 } else {
                     if (playState == PlayState.GO) {
                         next()
-                        musicPlayerService!!.start()
                     }
                 }
             }

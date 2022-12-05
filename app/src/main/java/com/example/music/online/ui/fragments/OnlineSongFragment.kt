@@ -78,7 +78,7 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        //get all song
+        //get all songs
         onlineSongViewModel.getAllSongs()
         onlineSongViewModel.song.observe(viewLifecycleOwner){
             when(it){
@@ -89,26 +89,6 @@ class OnlineSongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
                 }
                 is UiState.Success -> {
-
-//                    val artistList: ArrayList<List<OnlineArtist>> = ArrayList()
-//                    for (i in 0 until it.data.size){
-//                        onlineArtistViewModel.getAllArtistFromSong(it.data[i], i)
-//                        onlineArtistViewModel.artistInSong[i].observe(viewLifecycleOwner){ artists ->
-//                            when(artists){
-//                                is UiState.Loading -> {
-//
-//                                }
-//                                is UiState.Failure -> {
-//
-//                                }
-//                                is UiState.Success -> {
-//                                    artistList.add(artists.data)
-//                                    onlineSongAdapter.setDataForArtist(artistList)
-//                                }
-//                            }
-//                        }
-//                    }
-
                     onlineSongAdapter.setData(it.data)
                     initialList = it.data
                 }

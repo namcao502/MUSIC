@@ -82,11 +82,8 @@
             android:exported="false" />
 
         <activity
-            android:noHistory="true"
             android:name="com.example.music.offline.ui.activities.MainActivity"
             android:exported="true" >
-
-
 
         </activity>
 

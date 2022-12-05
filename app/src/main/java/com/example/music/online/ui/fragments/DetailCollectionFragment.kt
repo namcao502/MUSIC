@@ -109,7 +109,10 @@ class DetailCollectionFragment(
         }
 
         binding.backImg.setOnClickListener {
-            parentFragmentManager.beginTransaction().remove(this).commit()
+            parentFragmentManager
+                .beginTransaction()
+                .remove(this)
+                .commit()
 //            parentFragmentManager.popBackStack()
             DetailFragmentState.isOn = false
         }

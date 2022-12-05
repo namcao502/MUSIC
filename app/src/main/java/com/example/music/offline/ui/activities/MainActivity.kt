@@ -34,6 +34,8 @@ import com.example.music.offline.ui.fragments.PlaylistFragment
 import com.example.music.offline.ui.fragments.SongFragment
 import com.example.music.offline.viewModels.PlaylistViewModel
 import com.example.music.offline.viewModels.SongInPlaylistViewModel
+import com.example.music.online.services.OnlineMusicPlayerService
+import com.example.music.utils.PlayState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -242,27 +244,6 @@ class MainActivity:
             e.printStackTrace()
         }
 
-        musicPlayerService!!.mediaPlayer?.setOnCompletionListener {
-            if (playState == "Shuffle") {
-                createRandomTrackPosition()
-            } else {
-                if (playState == "Loop") {
-                    musicPlayerService!!.reset()
-                } else {
-                    songPosition++
-                }
-            }
-            try {
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            musicPlayerService!!.start()
-            binding.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            setTime()
-            loadUI()
-            updateProgress()
-        }
     }
 
     private fun previous() {
@@ -299,6 +280,7 @@ class MainActivity:
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
+        setCompleteListener()
     }
 
     private fun next() {
@@ -335,6 +317,7 @@ class MainActivity:
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         loadUI()
+        setCompleteListener()
     }
 
     private fun createRandomTrackPosition() {
@@ -350,6 +333,7 @@ class MainActivity:
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         setTime()
         updateProgress()
+        setCompleteListener()
     }
 
     private fun pause(){
@@ -358,6 +342,7 @@ class MainActivity:
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
         setTime()
         updateProgress()
+        setCompleteListener()
     }
 
     private fun initState() {
@@ -383,6 +368,24 @@ class MainActivity:
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniSongArtist.text = songList!![songPosition].artists
         updateProgress()
+    }
+
+    private fun setCompleteListener(){
+        musicPlayerService!!.mediaPlayer!!.setOnCompletionListener {
+            if (playState == PlayState.LOOP){
+                preparePlayer()
+            }
+            else {
+                if (playState == PlayState.SHUFFLE) {
+                    createRandomTrackPosition()
+                    preparePlayer()
+                } else {
+                    if (playState == PlayState.GO) {
+                        next()
+                    }
+                }
+            }
+        }
     }
 
     private fun updateProgress() {
@@ -427,9 +430,8 @@ class MainActivity:
         loadUI()
         musicPlayerService!!.start()
         listener()
-
+        setCompleteListener()
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
-
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
@@ -453,9 +455,7 @@ class MainActivity:
         }
     }
 
-    override fun callBackFromSongFragment(songs: List<Song>, position: Int) {
-        songList = songs
-        songPosition = position
+    private fun preparePlayer(){
         binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
         if (!isServiceConnected){
             initState()
@@ -468,28 +468,21 @@ class MainActivity:
             musicPlayerService!!.start()
             setTime()
             loadUI()
-            listener()
+            setCompleteListener()
         }
         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
     }
 
+    override fun callBackFromSongFragment(songs: List<Song>, position: Int) {
+        this.songList = songs
+        this.songPosition = position
+        preparePlayer()
+    }
+
     override fun callBackFromSongInPlaylist(songList: List<Song>, position: Int) {
         this.songList = songList
-        songPosition = position
-        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-        if (!isServiceConnected){
-            initState()
-            binding.bottomSheet.visibility = View.VISIBLE
-        }
-        else{
-            musicPlayerService!!.stop()
-            musicPlayerService!!.release()
-            musicPlayerService!!.createMediaPlayer(this.songList!![songPosition])
-            musicPlayerService!!.start()
-            setTime()
-            loadUI()
-            listener()
-        }
+        this.songPosition = position
+        preparePlayer()
     }
 
     override fun callBackFromMenuSongInPlaylist(action: String, songList: List<Song>, position: Int, playlist: Playlist) {
