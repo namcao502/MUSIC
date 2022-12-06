@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -52,6 +53,9 @@ class CRUDActivity : AppCompatActivity() {
             requestPermission() // Request Permission
         }
 
+        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+        window.navigationBarDividerColor = resources.getColor(R.color.main_color, this.theme)
     }
 
     private val permissions = arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)

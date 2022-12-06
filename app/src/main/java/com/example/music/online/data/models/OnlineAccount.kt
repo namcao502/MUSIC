@@ -10,6 +10,6 @@ data class OnlineAccount(
     var imgFilePath: String? = ""
 ) {
     override fun toString(): String {
-        return "Email = $email, Name = $name"
+        return "$email, $name"
     }
 }

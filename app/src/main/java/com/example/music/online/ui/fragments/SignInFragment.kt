@@ -1,14 +1,11 @@
 package com.example.music.online.ui.fragments
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,8 +16,6 @@ import com.example.music.databinding.FragmentSigninBinding
 import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.utils.toast
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,7 +25,6 @@ class SignInFragment: Fragment() {
     private val firebaseAuthViewModel: FirebaseAuthViewModel by activityViewModels()
     private var _binding: FragmentSigninBinding? = null
     private val binding get() = _binding!!
-    private lateinit var rememberSP: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -46,12 +40,6 @@ class SignInFragment: Fragment() {
         registerObservers()
 
         binding.apply {
-
-            rememberSP = requireActivity().getSharedPreferences("LoginData", Context.MODE_PRIVATE)
-            userEmailEtv.setText(rememberSP.getString("email", ""))
-            userPasswordEtv.setText(rememberSP.getString("password", ""))
-            val stillSignIn = rememberSP.getBoolean("check", false)
-            rememberCb.isChecked = stillSignIn
 
             signInButton.setOnClickListener {
 
@@ -92,32 +80,16 @@ class SignInFragment: Fragment() {
                     }
                     is FirebaseAuthViewModel.AllEvents.Message -> {
                         toast(event.message)
-                        //sign in success
-                        val editor = rememberSP.edit()
-                        if (binding.rememberCb.isChecked){
-                            editor.putString("email", binding.userEmailEtv.text.toString())
-                            editor.putString("password", binding.userPasswordEtv.text.toString())
-                            editor.putBoolean("check", true)
-                            editor.apply()
-                        }
-                        else {
-                            editor.putString("email", "")
-                            editor.putString("password", "")
-                            editor.putBoolean("check", false)
-                            editor.apply()
-                        }
                     }
                     is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if (event.code == 1)
                             binding.apply {
-                                userEmailEtvl.error = "email should not be empty"
+                                userEmailEtvl.error = "Email should not be empty"
                                 progressBarSignin.visibility = View.GONE
                             }
-
-
                         if(event.code == 2)
                             binding.apply {
-                                userPasswordEtvl.error = "password should not be empty"
+                                userPasswordEtvl.error = "Password should not be empty"
                                 progressBarSignin.visibility = View.GONE
                             }
                     }

@@ -20,15 +20,9 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val currentUser get() = _firebaseUser
 
-    //create our channels that will be used to pass messages to the main ui
-    //create event channel
     private val eventsChannel = Channel<AllEvents>()
-    //the messages passed to the channel shall be received as a Flowable
-    //in the ui
     val allEventsFlow = eventsChannel.receiveAsFlow()
 
-
-    //validate all fields first before performing any sign in operations
     fun signInUser(email: String, password: String) = viewModelScope.launch{
         when {
             email.isEmpty() -> {
@@ -43,7 +37,6 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
         }
     }
 
-    //validate all fields before performing any sign up operations
     fun signUpUser(email: String, password: String, confirmPass: String) = viewModelScope.launch {
         when{
             email.isEmpty() -> {
@@ -61,13 +54,12 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
         }
     }
 
-
     private fun actualSignInUser(email: String, password: String) = viewModelScope.launch {
         try {
             val user = repository.signInWithEmailPassword(email, password)
             user?.let {
                 _firebaseUser.postValue(it)
-                eventsChannel.send(AllEvents.Message("login success"))
+                eventsChannel.send(AllEvents.Message("Login success"))
             }
         }catch(e:Exception){
             val error = e.toString().split(":").toTypedArray()
@@ -81,7 +73,7 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
             val user = repository.signUpWithEmailPassword(email, password)
             user?.let {
                 _firebaseUser.postValue(it)
-                eventsChannel.send(AllEvents.Message("sign up success"))
+                eventsChannel.send(AllEvents.Message("Sign up success"))
             }
         }catch(e:Exception){
             val error = e.toString().split(":").toTypedArray()
@@ -94,8 +86,8 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
         try {
             val user = repository.signOut()
             user?.let {
-                eventsChannel.send(AllEvents.Message("logout failure"))
-            }?: eventsChannel.send(AllEvents.Message("sign out successful"))
+                eventsChannel.send(AllEvents.Message("Logout failure"))
+            }?: eventsChannel.send(AllEvents.Message("Sign out successful"))
 
             getCurrentUser()
 
@@ -126,9 +118,9 @@ class FirebaseAuthViewModel @Inject constructor(private val repository: BaseAuth
         try {
             val result = repository.sendResetPassword(email)
             if (result){
-                eventsChannel.send(AllEvents.Message("reset email sent"))
+                eventsChannel.send(AllEvents.Message("Reset email sent"))
             }else{
-                eventsChannel.send(AllEvents.Error("could not send password reset"))
+                eventsChannel.send(AllEvents.Error("Could not send password reset"))
             }
         }catch (e : Exception){
             val error = e.toString().split(":").toTypedArray()

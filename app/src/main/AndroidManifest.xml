@@ -41,6 +41,8 @@
         tools:targetApi="31">
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:name=".online.ui.activities.SongManagerActivity"
             android:exported="false">
             <meta-data
@@ -49,6 +51,8 @@
         </activity>
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:name=".online.ui.activities.CRUDActivity"
             android:exported="false" >
 
@@ -60,10 +64,14 @@
         </activity>
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:name=".online.ui.activities.OnlineMainActivity"
             android:exported="false" />
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:noHistory="true"
             android:name=".utils.SplashScreen"
             android:exported="true">
@@ -77,11 +85,15 @@
         </activity>
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:noHistory="true"
             android:name=".online.ui.activities.LOGActivity"
             android:exported="false" />
 
         <activity
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             android:name="com.example.music.offline.ui.activities.MainActivity"
             android:exported="true" >
 
@@ -91,6 +103,7 @@
         <service android:name=".online.services.OnlineMusicPlayerService" />
 
         <receiver android:name=".utils.MusicPlayerReceiver" />
+
     </application>
 
 </manifest>

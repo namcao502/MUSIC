@@ -30,19 +30,19 @@ class LOGActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             doubleBackToExitPressedOnce = false }
-            , 2000)
+            ,2000)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
 
-        //here we will simply setup the nav host fragment which is responsible
-        //for holding all the other fragments that will be used in the app
-        //the onSupportNavigationUp creates the back arrow in the toolbar.
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController)
+
+        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
     }
 
     override fun onSupportNavigateUp(): Boolean {

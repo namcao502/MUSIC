@@ -8,17 +8,16 @@
     tools:context=".online.ui.fragments.SignUpFragment">
 
     <TextView
-        android:textColor="@color/white"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
+        android:textAllCaps="true"
         android:fontFamily="sans-serif-medium"
         android:text="@string/sign_up"
+        android:textColor="@color/white"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBarSignup" />
 

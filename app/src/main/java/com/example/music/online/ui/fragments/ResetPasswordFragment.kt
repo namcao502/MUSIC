@@ -58,7 +58,7 @@ class ResetPasswordFragment : Fragment() {
                     is FirebaseAuthViewModel.AllEvents.ErrorCode -> {
                         if(event.code == 1)
                             binding.apply {
-                                userEmailEtvl.error = "email should not be empty!"
+                                userEmailEtvl.error = "Email should not be empty!"
                                 resetPassProgressBar.isInvisible = true
                             }
                     }
