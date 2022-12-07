@@ -40,7 +40,7 @@ class SignUpFragment : Fragment() {
                 val email = userEmailEtv.text.toString()
                 val password = userPasswordEtv.text.toString()
                 val confirmPass = confirmPasswordEtv.text.toString()
-                firebaseAuthViewModel.signUpUser(email , password , confirmPass)
+                firebaseAuthViewModel.signUpUser(email, password, confirmPass)
             }
 
             signInTxt.setOnClickListener {

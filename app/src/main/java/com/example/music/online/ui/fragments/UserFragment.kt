@@ -28,6 +28,10 @@ import com.example.music.utils.FireStoreCollection
 import com.example.music.utils.UiState
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.toast
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -53,6 +57,11 @@ class UserFragment: Fragment() {
 
     private var imgUri: Uri? = null
 
+    // declare the GoogleSignInClient
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentUserBinding.inflate(layoutInflater, container, false)
@@ -62,10 +71,28 @@ class UserFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // call requestIdToken as follows
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
         binding.signOutBtn.setOnClickListener {
-            firebaseAuthViewModel.signOut()
-            startActivity(Intent(requireContext(), LOGActivity::class.java))
-            requireActivity().finish()
+
+            mGoogleSignInClient.signOut()
+                .addOnCompleteListener {
+                    firebaseAuthViewModel.signOut()
+                    (activity as OnlineMainActivity).stopService()
+                    (activity as OnlineMainActivity).finish()
+                    startActivity(Intent(requireContext(), LOGActivity::class.java)) }
+                .addOnFailureListener {
+                    firebaseAuthViewModel.signOut()
+                    (activity as OnlineMainActivity).stopService()
+                    (activity as OnlineMainActivity).finish()
+                    startActivity(Intent(requireContext(), LOGActivity::class.java))
+                }
         }
 
         binding.libraryBtn.setOnClickListener {
@@ -73,29 +100,32 @@ class UserFragment: Fragment() {
             (activity as OnlineMainActivity).stopService()
         }
 
-        val currentUserID = Firebase.auth.currentUser!!.uid
-        accountViewModel.getAccountByID(currentUserID)
-        accountViewModel.accountByID.observe(viewLifecycleOwner){
-            when(it){
-                is UiState.Loading -> {
+        val currentUserID = Firebase.auth.currentUser?.uid
 
-                }
-                is UiState.Failure -> {
-                    toast(it.toString())
-                }
-                is UiState.Success -> {
-                    currentAccount = it.data
-                    binding.nameEt.setText(currentAccount.name)
-                    binding.emailEt.setText(currentAccount.email)
-                    binding.passwordEt.setText(currentAccount.password)
-                    if (currentAccount.imgFilePath!!.isNotEmpty()){
-                        Glide.with(requireContext()).load(currentAccount.imgFilePath).into(binding.userImg)
+        if (currentUserID != null){
+            accountViewModel.getAccountByID(currentUserID)
+            accountViewModel.accountByID.observe(viewLifecycleOwner){
+                when(it){
+                    is UiState.Loading -> {
+
                     }
-                    else {
-                        binding.userImg.setImageResource(R.drawable.ic_baseline_people_24)
+                    is UiState.Failure -> {
+                        toast(it.toString())
                     }
-                    if (currentAccount.role == FireStoreCollection.ADMIN){
-                        binding.manageBtn.visibility = View.VISIBLE
+                    is UiState.Success -> {
+                        currentAccount = it.data
+                        binding.nameEt.setText(currentAccount.name)
+                        binding.emailEt.setText(currentAccount.email)
+                        binding.passwordEt.setText(currentAccount.password)
+                        if (currentAccount.imgFilePath!!.isNotEmpty()){
+                            Glide.with(requireContext()).load(currentAccount.imgFilePath).into(binding.userImg)
+                        }
+                        else {
+                            binding.userImg.setImageResource(R.drawable.ic_baseline_people_24)
+                        }
+                        if (currentAccount.role == FireStoreCollection.ADMIN){
+                            binding.manageBtn.visibility = View.VISIBLE
+                        }
                     }
                 }
             }

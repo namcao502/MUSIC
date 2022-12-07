@@ -245,17 +245,21 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
         var name = ""
 
-        onlineAccountViewModel.getAccountByID(Firebase.auth.currentUser!!.uid)
-        onlineAccountViewModel.accountByID.observe(viewLifecycleOwner){
-            when (it) {
-                is UiState.Loading -> {
+        val currentUserID = Firebase.auth.currentUser?.uid
 
-                }
-                is UiState.Failure -> {
+        if (currentUserID != null){
+            onlineAccountViewModel.getAccountByID(currentUserID)
+            onlineAccountViewModel.accountByID.observe(viewLifecycleOwner){
+                when (it) {
+                    is UiState.Loading -> {
 
-                }
-                is UiState.Success -> {
-                    name = it.data.name.toString()
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        name = it.data.name.toString()
+                    }
                 }
             }
         }

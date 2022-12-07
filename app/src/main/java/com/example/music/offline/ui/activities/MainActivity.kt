@@ -35,7 +35,7 @@ import com.example.music.offline.ui.fragments.SongFragment
 import com.example.music.offline.viewModels.PlaylistViewModel
 import com.example.music.offline.viewModels.SongInPlaylistViewModel
 import com.example.music.online.services.OnlineMusicPlayerService
-import com.example.music.utils.PlayState
+import com.example.music.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,6 +81,22 @@ class MainActivity:
     private val dialogPlaylistAdapter: DialogPlaylistAdapter by lazy {
         DialogPlaylistAdapter(this, this, this, songInPlaylistViewModel) }
 
+    private var doubleBackToExitPressedOnce = false
+
+    override fun onBackPressed() {
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        this.doubleBackToExitPressedOnce = true
+        toast("Please click BACK again to return to Online mode")
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            doubleBackToExitPressedOnce = false }
+            , 2000)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

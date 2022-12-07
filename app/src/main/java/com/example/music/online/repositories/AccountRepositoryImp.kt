@@ -38,9 +38,9 @@ class AccountRepositoryImp(val database: FirebaseFirestore): AccountRepository {
                         accounts.add(account)
                     }
                 }
-                result.invoke(
-                    UiState.Success(accounts[0])
-                )
+                if (accounts.isNotEmpty()){
+                    result.invoke(UiState.Success(accounts[0]))
+                }
             }
     }
 
