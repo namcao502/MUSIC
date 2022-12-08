@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.*
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.databinding.ActivityMainBinding
 import com.example.music.offline.data.models.Playlist
@@ -39,6 +41,10 @@ import com.example.music.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,7 +90,6 @@ class MainActivity:
     private var doubleBackToExitPressedOnce = false
 
     override fun onBackPressed() {
-
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
             return
@@ -117,6 +122,9 @@ class MainActivity:
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
+
+        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
 
         BottomSheetBehavior.from(binding.bottomSheet).apply {
 
@@ -383,6 +391,12 @@ class MainActivity:
         binding.miniPb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniSongArtist.text = songList!![songPosition].artists
+
+        val albumId: String = songList!![songPosition].album_id
+        val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
+        val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
+        Glide.with(this).load(uri).into(binding.songImg)
+
         updateProgress()
     }
 
@@ -438,16 +452,20 @@ class MainActivity:
     }
 
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-        val myBinder = p1 as MusicPlayerService.MyBinder
-        iBinder = myBinder
-        musicPlayerService = myBinder.getService()
-        isServiceConnected = true
-        setTime()
-        loadUI()
-        musicPlayerService!!.start()
-        listener()
-        setCompleteListener()
-        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+        GlobalScope.launch {
+            val myBinder = p1 as MusicPlayerService.MyBinder
+            iBinder = myBinder
+            musicPlayerService = myBinder.getService()
+            isServiceConnected = true
+            musicPlayerService!!.start()
+            registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+            runOnUiThread {
+                setTime()
+                loadUI()
+                listener()
+                setCompleteListener()
+            }
+        }
     }
 
     override fun onServiceDisconnected(p0: ComponentName?) {
@@ -564,7 +582,7 @@ class MainActivity:
         val currentSong = songList!![songPosition]
         val songPlaylistCrossRef = SongPlaylistCrossRef(currentSong.song_id, playlist.playlist_id)
         songInPlaylistViewModel.addSongPlaylistCrossRef(songPlaylistCrossRef)
-        Toast.makeText(this, "Song ${currentSong.name} added to ${playlist.name} playlist", Toast.LENGTH_SHORT).show()
+        toast("Song ${currentSong.name} added to ${playlist.name} playlist")
     }
 
 }

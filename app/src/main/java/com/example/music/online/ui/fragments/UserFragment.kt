@@ -71,15 +71,16 @@ class UserFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // call requestIdToken as follows
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
 
-        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         binding.signOutBtn.setOnClickListener {
+
+            // call requestIdToken as follows
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+            mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
             mGoogleSignInClient.signOut()
                 .addOnCompleteListener {
@@ -96,8 +97,8 @@ class UserFragment: Fragment() {
         }
 
         binding.libraryBtn.setOnClickListener {
-            startActivity(Intent(requireContext(), MainActivity::class.java))
             (activity as OnlineMainActivity).stopService()
+            startActivity(Intent(requireContext(), MainActivity::class.java))
         }
 
         val currentUserID = Firebase.auth.currentUser?.uid

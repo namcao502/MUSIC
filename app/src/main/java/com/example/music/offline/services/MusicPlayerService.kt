@@ -4,19 +4,26 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.media.session.MediaSessionCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.offline.data.models.Song
 import com.example.music.utils.MusicPlayerReceiver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MusicPlayerService: Service() {
 
@@ -77,46 +84,55 @@ class MusicPlayerService: Service() {
 
     private fun sendNotification(song: Song) {
 
-        val channelId =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel(CHANNEL_ID_1, "My Background Service")
-            } else {
-                // If earlier version channel ID is not used
-                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                ""
+        GlobalScope.launch {
+            val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
+
+            val albumId: String = song.album_id
+
+            val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
+
+            val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
+
+            val image = withContext(Dispatchers.IO) {
+                Glide.with(this@MusicPlayerService).asBitmap().load(uri).submit().get()
             }
 
-        val mediaSessionCompat = MediaSessionCompat(this, "tag")
+            val notification = NotificationCompat.Builder(this@MusicPlayerService, channelId)
+                .setContentTitle(song.name)
+                .setContentText(song.artists)
+                .setSmallIcon(R.drawable.ic_baseline_music_note_24)
+                .setLargeIcon(image)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(NotificationCompat.BigPictureStyle()
+                    .bigPicture(image)
+                    .bigLargeIcon(null))
 
-        // Create an explicit intent for an Activity in your app
-//        val intent = Intent(this, MainActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
-//        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            if (isPlaying()){
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                        "Previous",
+                        pendingIntent(this@MusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_pause_circle_outline_24,
+                        "Pause",
+                        pendingIntent(this@MusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@MusicPlayerService, ACTION_NEXT))
+            }
+            else {
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                    "Previous",
+                    pendingIntent(this@MusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_play_circle_outline_24,
+                        "Play",
+                        pendingIntent(this@MusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@MusicPlayerService, ACTION_NEXT))
+            }
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle(song.name)
-            .setContentText(song.artists)
-            .setSmallIcon(R.drawable.ic_baseline_music_note_24)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-//            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-//                .setShowActionsInCompactView(0, 1, 2)
-//                .setMediaSession(mediaSessionCompat.sessionToken))
-
-        if (isPlaying()){
-            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_pause_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
-                .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
+            val fNotification = notification.build()
+            startForeground(1, fNotification)
         }
-        else {
-            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Play", pendingIntent(this, ACTION_PAUSE))
-                .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
-        }
-
-        val fNotification = notification.build()
-
-        startForeground(1, fNotification)
     }
 
     private fun pendingIntent(context: Context, action: Int): PendingIntent{

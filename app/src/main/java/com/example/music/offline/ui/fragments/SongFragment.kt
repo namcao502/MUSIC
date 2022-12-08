@@ -223,7 +223,6 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun createDialogForDeletePlaylist(playlist: Playlist){
-
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
@@ -256,23 +255,8 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         }
     }
 
-//    @Deprecated("Deprecated in Java")
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        if (requestCode == permission) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                readFile()
-//            } else {
-//                // Permission Denied
-//                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-//            }
-//            return
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
-
     private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
+        ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             // PERMISSION GRANTED
             readFile()

@@ -25,8 +25,8 @@ class ScanSongInStorage(context: Context) {
         MediaStore.Audio.Media.DURATION,
         MediaStore.Audio.Media.SIZE,
         MediaStore.Audio.Media.ARTIST,
-        MediaStore.Audio.Media.DATA
-
+        MediaStore.Audio.Media.DATA,
+        MediaStore.Audio.Albums.ALBUM_ID
     )
 
     // Show only audios that are at least 1 minute in duration.
@@ -58,6 +58,7 @@ class ScanSongInStorage(context: Context) {
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
             val artistsColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
             val filePathColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+            val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
 
             while (cursor.moveToNext()) {
                 // Get values of columns for a given audio.
@@ -67,11 +68,11 @@ class ScanSongInStorage(context: Context) {
                 val size = cursor.getInt(sizeColumn)
                 val artists = cursor.getString(artistsColumn)
                 val filePath = cursor.getString(filePathColumn)
-
+                val albumId = cursor.getString(albumIdColumn)
                 val contentUri: Uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                 // Stores column values and the contentUri in a local object
                 // that represents the media file.
-                songList.add(Song(contentUri.toString(), name, artists, duration, size, filePath, id.toInt()))
+                songList.add(Song(contentUri.toString(), name, artists, duration, size, filePath, id.toInt(), albumId))
             }
         }
         return songList

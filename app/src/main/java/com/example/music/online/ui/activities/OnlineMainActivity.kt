@@ -78,17 +78,17 @@ class OnlineMainActivity: AppCompatActivity(),
 
     override fun onBackPressed() {
 
-        if (DetailFragmentState.isOn){
-            DetailFragmentState.isOn = false
-            supportFragmentManager.beginTransaction().remove(DetailFragmentState.instance!!).commit()
-            super.onBackPressed()
-            return
-        }
-
         if (PlayerState.isOn){
             PlayerState.isOn = false
             binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
             binding.bottomCard.fadeVisibility(View.VISIBLE)
+            return
+        }
+
+        if (DetailFragmentState.isOn){
+            DetailFragmentState.isOn = false
+            supportFragmentManager.beginTransaction().remove(DetailFragmentState.instance!!).commit()
+            super.onBackPressed()
             return
         }
 
@@ -110,6 +110,8 @@ class OnlineMainActivity: AppCompatActivity(),
         binding = ActivityOnlineMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        Log.i("TAG502", "onCreate: Player")
 
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -192,6 +194,26 @@ class OnlineMainActivity: AppCompatActivity(),
 
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.i("TAG502", "onRestart: Player")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("TAG502", "onPause: Player")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("TAG502", "onResume: Player")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("TAG502", "onStop: Player")
     }
 
     private fun listener() {
@@ -604,6 +626,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     }
                     text = text.dropLast(2)
                     currentArtists = text
+                    PlayerState.artistText = text
                     musicPlayerService!!.recreateNotification(text)
                     binding.miniSongArtist.text = text
                     binding.playerSheet.artistTxt.text = text
@@ -659,6 +682,7 @@ class OnlineMainActivity: AppCompatActivity(),
             unbindService(this)
             isServiceConnected = false
         }
+        Log.i("TAG502", "onDestroy: Player")
     }
 
     fun stopService(){
@@ -716,15 +740,25 @@ class OnlineMainActivity: AppCompatActivity(),
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.extras!!.getInt("action_music")) {
-                OnlineMusicPlayerService.ACTION_PREVIOUS -> previous()
+                OnlineMusicPlayerService.ACTION_PREVIOUS ->
+                    GlobalScope.launch {
+                        previous()
+                    }
                 OnlineMusicPlayerService.ACTION_PAUSE -> {
                     if (musicPlayerService!!.isPlaying()) {
-                        pause()
+                        GlobalScope.launch {
+                            pause()
+                        }
                     } else {
-                        play()
+                        GlobalScope.launch {
+                            play()
+                        }
                     }
                 }
-                OnlineMusicPlayerService.ACTION_NEXT -> next()
+                OnlineMusicPlayerService.ACTION_NEXT ->
+                    GlobalScope.launch {
+                        next()
+                    }
             }
         }
     }
@@ -851,7 +885,6 @@ class OnlineMainActivity: AppCompatActivity(),
         GlobalScope.launch {
             preparePlayer()
         }
-//        preparePlayer()
     }
 
     override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
@@ -860,7 +893,6 @@ class OnlineMainActivity: AppCompatActivity(),
         GlobalScope.launch {
             preparePlayer()
         }
-//        preparePlayer()
     }
 
     override fun callBackFromMenuClickComment(action: String, comment: OnlineComment) {

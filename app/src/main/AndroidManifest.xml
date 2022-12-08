@@ -71,7 +71,7 @@
 
         <activity
             android:configChanges="uiMode"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:noHistory="true"
             android:name=".utils.SplashScreen"
             android:exported="true">
@@ -95,9 +95,7 @@
             android:configChanges="uiMode"
             android:launchMode="singleTask"
             android:name="com.example.music.offline.ui.activities.MainActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="false" />
 
         <service android:name="com.example.music.offline.services.MusicPlayerService" />
         <service android:name=".online.services.OnlineMusicPlayerService" />

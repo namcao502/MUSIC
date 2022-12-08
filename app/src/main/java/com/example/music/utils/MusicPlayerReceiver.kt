@@ -13,7 +13,6 @@ class MusicPlayerReceiver: BroadcastReceiver() {
 //
 //        context.startService(intentService)
 
-        context.sendBroadcast(Intent("TRACKS_TRACKS").putExtra("action_music", actionMusic)
-        )
+        context.sendBroadcast(Intent("TRACKS_TRACKS").putExtra("action_music", actionMusic))
     }
 }

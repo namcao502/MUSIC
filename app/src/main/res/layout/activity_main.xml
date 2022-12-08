@@ -40,15 +40,28 @@
         android:layout_height="match_parent"
         android:id="@+id/bottom_sheet">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/song_img"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_img"
             android:layout_width="370dp"
             android:layout_height="370dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
+            app:cardBackgroundColor="@color/main_color"
+            app:cardCornerRadius="10dp"
             android:src="@drawable/music_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mini_player_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/mini_player_layout">
+
+        <ImageView
+            android:id="@+id/song_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/todo"
+            android:scaleType="fitCenter"
+            android:src="@drawable/poster_04" />
+
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mini_player_layout"
@@ -146,7 +159,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <ImageView
             android:scaleType="centerInside"
             android:id="@+id/play_state_btn"
@@ -214,7 +226,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/song_img">
+            app:layout_constraintTop_toBottomOf="@+id/card_img">
 
         </TextView>
 

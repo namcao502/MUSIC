@@ -13,5 +13,6 @@ data class Song(
     val size: Int,
     val filePath: String,
     @PrimaryKey
-    val song_id: Int
+    val song_id: Int,
+    val album_id: String
 ): Serializable
