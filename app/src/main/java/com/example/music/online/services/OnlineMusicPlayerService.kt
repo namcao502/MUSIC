@@ -13,9 +13,18 @@ import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
+import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.viewModels.OnlineArtistViewModel
 import com.example.music.utils.MusicPlayerReceiver
+import com.example.music.utils.PlayerState
+import com.example.music.utils.UiState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class OnlineMusicPlayerService: Service() {
@@ -81,6 +90,57 @@ class OnlineMusicPlayerService: Service() {
         sendNotification(currentSong!!)
     }
 
+    fun recreateNotification(artist: String){
+
+        val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
+
+        GlobalScope.launch {
+
+            val image = withContext(Dispatchers.IO) {
+                Glide.with(this@OnlineMusicPlayerService).asBitmap().load(currentSong!!.imgFilePath).submit().get()
+            }
+
+            val notification = NotificationCompat.Builder(this@OnlineMusicPlayerService, channelId)
+                .setContentTitle(currentSong!!.name)
+                .setContentText(artist)
+                .setLargeIcon(image)
+                .setSmallIcon(R.drawable.ic_baseline_music_note_24)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(NotificationCompat.BigPictureStyle()
+                    .bigPicture(image)
+                    .bigLargeIcon(null))
+//            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+//                .setShowActionsInCompactView(0, 1, 2)
+//                .setMediaSession(mediaSessionCompat.sessionToken))
+
+            if (isPlaying()){
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                    "Previous",
+                    pendingIntent(this@OnlineMusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_pause_circle_outline_24,
+                        "Pause",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_NEXT))
+            }
+            else {
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                    "Previous",
+                    pendingIntent(this@OnlineMusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_play_circle_outline_24,
+                        "Play",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_NEXT))
+            }
+
+            val fNotification = notification.build()
+            startForeground(1, fNotification)
+        }
+    }
+
     private fun sendNotification(song: OnlineSong) {
 
         val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
@@ -93,30 +153,51 @@ class OnlineMusicPlayerService: Service() {
 //        }
 //        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle(song.name)
-//            .setContentText(song.artists)
-//            .setLargeIcon(Glide.with(this).asBitmap().load(song.imgFilePath).submit().get())
-            .setSmallIcon(R.drawable.ic_baseline_music_note_24)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+        GlobalScope.launch {
+
+            val image = withContext(Dispatchers.IO) {
+                Glide.with(this@OnlineMusicPlayerService).asBitmap().load(song.imgFilePath).submit().get()
+            }
+
+            val notification = NotificationCompat.Builder(this@OnlineMusicPlayerService, channelId)
+                .setContentTitle(song.name)
+                .setContentText(PlayerState.artistText)
+                .setLargeIcon(image)
+                .setSmallIcon(R.drawable.ic_baseline_music_note_24)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(NotificationCompat.BigPictureStyle()
+                    .bigPicture(image)
+                    .bigLargeIcon(null))
 //            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
 //                .setShowActionsInCompactView(0, 1, 2)
 //                .setMediaSession(mediaSessionCompat.sessionToken))
 
-        if (isPlaying()){
-            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_pause_circle_outline_24, "Pause", pendingIntent(this, ACTION_PAUSE))
-                .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
-        }
-        else {
-            notification.addAction(R.drawable.ic_baseline_skip_previous_24, "Previous", pendingIntent(this, ACTION_PREVIOUS))
-                .addAction(R.drawable.ic_baseline_play_circle_outline_24, "Play", pendingIntent(this, ACTION_PAUSE))
-                .addAction(R.drawable.ic_baseline_skip_next_24, "Next", pendingIntent(this, ACTION_NEXT))
-        }
+            if (isPlaying()){
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                        "Previous",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_pause_circle_outline_24,
+                        "Pause",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_NEXT))
+            }
+            else {
+                notification.addAction(R.drawable.ic_baseline_skip_previous_24,
+                        "Previous",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PREVIOUS))
+                    .addAction(R.drawable.ic_baseline_play_circle_outline_24,
+                        "Play",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_PAUSE))
+                    .addAction(R.drawable.ic_baseline_skip_next_24,
+                        "Next",
+                        pendingIntent(this@OnlineMusicPlayerService, ACTION_NEXT))
+            }
 
-        val fNotification = notification.build()
-
-        startForeground(1, fNotification)
+            val fNotification = notification.build()
+            startForeground(1, fNotification)
+        }
     }
 
     private fun pendingIntent(context: Context, action: Int): PendingIntent{

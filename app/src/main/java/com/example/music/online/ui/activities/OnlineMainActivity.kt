@@ -576,6 +576,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun loadUI(){
+
         binding.playerSheet.titleTxt.text = songList!![songPosition].name
         binding.playerSheet.songSb.max = musicPlayerService!!.getDuration()
         binding.miniSongTitle.text = songList!![songPosition].name
@@ -603,6 +604,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     }
                     text = text.dropLast(2)
                     currentArtists = text
+                    musicPlayerService!!.recreateNotification(text)
                     binding.miniSongArtist.text = text
                     binding.playerSheet.artistTxt.text = text
                 }

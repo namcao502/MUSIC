@@ -33,6 +33,7 @@ object DetailFragmentState{
 
 object PlayerState{
     var isOn = false
+    var artistText = ""
 }
 
 object WelcomeText{
