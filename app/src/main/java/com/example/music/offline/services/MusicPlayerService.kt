@@ -7,6 +7,9 @@ import android.app.Service
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
@@ -88,13 +91,16 @@ class MusicPlayerService: Service() {
             val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
 
             val albumId: String = song.album_id
-
             val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
-
             val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
 
             val image = withContext(Dispatchers.IO) {
-                Glide.with(this@MusicPlayerService).asBitmap().load(uri).submit().get()
+                try {
+                    Glide.with(this@MusicPlayerService).asBitmap().load(uri).submit().get()
+                }
+                catch (e: Exception){
+                    BitmapFactory.decodeResource(resources, R.drawable.music_default)
+                }
             }
 
             val notification = NotificationCompat.Builder(this@MusicPlayerService, channelId)

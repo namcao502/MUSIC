@@ -3,6 +3,7 @@ package com.example.music.offline.ui.activities
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.*
+import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -392,10 +393,22 @@ class MainActivity:
         binding.miniSongTitle.text = songList!![songPosition].name
         binding.miniSongArtist.text = songList!![songPosition].artists
 
-        val albumId: String = songList!![songPosition].album_id
-        val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
-        val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
-        Glide.with(this).load(uri).into(binding.songImg)
+        GlobalScope.launch {
+            val albumId: String = songList!![songPosition].album_id
+            val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
+            val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
+            val image = withContext(Dispatchers.IO) {
+                try {
+                    Glide.with(this@MainActivity).asBitmap().load(uri).submit().get()
+                }
+                catch (e: Exception){
+                    BitmapFactory.decodeResource(resources, R.drawable.music_default)
+                }
+            }
+            runOnUiThread {
+                binding.songImg.setImageBitmap(image)
+            }
+        }
 
         updateProgress()
     }

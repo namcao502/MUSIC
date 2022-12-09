@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/todo"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:src="@drawable/poster_04" />
 
         </androidx.cardview.widget.CardView>
