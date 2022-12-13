@@ -106,12 +106,10 @@ class OnlineMusicPlayerService: Service() {
                 .setLargeIcon(image)
                 .setSmallIcon(R.drawable.ic_baseline_music_note_24)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .setStyle(NotificationCompat.BigPictureStyle()
                     .bigPicture(image)
                     .bigLargeIcon(null))
-//            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-//                .setShowActionsInCompactView(0, 1, 2)
-//                .setMediaSession(mediaSessionCompat.sessionToken))
 
             if (isPlaying()){
                 notification.addAction(R.drawable.ic_baseline_skip_previous_24,
@@ -145,14 +143,6 @@ class OnlineMusicPlayerService: Service() {
 
         val channelId = createNotificationChannel(CHANNEL_ID_1, "My Background Service")
 
-        val mediaSessionCompat = MediaSessionCompat(this, "tag")
-
-        // Create an explicit intent for an Activity in your app
-//        val intent = Intent(this, MainActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
-//        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
         GlobalScope.launch {
 
             val image = withContext(Dispatchers.IO) {
@@ -165,6 +155,7 @@ class OnlineMusicPlayerService: Service() {
                 .setLargeIcon(image)
                 .setSmallIcon(R.drawable.ic_baseline_music_note_24)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .setStyle(NotificationCompat.BigPictureStyle()
                     .bigPicture(image)
                     .bigLargeIcon(null))

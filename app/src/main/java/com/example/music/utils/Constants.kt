@@ -44,5 +44,7 @@ object WelcomeText{
 
 object ConnectionType{
     const val NOT_CONNECT = 0
+    const val NO_INTERNET = "No internet access"
+    const val BACK_ONLINE = "Internet access"
 }
 

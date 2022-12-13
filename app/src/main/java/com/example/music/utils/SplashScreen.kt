@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.music.R
+import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.ui.activities.LOGActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,15 +27,30 @@ class SplashScreen : AppCompatActivity() {
         window.navigationBarColor = resources.getColor(R.color.nav_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.nav_color, this.theme)
 
-        if (getConnectionType(this) == ConnectionType.NOT_CONNECT){
-            //switch to library
-            showOfflineAlertDialog()
-        }
-        else {
-            Handler(Looper.getMainLooper()).postDelayed({
-                startActivity(Intent(this, LOGActivity::class.java))
-                finish()
-            }, 1000)
-        }
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (getConnectionType(this@SplashScreen) == ConnectionType.NOT_CONNECT){
+                    AlertDialog
+                        .Builder(this@SplashScreen)
+                        .setMessage("Switch to offline mode?")
+                        .setTitle("No internet connection")
+                        .setPositiveButton("Yes") { _, _ ->
+                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+                        }
+                        .setNegativeButton("Retry") { _, _ ->
+                            handler.postDelayed(this, 1000)
+                        }
+                        .create()
+                        .show()
+                }
+                else {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        startActivity(Intent(this@SplashScreen, LOGActivity::class.java))
+                        finish()
+                    }, 1000)
+                }
+            }
+        }, 1000)
     }
 }

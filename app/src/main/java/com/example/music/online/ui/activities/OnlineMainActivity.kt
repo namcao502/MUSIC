@@ -2,6 +2,7 @@ package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.*
+import android.graphics.Color
 import android.os.*
 import android.util.Log
 import android.view.View
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.databinding.ActivityOnlineMainBinding
+import com.example.music.offline.ui.activities.MainActivity
+import com.example.music.online.data.dao.ConnectivityObserver
 import com.example.music.online.data.models.OnlineComment
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
@@ -28,8 +31,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.plcoding.observeconnectivity.NetworkConnectivityObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
 import java.lang.Runnable
 import java.text.SimpleDateFormat
@@ -76,6 +82,8 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private var doubleBackToExitPressedOnce = false
 
+    private lateinit var connectivityObserver: ConnectivityObserver
+
     override fun onBackPressed() {
 
         if (PlayerState.isOn){
@@ -110,8 +118,6 @@ class OnlineMainActivity: AppCompatActivity(),
         binding = ActivityOnlineMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        Log.i("TAG502", "onCreate: Player")
 
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -194,26 +200,40 @@ class OnlineMainActivity: AppCompatActivity(),
 
         window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
         window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
-    }
 
-    override fun onRestart() {
-        super.onRestart()
-        Log.i("TAG502", "onRestart: Player")
-    }
+        GlobalScope.launch {
+            connectivityObserver = NetworkConnectivityObserver(this@OnlineMainActivity)
+            connectivityObserver.observe().collect { value ->
+                when (value){
+                    ConnectivityObserver.Status.Available -> {
+                        runOnUiThread {
+                            with(binding.internetTxt){
+//                                setBackgroundColor(Color.GREEN)
+                                setTextColor(Color.GREEN)
+                                text = ConnectionType.BACK_ONLINE
+                                visibility = View.VISIBLE
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    this@with.visibility = View.GONE
+                                }, 2000)
+                            }
+                        }
+                    }
+                    else -> {
+                        runOnUiThread {
+                            with(binding.internetTxt){
+//                                setBackgroundColor(Color.BLACK)
+                                setTextColor(Color.RED)
+                                text = ConnectionType.NO_INTERNET
+                                visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-    override fun onPause() {
-        super.onPause()
-        Log.i("TAG502", "onPause: Player")
-    }
+//        checkNetwork(binding.internetTxt)
 
-    override fun onResume() {
-        super.onResume()
-        Log.i("TAG502", "onResume: Player")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.i("TAG502", "onStop: Player")
     }
 
     private fun listener() {
@@ -764,28 +784,51 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun preparePlayer(){
-        runOnUiThread {
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-        }
-        if (!isServiceConnected){
-            initState()
-            runOnUiThread{
-                binding.miniPlayerLayout.visibility = View.VISIBLE
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (getConnectionType(this@OnlineMainActivity) == ConnectionType.NOT_CONNECT){
+                    AlertDialog
+                        .Builder(this@OnlineMainActivity)
+                        .setMessage("Switch to offline mode?")
+                        .setTitle("No internet connection")
+                        .setPositiveButton("Yes") { _, _ ->
+                            startActivity(Intent(this@OnlineMainActivity, MainActivity::class.java))
+                        }
+                        .setNegativeButton("Retry") { _, _ ->
+                            handler.postDelayed(this, 100)
+                        }
+                        .create()
+                        .show()
+                }
+                else {
+                    runOnUiThread {
+                        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+                        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                    }
+                    if (!isServiceConnected){
+                        initState()
+                        runOnUiThread{
+                            binding.miniPlayerLayout.visibility = View.VISIBLE
+                        }
+                    }
+                    else{
+                        musicPlayerService!!.stop()
+                        musicPlayerService!!.release()
+                        musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                        musicPlayerService!!.start()
+                        runOnUiThread {
+                            setTime()
+                            loadUI()
+                            setCompleteListener()
+                        }
+                    }
+                    registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+                }
             }
-        }
-        else{
-            musicPlayerService!!.stop()
-            musicPlayerService!!.release()
-            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            musicPlayerService!!.start()
-            runOnUiThread {
-                setTime()
-                loadUI()
-                setCompleteListener()
-            }
-        }
-        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+        }, 500)
+
     }
 
     override fun onMenuClick(action: String, playlist: OnlinePlaylist) {

@@ -6,6 +6,7 @@ import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -15,8 +16,10 @@ import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +29,7 @@ import androidx.transition.TransitionManager
 import com.example.music.R
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlinePlaylist
+import com.example.music.online.ui.activities.LOGActivity
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.ui.fragments.DetailCollectionFragment
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
@@ -42,56 +46,39 @@ fun View.fadeVisibility(visibility: Int, duration: Long = 400) {
     this.visibility = visibility
 }
 
-fun Activity.checkNetwork(){
-    Handler(Looper.getMainLooper()).postDelayed({
-        showOfflineAlertDialog()
-    }, 1000)
-}
-
-fun Activity.showOfflineAlertDialog(){
-    val builder = AlertDialog.Builder(this)
-
-    builder.setMessage("Switch to offline mode?")
-        .setTitle("No internet connection")
-        .setPositiveButton("Yes") { _, _ ->
-            startActivity(Intent(this, MainActivity::class.java))
+fun Activity.checkNetwork(view: TextView){
+    val handler = Handler(Looper.getMainLooper())
+    handler.postDelayed(object : Runnable {
+        override fun run() {
+            if (getConnectionType(this@checkNetwork) == ConnectionType.NOT_CONNECT){
+                view.setBackgroundColor(Color.BLACK)
+                view.text = ConnectionType.NO_INTERNET
+                view.visibility = View.VISIBLE
+            }
+            else {
+                view.setBackgroundColor(Color.GREEN)
+                view.text = ConnectionType.BACK_ONLINE
+                view.visibility = View.VISIBLE
+                Handler(Looper.getMainLooper()).postDelayed({
+                    view.visibility = View.GONE
+                }, 1000)
+            }
+            handler.postDelayed(this, 2000)
         }
-        .setNegativeButton("Retry") { _, _ ->
-            this.recreate()
-        }
-    // Create the AlertDialog object and return it
-    builder.create().show()
+    }, 500)
 }
 
 fun getConnectionType(context: Context): Int {
     var result = 0 // Returns connection type. 0: none; 1: mobile data; 2: wifi; 3: vpn
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        cm?.run {
-            cm.getNetworkCapabilities(cm.activeNetwork)?.run {
-                if (hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    result = 2
-                } else if (hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    result = 1
-                } else if (hasTransport(NetworkCapabilities.TRANSPORT_VPN)){
-                    result = 3
-                }
-            }
-        }
-    } else {
-        cm?.run {
-            cm.activeNetworkInfo?.run {
-                when (type) {
-                    ConnectivityManager.TYPE_WIFI -> {
-                        result = 2
-                    }
-                    ConnectivityManager.TYPE_MOBILE -> {
-                        result = 1
-                    }
-                    ConnectivityManager.TYPE_VPN -> {
-                        result = 3
-                    }
-                }
+    cm?.run {
+        cm.getNetworkCapabilities(cm.activeNetwork)?.run {
+            if (hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                result = 2
+            } else if (hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                result = 1
+            } else if (hasTransport(NetworkCapabilities.TRANSPORT_VPN)){
+                result = 3
             }
         }
     }

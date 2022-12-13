@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -24,10 +27,7 @@ import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
-import com.example.music.utils.FireStoreCollection
-import com.example.music.utils.UiState
-import com.example.music.utils.createProgressDialog
-import com.example.music.utils.toast
+import com.example.music.utils.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -60,8 +60,6 @@ class UserFragment: Fragment() {
     // declare the GoogleSignInClient
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private val auth = FirebaseAuth.getInstance()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentUserBinding.inflate(layoutInflater, container, false)
@@ -70,8 +68,6 @@ class UserFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         binding.signOutBtn.setOnClickListener {
 
@@ -133,22 +129,69 @@ class UserFragment: Fragment() {
         }
 
         binding.manageBtn.setOnClickListener {
-            startActivity(Intent(requireContext(), CRUDActivity::class.java))
-            (activity as OnlineMainActivity).stopService()
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Switch to offline mode?")
+                            .setTitle("No internet connection")
+                            .setPositiveButton("Yes") { _, _ ->
+                                startActivity(Intent(requireContext(), MainActivity::class.java))
+                            }
+                            .setNegativeButton("Retry") { _, _ ->
+                                handler.postDelayed(this, 100)
+                            }
+                            .create()
+                            .show()
+                    }
+                    else {
+                        startActivity(Intent(requireContext(), CRUDActivity::class.java))
+                        (activity as OnlineMainActivity).stopService()
+                    }
+                }
+            }, 500)
+
         }
 
         binding.editBtn.setOnClickListener {
-            isEditing = if (isEditing){
-                showUI(false)
-                false
-            } else {
-                showUI(true)
-                true
-            }
+
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Switch to offline mode?")
+                            .setTitle("No internet connection")
+                            .setPositiveButton("Yes") { _, _ ->
+                                startActivity(Intent(requireContext(), MainActivity::class.java))
+                            }
+                            .setNegativeButton("Retry") { _, _ ->
+                                handler.postDelayed(this, 100)
+                            }
+                            .create()
+                            .show()
+                    }
+                    else {
+                        isEditing = if (isEditing){
+                            showUI(false)
+                            false
+                        } else {
+                            showUI(true)
+                            true
+                        }
+                    }
+                }
+            }, 500)
+
         }
 
         binding.userImg.setOnClickListener {
-            imageChooser()
+            if (isEditing){
+                imageChooser()
+            }
         }
 
         binding.userImg.setOnLongClickListener {
