@@ -71,25 +71,48 @@ class UserFragment: Fragment() {
 
         binding.signOutBtn.setOnClickListener {
 
-            // call requestIdToken as follows
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Switch to offline mode?")
+                            .setTitle("No internet connection")
+                            .setPositiveButton("Yes") { _, _ ->
+                                startActivity(Intent(requireContext(), MainActivity::class.java))
+                            }
+                            .setNegativeButton("Retry") { _, _ ->
+                                handler.postDelayed(this, 100)
+                            }
+                            .create()
+                            .show()
+                    }
+                    else {
+                        // call requestIdToken as follows
+                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.default_web_client_id))
+                            .requestEmail()
+                            .build()
+                        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-            mGoogleSignInClient.signOut()
-                .addOnCompleteListener {
-                    firebaseAuthViewModel.signOut()
-                    (activity as OnlineMainActivity).stopService()
-                    (activity as OnlineMainActivity).finish()
-                    startActivity(Intent(requireContext(), LOGActivity::class.java)) }
-                .addOnFailureListener {
-                    firebaseAuthViewModel.signOut()
-                    (activity as OnlineMainActivity).stopService()
-                    (activity as OnlineMainActivity).finish()
-                    startActivity(Intent(requireContext(), LOGActivity::class.java))
+                        mGoogleSignInClient.signOut()
+                            .addOnCompleteListener {
+                                firebaseAuthViewModel.signOut()
+                                (activity as OnlineMainActivity).stopService()
+                                (activity as OnlineMainActivity).finish()
+                                startActivity(Intent(requireContext(), LOGActivity::class.java)) }
+                            .addOnFailureListener {
+                                firebaseAuthViewModel.signOut()
+                                (activity as OnlineMainActivity).stopService()
+                                (activity as OnlineMainActivity).finish()
+                                startActivity(Intent(requireContext(), LOGActivity::class.java))
+                            }
+                    }
                 }
+            }, 500)
+
+
         }
 
         binding.libraryBtn.setOnClickListener {
