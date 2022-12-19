@@ -75,24 +75,30 @@ class SongAdapter(private val context: Context, private val itemClickListener: I
 
                 binding.authorTxt.text = this.artists
 
-                val albumId: String = this@with.album_id
-                val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
-                val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
-//                val image = {
-//                    try {
-//                        Glide.with(context).asBitmap().load(uri).submit().get()
-//                    }
-//                    catch (e: Exception){
-//                        BitmapFactory.decodeResource(context.resources, R.drawable.music_default)
-//                    }
-//                }
 //                val image = try {
 //                    Glide.with(context).asBitmap().load(uri).submit().get()
 //                } catch (e: Exception){
 //                    BitmapFactory.decodeResource(context.resources, R.drawable.music_default)
 //                }
-                Glide.with(context).load(uri).into(binding.imageView)
+//                Glide.with(context).load(uri).into(binding.imageView)
 //                binding.imageView.setImageBitmap(image)
+
+                GlobalScope.launch {
+                    val albumId: String = this@with.album_id
+                    val albumUri: Uri = Uri.parse("content://media/external/audio/albumart")
+                    val uri: Uri = ContentUris.withAppendedId(albumUri, albumId.toLong())
+                    val image = withContext(Dispatchers.IO) {
+                        try {
+                            Glide.with(context).asBitmap().load(uri).submit().get()
+                        }
+                        catch (e: Exception){
+                            BitmapFactory.decodeResource(context.resources, R.drawable.icons8_music_note_default_68)
+                        }
+                    }
+                    (context as Activity).runOnUiThread {
+                        binding.imageView.setImageBitmap(image)
+                    }
+                }
 
             }
         }

@@ -31,7 +31,7 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
     private val songInPlaylistViewModel: SongInPlaylistViewModel by viewModels()
 
     private val playlistAdapter: PlaylistAdapter by lazy {
-        PlaylistAdapter(requireContext(),
+        PlaylistAdapter(requireActivity(),
             this, viewLifecycleOwner, songInPlaylistViewModel)
     }
 

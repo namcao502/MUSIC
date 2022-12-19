@@ -402,7 +402,7 @@ class MainActivity:
                     Glide.with(this@MainActivity).asBitmap().load(uri).submit().get()
                 }
                 catch (e: Exception){
-                    BitmapFactory.decodeResource(resources, R.drawable.music_default)
+                    BitmapFactory.decodeResource(resources, R.drawable.default_music_neon_icon)
                 }
             }
             runOnUiThread {

@@ -56,6 +56,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:scaleType="centerCrop"
                 android:background="@color/button_color"
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
