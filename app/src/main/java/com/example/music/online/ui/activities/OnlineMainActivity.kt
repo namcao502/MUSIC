@@ -399,48 +399,32 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniNextBtn.setOnClickListener {
-            GlobalScope.launch {
-                next()
-            }
+            next()
         }
 
         binding.miniPreviousBtn.setOnClickListener {
-            GlobalScope.launch {
-                previous()
-            }
+            previous()
         }
 
         binding.miniPlayPauseBtn.setOnClickListener {
             if (musicPlayerService!!.isPlaying()) {
-                GlobalScope.launch{
-                    pause()
-                }
+                pause()
             } else {
-                GlobalScope.launch {
-                    play()
-                }
+                play()
             }
         }
 
         binding.playerSheet.nextBtn.setOnClickListener{
-            GlobalScope.launch {
-                next()
-            }
+            next()
         }
         binding.playerSheet.previousBtn.setOnClickListener{
-            GlobalScope.launch {
-                previous()
-            }
+            previous()
         }
         binding.playerSheet.playPauseBtn.setOnClickListener{
             if (musicPlayerService!!.isPlaying()) {
-                GlobalScope.launch{
-                    pause()
-                }
+                pause()
             } else {
-                GlobalScope.launch {
-                    play()
-                }
+                play()
             }
         }
         binding.playerSheet.songSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -495,81 +479,87 @@ class OnlineMainActivity: AppCompatActivity(),
         builder.create().show()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun previous() {
-        songPosition -= 1
-        val maxLength: Int = songList!!.size
-        if (songPosition < 0) {
-            songPosition = maxLength - 1
-        }
-        if (playState == PlayState.SHUFFLE) {
-            createRandomTrackPosition()
-        } else {
-            if (playState == PlayState.LOOP) {
-                songPosition += 1
-                musicPlayerService!!.reset()
+        GlobalScope.launch {
+            songPosition -= 1
+            val maxLength: Int = songList!!.size
+            if (songPosition < 0) {
+                songPosition = maxLength - 1
             }
-        }
-        if (musicPlayerService!!.isPlaying()) {
-            musicPlayerService!!.stop()
-            musicPlayerService!!.release()
-            try {
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            } catch (e: IOException) {
-                e.printStackTrace()
+            if (playState == PlayState.SHUFFLE) {
+                createRandomTrackPosition()
+            } else {
+                if (playState == PlayState.LOOP) {
+                    songPosition += 1
+                    musicPlayerService!!.reset()
+                }
             }
+            if (musicPlayerService!!.isPlaying()) {
+                musicPlayerService!!.stop()
+                musicPlayerService!!.release()
+                try {
+                    musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
 
-        } else {
-            try {
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            } catch (e: IOException) {
-                e.printStackTrace()
+            } else {
+                try {
+                    musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
-        }
-        runOnUiThread {
-            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-            setTime()
-            loadUI()
-            setCompleteListener()
+            runOnUiThread {
+                binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+                setTime()
+                loadUI()
+                setCompleteListener()
+            }
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun next() {
-        songPosition += 1
-        val maxLength: Int = songList!!.size
-        if (songPosition > maxLength - 1) {
-            songPosition = 0
-        }
-        if (playState == PlayState.SHUFFLE) {
-            createRandomTrackPosition()
-        } else {
-            if (playState == PlayState.LOOP) {
-                songPosition -= 1
-                musicPlayerService!!.reset()
+        GlobalScope.launch {
+            songPosition += 1
+            val maxLength: Int = songList!!.size
+            if (songPosition > maxLength - 1) {
+                songPosition = 0
             }
-        }
-        if (musicPlayerService!!.isPlaying()) {
-            musicPlayerService!!.stop()
-            musicPlayerService!!.release()
-            try {
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            } catch (e: IOException) {
-                e.printStackTrace()
+            if (playState == PlayState.SHUFFLE) {
+                createRandomTrackPosition()
+            } else {
+                if (playState == PlayState.LOOP) {
+                    songPosition -= 1
+                    musicPlayerService!!.reset()
+                }
             }
+            if (musicPlayerService!!.isPlaying()) {
+                musicPlayerService!!.stop()
+                musicPlayerService!!.release()
+                try {
+                    musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
 
-        } else {
-            try {
-                musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-            } catch (e: IOException) {
-                e.printStackTrace()
+            } else {
+                try {
+                    musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
-        }
-        runOnUiThread {
-            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-            setTime()
-            loadUI()
-            setCompleteListener()
+            runOnUiThread {
+                binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+                setTime()
+                loadUI()
+                setCompleteListener()
+            }
         }
     }
 
@@ -580,25 +570,31 @@ class OnlineMainActivity: AppCompatActivity(),
         songPosition = randomNumber
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun play(){
-        musicPlayerService!!.start()
-        runOnUiThread {
-            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-            setTime()
-            updateProgress()
-            setCompleteListener()
+        GlobalScope.launch {
+            musicPlayerService!!.start()
+            runOnUiThread {
+                binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+                binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+                setTime()
+                updateProgress()
+                setCompleteListener()
+            }
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun pause(){
-        musicPlayerService!!.pause()
-        runOnUiThread {
-            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
-            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
-            setTime()
-            updateProgress()
-            setCompleteListener()
+        GlobalScope.launch {
+            musicPlayerService!!.pause()
+            runOnUiThread {
+                binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_play_arrow_24)
+                binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_play_circle_outline_24)
+                setTime()
+                updateProgress()
+                setCompleteListener()
+            }
         }
     }
 
@@ -735,6 +731,7 @@ class OnlineMainActivity: AppCompatActivity(),
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
         GlobalScope.launch {
             val myBinder = p1 as OnlineMusicPlayerService.MyBinder
@@ -783,51 +780,53 @@ class OnlineMainActivity: AppCompatActivity(),
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun preparePlayer(){
-
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                if (getConnectionType(this@OnlineMainActivity) == ConnectionType.NOT_CONNECT){
-                    AlertDialog
-                        .Builder(this@OnlineMainActivity)
-                        .setMessage("Switch to offline mode?")
-                        .setTitle("No internet connection")
-                        .setPositiveButton("Yes") { _, _ ->
-                            startActivity(Intent(this@OnlineMainActivity, MainActivity::class.java))
-                        }
-                        .setNegativeButton("Retry") { _, _ ->
-                            handler.postDelayed(this, 100)
-                        }
-                        .create()
-                        .show()
-                }
-                else {
-                    runOnUiThread {
-                        binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
-                        binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
+        GlobalScope.launch {
+            val handler = Handler(Looper.getMainLooper())
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    if (getConnectionType(this@OnlineMainActivity) == ConnectionType.NOT_CONNECT){
+                        AlertDialog
+                            .Builder(this@OnlineMainActivity)
+                            .setMessage("Switch to offline mode?")
+                            .setTitle("No internet connection")
+                            .setPositiveButton("Yes") { _, _ ->
+                                startActivity(Intent(this@OnlineMainActivity, MainActivity::class.java))
+                            }
+                            .setNegativeButton("Retry") { _, _ ->
+                                handler.postDelayed(this, 100)
+                            }
+                            .create()
+                            .show()
                     }
-                    if (!isServiceConnected){
-                        initState()
-                        runOnUiThread{
-                            binding.miniPlayerLayout.visibility = View.VISIBLE
-                        }
-                    }
-                    else{
-                        musicPlayerService!!.stop()
-                        musicPlayerService!!.release()
-                        musicPlayerService!!.createMediaPlayer(songList!![songPosition])
-                        musicPlayerService!!.start()
+                    else {
                         runOnUiThread {
-                            setTime()
-                            loadUI()
-                            setCompleteListener()
+                            binding.miniPlayPauseBtn.setImageResource(R.drawable.ic_baseline_pause_circle_outline_24)
+                            binding.playerSheet.playPauseBtn.setImageResource(R.drawable.ic_baseline_pause_24)
                         }
+                        if (!isServiceConnected){
+                            initState()
+                            runOnUiThread{
+                                binding.miniPlayerLayout.visibility = View.VISIBLE
+                            }
+                        }
+                        else{
+                            musicPlayerService!!.stop()
+                            musicPlayerService!!.release()
+                            musicPlayerService!!.createMediaPlayer(songList!![songPosition])
+                            musicPlayerService!!.start()
+                            runOnUiThread {
+                                setTime()
+                                loadUI()
+                                setCompleteListener()
+                            }
+                        }
+                        registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
                     }
-                    registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
                 }
-            }
-        }, 500)
+            }, 500)
+        }
 
     }
 
@@ -925,17 +924,13 @@ class OnlineMainActivity: AppCompatActivity(),
     override fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int) {
         this.songList = songList
         this.songPosition = position
-        GlobalScope.launch {
-            preparePlayer()
-        }
+        preparePlayer()
     }
 
     override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
         this.songList = songs
         this.songPosition = position
-        GlobalScope.launch {
-            preparePlayer()
-        }
+        preparePlayer()
     }
 
     override fun callBackFromMenuClickComment(action: String, comment: OnlineComment) {
