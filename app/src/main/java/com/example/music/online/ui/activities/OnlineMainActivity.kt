@@ -31,11 +31,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.plcoding.observeconnectivity.NetworkConnectivityObserver
+import com.example.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
 import java.lang.Runnable
 import java.text.SimpleDateFormat
