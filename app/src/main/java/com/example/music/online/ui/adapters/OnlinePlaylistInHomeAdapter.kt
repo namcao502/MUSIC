@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.music.R
-import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.databinding.ColumnItemBinding
+import com.example.music.online.data.models.OnlinePlaylist
 
 class OnlinePlaylistInHomeAdapter(val context: Context,
                                   private val clickAPlaylist: ClickAPlaylist)
@@ -41,12 +40,6 @@ class OnlinePlaylistInHomeAdapter(val context: Context,
                 binding.itemName.text = this.name
                 val imgUrl = this.imgFilePath
                 Glide.with(context).load(imgUrl).into(binding.itemImg)
-//                if (imgUrl!!.isNotEmpty()){
-//
-//                }
-//                else {
-//                    binding.itemImg.setImageResource(R.drawable.ic_baseline_airplay_24)
-//                }
             }
         }
 

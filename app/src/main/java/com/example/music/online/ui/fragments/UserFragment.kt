@@ -31,7 +31,6 @@ import com.example.music.utils.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -120,11 +119,12 @@ class UserFragment: Fragment() {
 
         binding.libraryBtn.setOnClickListener {
             (activity as OnlineMainActivity).stopService()
+            (activity as OnlineMainActivity).handler.removeMessages(0)
+            (activity as OnlineMainActivity).handler2.removeMessages(0)
             startActivity(Intent(requireContext(), MainActivity::class.java))
         }
 
         val currentUserID = Firebase.auth.currentUser?.uid
-
         if (currentUserID != null){
             accountViewModel.getAccountByID(currentUserID)
             accountViewModel.accountByID.observe(viewLifecycleOwner){
@@ -146,9 +146,9 @@ class UserFragment: Fragment() {
                         else {
                             binding.userImg.setImageResource(R.drawable.ic_baseline_people_24)
                         }
-                        if (currentAccount.role == FireStoreCollection.ADMIN){
-                            binding.manageBtn.visibility = View.VISIBLE
-                        }
+//                        if (currentAccount.role == FireStoreCollection.ADMIN){
+//                            binding.manageBtn.visibility = View.VISIBLE
+//                        }
                     }
                 }
             }

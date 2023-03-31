@@ -10,7 +10,7 @@ import com.example.music.R
 import com.example.music.online.data.models.OnlineGenre
 import com.example.music.databinding.ColumnItemBinding
 
-class OnlineGenreAdapter(val context: Context, val clickAGenre: ClickAGenre)
+class OnlineGenreAdapter(val context: Context, private val clickAGenre: ClickAGenre)
     : RecyclerView.Adapter<OnlineGenreAdapter.ViewHolder>() {
 
     var genre = emptyList<OnlineGenre>()

@@ -3,27 +3,27 @@
 
     <item
         android:id="@+id/online_home_menu"
-        android:title="Home"
+        android:title="@string/home"
         android:icon="@drawable/ic_baseline_home_24"/>
 
     <item
         android:id="@+id/online_search_menu"
-        android:title="Search"
+        android:title="@string/search"
         android:icon="@drawable/ic_baseline_search_24"/>
 
     <item
         android:id="@+id/online_song_menu"
-        android:title="Songs"
+        android:title="@string/songs"
         android:icon="@drawable/ic_baseline_music_note_24"/>
 
     <item
         android:id="@+id/online_collection_menu"
-        android:title="Collection"
+        android:title="@string/collection"
         android:icon="@drawable/ic_baseline_collections_bookmark_24"/>
 
     <item
         android:id="@+id/online_user_menu"
-        android:title="User"
+        android:title="@string/user"
         android:icon="@drawable/ic_baseline_people_24"/>
 
 </menu>

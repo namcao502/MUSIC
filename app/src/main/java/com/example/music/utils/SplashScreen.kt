@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_splash_screen)
 
         //hide status bar
@@ -25,8 +26,8 @@ class SplashScreen : AppCompatActivity() {
         }
 
         //set color for status bar and navigation bar
-        window.navigationBarColor = resources.getColor(R.color.nav_color, this.theme)
-        window.statusBarColor = resources.getColor(R.color.nav_color, this.theme)
+        window.navigationBarColor = resources.getColor(R.color.white, this.theme)
+        window.statusBarColor = resources.getColor(R.color.white, this.theme)
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {

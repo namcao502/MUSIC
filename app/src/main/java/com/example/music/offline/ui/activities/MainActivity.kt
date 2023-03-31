@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -50,7 +51,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 @AndroidEntryPoint
 class MainActivity:
     AppCompatActivity(),
@@ -90,9 +90,14 @@ class MainActivity:
 
     private var doubleBackToExitPressedOnce = false
 
+    var handler: Handler = Handler(Looper.getMainLooper())
+
     override fun onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
+            handler.removeCallbacksAndMessages(null)
+            stopService()
+            finish()
             return
         }
 
@@ -124,8 +129,8 @@ class MainActivity:
             supportActionBar!!.hide()
         }
 
-        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
-        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
 
         BottomSheetBehavior.from(binding.bottomSheet).apply {
 
@@ -432,8 +437,7 @@ class MainActivity:
     }
 
     private fun updateProgress() {
-
-        val handler = Handler(Looper.getMainLooper())
+        handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             @SuppressLint("SimpleDateFormat")
             override fun run(){
@@ -446,7 +450,7 @@ class MainActivity:
                     handler.postDelayed(this, 1000)
                 }
                 catch (error: IllegalStateException){
-                    handler.removeCallbacksAndMessages(null)
+                    handler.removeCallbacksAndMessages(this)
                 }
             }
         }, 1000)
@@ -455,13 +459,30 @@ class MainActivity:
     override fun onDestroy() {
         super.onDestroy()
         if (musicPlayerService != null){
-            musicPlayerService!!.pause()
+            musicPlayerService = null
+//            musicPlayerService!!.pause()
+//            musicPlayerService!!.stop()
+        }
+        stopService(Intent(this, OnlineMusicPlayerService::class.java))
+        if (isServiceConnected){
+            unbindService(this)
+            isServiceConnected = false
+        }
+        Log.i("TAG502", "onDestroy: Player")
+    }
+
+    private fun stopService(){
+        if (musicPlayerService != null){
+            musicPlayerService = null
+//            musicPlayerService!!.stop()
+//            musicPlayerService!!.pause()
         }
         stopService(Intent(this, MusicPlayerService::class.java))
         if (isServiceConnected){
             unbindService(this)
             isServiceConnected = false
         }
+        binding.miniPlayerLayout.visibility = View.GONE
     }
 
     override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {

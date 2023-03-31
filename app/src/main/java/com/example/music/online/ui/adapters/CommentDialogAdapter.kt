@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.CommentRowItemBinding
+import com.example.music.databinding.OnlinePlaylistRowItemBinding
 import com.example.music.online.data.models.OnlineComment
 
 class CommentDialogAdapter(val context: Context, private val clickAComment: ClickAComment)
@@ -15,10 +16,10 @@ class CommentDialogAdapter(val context: Context, private val clickAComment: Clic
 
     var commentList = emptyList<OnlineComment>()
 
-    inner class ViewHolder(val binding: CommentRowItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: OnlinePlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = CommentRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = OnlinePlaylistRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

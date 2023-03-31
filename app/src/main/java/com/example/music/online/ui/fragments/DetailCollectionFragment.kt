@@ -111,6 +111,7 @@ class DetailCollectionFragment(
         binding.backImg.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_out, 0, 0, 0)
                 .remove(this)
                 .commit()
 //            parentFragmentManager.popBackStack()

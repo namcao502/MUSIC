@@ -8,7 +8,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
 import com.example.music.databinding.OnlinePlaylistRowItemBinding
-import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.online.data.models.OnlinePlaylist
 
 class OnlineDialogPlaylistAdapter(

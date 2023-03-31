@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/main_color"
     tools:context=".online.ui.fragments.HomeFragment">
 
     <LinearLayout
@@ -15,7 +14,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.SearchView
-            android:layout_margin="10dp"
+            android:layout_margin="16dp"
             android:layout_gravity="center"
             app:queryHint="Search here..."
             app:submitBackground="@null"
@@ -27,153 +26,146 @@
             android:layout_width="wrap_content"/>
 
         <LinearLayout
+            android:id="@+id/songLayout"
             android:visibility="gone"
-            android:id="@+id/playlist_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <TextView
-                android:textColor="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/playlists"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/playlist_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/artist_layout"
-            android:padding="10dp"
+            android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/artists"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
-                android:id="@+id/artist_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/genre_layout"
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/genres"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
-                android:id="@+id/genre_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/album_layout"
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/albums"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
-                android:id="@+id/album_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/song_layout"
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/songs"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:textAlignment="textStart"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
                 android:id="@+id/song_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/playlistLayout"
             android:visibility="gone"
-            android:id="@+id/country_layout"
-            android:padding="10dp"
+            android:paddingHorizontal="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/playlists"
+                android:textAlignment="textStart"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/playlist_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/artistLayout"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/countries"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:text="@string/artists"
+                android:textAlignment="textStart"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:padding="5dp"
+                android:id="@+id/artist_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/genreLayout"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/genres"
+                android:textAlignment="textStart"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/genre_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/albumLayout"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/albums"
+                android:textAlignment="textStart"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/album_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/countryLayout"
+            android:visibility="gone"
+            android:paddingHorizontal="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/countries"
+                android:textAlignment="textStart"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/country_rv"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />

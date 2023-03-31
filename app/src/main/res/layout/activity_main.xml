@@ -6,14 +6,12 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:background="@color/main_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
             app:tabMode="fixed"
-            android:background="@color/main_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tabLayoutMain" />
@@ -35,7 +33,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:visibility="gone"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:background="@color/main_color"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/bottom_sheet">
@@ -44,9 +42,9 @@
             android:id="@+id/card_img"
             android:layout_width="370dp"
             android:layout_height="370dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             app:cardBackgroundColor="@color/main_color"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="20dp"
             android:src="@drawable/music_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,13 +64,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mini_player_layout"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="70dp"
             android:background="@drawable/mini_player_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ProgressBar
+                android:visibility="gone"
                 android:indeterminate="false"
                 android:indeterminateTintMode="src_atop"
                 android:indeterminateTint="#e88275"
@@ -160,12 +159,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
+            android:background="@drawable/circle_button"
             android:scaleType="centerInside"
             android:id="@+id/play_state_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="48dp"
-            android:background="@drawable/circle_button_light"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_baseline_arrow_forward_24"
             app:layout_constraintEnd_toStartOf="@+id/previous_btn"
@@ -174,7 +173,7 @@
 
         <ImageView
             android:scaleType="centerInside"
-            android:background="@drawable/circle_button_light"
+            android:background="@drawable/circle_button"
             android:id="@+id/add_to_playlist_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -198,6 +197,9 @@
             android:contentDescription="@string/todo" />
 
         <SeekBar
+            android:thumbTint="@color/black"
+            android:progressTint="@color/black"
+            android:progressBackgroundTint="@color/black"
             android:id="@+id/volume_sb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -207,7 +209,6 @@
             app:layout_constraintTop_toBottomOf="@+id/play_pause_btn" />
 
         <TextView
-            android:textColor="@color/white"
             android:textAlignment="center"
             android:id="@+id/title_txt"
             android:layout_width="0dp"
@@ -235,7 +236,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/circle_button"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_pause_24"
             app:layout_constraintEnd_toStartOf="@+id/next_btn"
@@ -244,9 +245,9 @@
             android:contentDescription="@string/todo" />
 
         <SeekBar
-            android:thumbTint="#01f0f0"
-            android:progressTint="#01f0f0"
-            android:progressBackgroundTint="#727477"
+            android:thumbTint="@color/black"
+            android:progressTint="@color/black"
+            android:progressBackgroundTint="@color/black"
             android:id="@+id/song_sb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -260,7 +261,6 @@
 
         <TextView
             android:id="@+id/artist_txt"
-            android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -287,18 +287,19 @@
         </TextView>
 
         <TextView
-            android:textColor="@color/white"
             android:id="@+id/start_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/orbitron"
             android:text="@string/_00_00"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_txt" />
 
         <ImageView
             android:scaleType="centerInside"
-            android:background="@drawable/circle_button_light"
+            android:background="@drawable/circle_button"
             android:id="@+id/next_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -315,7 +316,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="48dp"
-            android:background="@drawable/circle_button_light"
+            android:background="@drawable/circle_button"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_baseline_skip_previous_24"
             app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
@@ -335,11 +336,12 @@
             android:contentDescription="@string/todo" />
 
         <TextView
-            android:textColor="@color/white"
             android:id="@+id/end_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:fontFamily="@font/orbitron"
             android:text="@string/_00_00"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/artist_txt" />

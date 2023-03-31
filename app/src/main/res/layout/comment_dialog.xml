@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/main_color"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <EditText
-        android:textColorHint="#B1A9A9"
-        android:textColor="@color/white"
         android:id="@+id/message_et_cmt_dialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_margin="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/add_new_comment"
@@ -36,7 +31,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:padding="10dp"
         android:id="@+id/comment_rv"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginTop="16dp"

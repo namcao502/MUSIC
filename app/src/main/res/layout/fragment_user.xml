@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_color"
     tools:context=".online.ui.fragments.UserFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_color"
         tools:context=".online.ui.fragments.UserFragment">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -25,10 +22,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
+            android:background="@drawable/circle_button"
             android:id="@+id/edit_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:clickable="true"
@@ -45,7 +43,6 @@
             android:layout_marginTop="8dp"
             android:enabled="false"
             android:hint="@string/name"
-            android:textColorHint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +64,6 @@
             android:layout_marginTop="8dp"
             android:enabled="false"
             android:hint="@string/email"
-            android:textColorHint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +85,6 @@
             android:layout_height="64dp"
             android:layout_marginTop="8dp"
             android:hint="@string/password"
-            android:textColorHint="@color/white"
             app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
@@ -117,14 +112,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPW" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
             android:id="@+id/manage_btn"
             android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/circle_button"
             android:src="@drawable/ic_baseline_category_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

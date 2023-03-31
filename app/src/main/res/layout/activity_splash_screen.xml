@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <ImageView
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:id="@+id/imageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -16,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/poster_3563273"
+        app:srcCompat="@drawable/bg_player_ai"
         android:contentDescription="@string/todo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

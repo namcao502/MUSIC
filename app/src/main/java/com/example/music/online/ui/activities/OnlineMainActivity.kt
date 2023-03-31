@@ -82,6 +82,10 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private lateinit var connectivityObserver: ConnectivityObserver
 
+    var handler: Handler = Handler(Looper.getMainLooper())
+
+    var handler2: Handler = Handler(Looper.getMainLooper())
+
     override fun onBackPressed() {
 
         if (PlayerState.isOn){
@@ -125,7 +129,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
                         .hide(activeFragment)
                         .show(homeFragment).commit()
                     activeFragment = homeFragment
@@ -137,7 +141,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
                         .hide(activeFragment)
                         .show(searchFragment).commit()
                     activeFragment = searchFragment
@@ -149,7 +153,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
                         .hide(activeFragment)
                         .show(songFragment).commit()
                     activeFragment = songFragment
@@ -161,7 +165,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
                         .hide(activeFragment)
                         .show(playlistFragment).commit()
                     activeFragment = playlistFragment
@@ -173,7 +177,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         DetailFragmentState.isOn = false
                     }
                     supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade, 0, 0, 0)
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
                         .hide(activeFragment)
                         .show(userFragment).commit()
                     activeFragment = userFragment
@@ -196,8 +200,8 @@ class OnlineMainActivity: AppCompatActivity(),
             supportActionBar!!.hide()
         }
 
-        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
-        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
 
         GlobalScope.launch {
             connectivityObserver = NetworkConnectivityObserver(this@OnlineMainActivity)
@@ -206,8 +210,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     ConnectivityObserver.Status.Available -> {
                         runOnUiThread {
                             with(binding.internetTxt){
-//                                setBackgroundColor(Color.GREEN)
-                                setTextColor(Color.GREEN)
+                                setBackgroundColor(Color.GREEN)
                                 text = ConnectionType.BACK_ONLINE
                                 visibility = View.VISIBLE
                                 Handler(Looper.getMainLooper()).postDelayed({
@@ -219,8 +222,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     else -> {
                         runOnUiThread {
                             with(binding.internetTxt){
-//                                setBackgroundColor(Color.BLACK)
-                                setTextColor(Color.RED)
+                                setBackgroundColor(Color.RED)
                                 text = ConnectionType.NO_INTERNET
                                 visibility = View.VISIBLE
                             }
@@ -336,6 +338,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                         is UiState.Success -> {
                             onlineDialogPlaylistAdapter.setData(it.data)
+                            Log.i("TAG502", "listener: ${it.data}")
                         }
                     }
                 }
@@ -583,7 +586,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun pause(){
+    public fun pause(){
         GlobalScope.launch {
             musicPlayerService!!.pause()
             runOnUiThread {
@@ -667,8 +670,8 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun updateProgress() {
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(object : Runnable {
+        val handler2 = Handler(Looper.getMainLooper())
+        handler2.postDelayed(object : Runnable {
             @SuppressLint("SimpleDateFormat")
             override fun run(){
                 try{
@@ -689,7 +692,7 @@ class OnlineMainActivity: AppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         if (musicPlayerService != null){
-            musicPlayerService == null
+            musicPlayerService = null
 //            musicPlayerService!!.pause()
 //            musicPlayerService!!.stop()
         }
@@ -703,7 +706,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     fun stopService(){
         if (musicPlayerService != null){
-            musicPlayerService == null
+            musicPlayerService = null
 //            musicPlayerService!!.stop()
 //            musicPlayerService!!.pause()
         }
@@ -785,7 +788,7 @@ class OnlineMainActivity: AppCompatActivity(),
     @OptIn(DelicateCoroutinesApi::class)
     private fun preparePlayer(){
         GlobalScope.launch {
-            val handler = Handler(Looper.getMainLooper())
+            handler = Handler(Looper.getMainLooper())
             handler.postDelayed(object : Runnable {
                 override fun run() {
                     if (getConnectionType(this@OnlineMainActivity) == ConnectionType.NOT_CONNECT){

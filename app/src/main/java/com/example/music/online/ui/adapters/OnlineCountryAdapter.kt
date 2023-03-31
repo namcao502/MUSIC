@@ -8,13 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.databinding.ColumnItemBinding
-import com.example.music.online.data.models.OnlineAlbum
 import com.example.music.online.data.models.OnlineCountry
 
 class OnlineCountryAdapter(val context: Context, private val clickACountry: ClickACountry)
     : RecyclerView.Adapter<OnlineCountryAdapter.ViewHolder>() {
 
-    var countries = emptyList<OnlineCountry>()
+    private var countries = emptyList<OnlineCountry>()
 
     inner class ViewHolder(val binding: ColumnItemBinding): RecyclerView.ViewHolder(binding.root)
 

@@ -209,7 +209,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
         val imageList = arrayListOf(
             SlideModel(R.drawable.poster_06, ""),
-            SlideModel(R.drawable.ncs_slide, ""),
             SlideModel(R.drawable.poster_07, ""),
             SlideModel(R.drawable.alan_walker_slide, ""),
             SlideModel(R.drawable.poster_08, "")
@@ -291,7 +290,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     private fun sendDataToDetailFragment(name: String, songs: List<String>, imgFilePath: String){
         val fragmentTransaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-        fragmentTransaction.setCustomAnimations(R.anim.fade, 0, 0, 0)
+        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
         fragmentTransaction.add(R.id.fragment_container, DetailCollectionFragment(name, songs, imgFilePath, this))
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()

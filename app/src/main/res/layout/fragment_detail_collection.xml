@@ -1,83 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:minHeight="500dp"
-    android:background="@color/main_color"
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bsd_layout"
+    android:orientation="vertical"
+    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_song_rv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_tv" />
+    <LinearLayout
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_img"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="40dp"
-        app:cardBackgroundColor="@color/main_color"
-        app:cardCornerRadius="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:scaleType="fitCenter"
-            android:id="@+id/img_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:src="@drawable/ic_baseline_album_24"
+        <ImageButton
+            android:background="@drawable/circle_button"
+            android:id="@+id/back_img"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
             android:contentDescription="@string/todo" />
 
+        <TextView
+            android:fontFamily="@font/orbitron"
+            android:layout_weight="100"
+            android:gravity="center"
+            android:id="@+id/name_tv"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:text="@string/this_is_a_title"
+            android:textAllCaps="true"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:background="@drawable/circle_button"
+            android:id="@+id/add_img"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/ic_baseline_playlist_add_24"
+            android:contentDescription="@string/todo" />
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"
+        android:id="@+id/card_img"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        app:cardCornerRadius="20dp">
+
+    <ImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/img_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:src="@drawable/music_default"
+        android:contentDescription="@string/todo" />
     </androidx.cardview.widget.CardView>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:paddingHorizontal="10dp"
+        android:id="@+id/list_song_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_tv" />
 
-    <TextView
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:id="@+id/name_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/this_is_a_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_img" />
-
-    <ImageButton
-        android:background="@drawable/circle_button"
-        android:id="@+id/back_img"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
-        android:contentDescription="@string/todo" />
-
-    <ImageButton
-        android:background="@drawable/circle_button"
-        android:id="@+id/add_img"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_playlist_add_24"
-        android:contentDescription="@string/todo" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
