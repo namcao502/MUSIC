@@ -12,6 +12,7 @@ import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.ui.activities.LOGActivity
 import dagger.hilt.android.AndroidEntryPoint
 
+@SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

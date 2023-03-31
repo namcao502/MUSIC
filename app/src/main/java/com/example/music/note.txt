@@ -1,3 +1,3 @@
-
-tối ưu giao diện
+ghi lại các thể loại mà người dùng thích nghe để đề xuất (sử dụng room db)
+thực hiện thêm phần class diagram và sequence diagram (nếu có thể) trong file document
 

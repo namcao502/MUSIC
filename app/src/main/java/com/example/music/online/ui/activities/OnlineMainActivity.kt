@@ -689,7 +689,9 @@ class OnlineMainActivity: AppCompatActivity(),
     override fun onDestroy() {
         super.onDestroy()
         if (musicPlayerService != null){
-            musicPlayerService!!.pause()
+            musicPlayerService == null
+//            musicPlayerService!!.pause()
+//            musicPlayerService!!.stop()
         }
         stopService(Intent(this, OnlineMusicPlayerService::class.java))
         if (isServiceConnected){
@@ -701,7 +703,9 @@ class OnlineMainActivity: AppCompatActivity(),
 
     fun stopService(){
         if (musicPlayerService != null){
-            musicPlayerService!!.pause()
+            musicPlayerService == null
+//            musicPlayerService!!.stop()
+//            musicPlayerService!!.pause()
         }
         stopService(Intent(this, OnlineMusicPlayerService::class.java))
         if (isServiceConnected){

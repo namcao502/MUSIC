@@ -100,13 +100,16 @@ class UserFragment: Fragment() {
                             .addOnCompleteListener {
                                 firebaseAuthViewModel.signOut()
                                 (activity as OnlineMainActivity).stopService()
-                                (activity as OnlineMainActivity).finish()
-                                startActivity(Intent(requireContext(), LOGActivity::class.java)) }
+//                                (activity as OnlineMainActivity).finish()
+                                startActivity(Intent(requireContext(), LOGActivity::class.java))
+                                activity!!.finish()
+                            }
                             .addOnFailureListener {
                                 firebaseAuthViewModel.signOut()
                                 (activity as OnlineMainActivity).stopService()
-                                (activity as OnlineMainActivity).finish()
+//                                (activity as OnlineMainActivity).finish()
                                 startActivity(Intent(requireContext(), LOGActivity::class.java))
+                                activity!!.finish()
                             }
                     }
                 }
