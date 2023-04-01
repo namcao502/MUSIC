@@ -69,7 +69,6 @@ class UserFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signOutBtn.setOnClickListener {
-
             val handler = Handler(Looper.getMainLooper())
             handler.postDelayed(object : Runnable {
                 override fun run() {
@@ -99,16 +98,18 @@ class UserFragment: Fragment() {
                             .addOnCompleteListener {
                                 firebaseAuthViewModel.signOut()
                                 (activity as OnlineMainActivity).stopService()
-//                                (activity as OnlineMainActivity).finish()
+                                (activity as OnlineMainActivity).handler.removeMessages(0)
+                                (activity as OnlineMainActivity).handler2.removeMessages(0)
+                                (activity as OnlineMainActivity).finish()
                                 startActivity(Intent(requireContext(), LOGActivity::class.java))
-                                activity!!.finish()
                             }
                             .addOnFailureListener {
                                 firebaseAuthViewModel.signOut()
                                 (activity as OnlineMainActivity).stopService()
-//                                (activity as OnlineMainActivity).finish()
+                                (activity as OnlineMainActivity).handler.removeMessages(0)
+                                (activity as OnlineMainActivity).handler2.removeMessages(0)
+                                (activity as OnlineMainActivity).finish()
                                 startActivity(Intent(requireContext(), LOGActivity::class.java))
-                                activity!!.finish()
                             }
                     }
                 }

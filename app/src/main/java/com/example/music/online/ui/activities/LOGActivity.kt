@@ -41,8 +41,9 @@ class LOGActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController)
 
-        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
-        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
+//        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

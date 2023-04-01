@@ -5,18 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_color"
+    android:background="@color/white"
     tools:context=".online.ui.fragments.SignInFragment">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:textAllCaps="true"
+        android:layout_marginTop="96dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/sign_in"
-        android:textColor="@color/white"
+        android:textAllCaps="true"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,6 @@
         android:layout_marginEnd="24dp"
         android:hint="@string/email"
         app:errorEnabled="true"
-        android:textColorHint="@color/white"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -54,7 +52,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_email_etv"
-            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
@@ -70,7 +67,6 @@
         android:layout_marginEnd="24dp"
         android:hint="@string/password"
         app:errorEnabled="true"
-        android:textColorHint="@color/white"
         app:endIconMode="password_toggle"
         app:errorIconDrawable="@drawable/ic_error"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +77,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_password_etv"
-            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
@@ -89,11 +84,11 @@
 
     <Button
         android:id="@+id/sign_in_button"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="86dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="86dp"
         android:text="@string/sign_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +123,7 @@
         app:layout_constraintTop_toBottomOf="@+id/user_password_etvl" />
 
     <Button
-        android:text="Sign in with google"
+        android:text="@string/sign_in_with_google"
         android:id="@+id/btn_gg_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,7 +140,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="68dp"
         android:text="@string/do_not_have_an_account"
-        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/sign_up_txt"
