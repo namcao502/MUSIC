@@ -2,7 +2,6 @@ package com.example.music.online.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
-import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.OnlineArtistViewModel
-
+import com.example.music.utils.UiState
 class DetailCollectionAdapter(
     private val context: Context,
     private val clickASong: ClickASong,
@@ -25,10 +22,8 @@ class DetailCollectionAdapter(
 ): RecyclerView.Adapter<DetailCollectionAdapter.ViewHolder>() {
 
     var songList = emptyList<OnlineSong>()
-    private var artistList: ArrayList<String> = ArrayList()
-
+//    private var artistList: ArrayList<String> = ArrayList()
     inner class ViewHolder(val binding: SongRowItemBinding): RecyclerView.ViewHolder(binding.root)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = SongRowItemBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -109,11 +104,11 @@ class DetailCollectionAdapter(
         this.songList = songList
         notifyDataSetChanged()
     }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun setDataForArtist(artistList: ArrayList<String>){
-        this.artistList = artistList
-        notifyDataSetChanged()
-    }
+//
+//    @SuppressLint("NotifyDataSetChanged")
+//    fun setDataForArtist(artistList: ArrayList<String>){
+//        this.artistList = artistList
+//        notifyDataSetChanged()
+//    }
 
 }

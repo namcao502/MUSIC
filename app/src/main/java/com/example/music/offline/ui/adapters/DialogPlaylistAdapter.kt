@@ -22,7 +22,6 @@ class DialogPlaylistAdapter(
     ): RecyclerView.Adapter<DialogPlaylistAdapter.ViewHolder>() {
 
     var playlist = emptyList<Playlist>()
-
     inner class ViewHolder(val binding: PlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,6 +36,7 @@ class DialogPlaylistAdapter(
         return playlist.size
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){

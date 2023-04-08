@@ -14,10 +14,8 @@ import com.example.music.online.data.models.OnlineComment
 class CommentDialogAdapter(val context: Context, private val clickAComment: ClickAComment)
     : RecyclerView.Adapter<CommentDialogAdapter.ViewHolder>() {
 
-    var commentList = emptyList<OnlineComment>()
-
+    private var commentList = emptyList<OnlineComment>()
     inner class ViewHolder(val binding: OnlinePlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = OnlinePlaylistRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)

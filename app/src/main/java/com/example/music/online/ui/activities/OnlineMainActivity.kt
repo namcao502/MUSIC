@@ -320,7 +320,7 @@ class OnlineMainActivity: AppCompatActivity(),
             addToPlaylistBtn!!.setOnClickListener {
                 val addDialog = createBottomSheetDialog(R.layout.fragment_online_playlist)
 
-                val recyclerView = addDialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+                val recyclerView = addDialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
                 recyclerView!!.adapter = onlineDialogPlaylistAdapter
                 recyclerView.layoutManager = LinearLayoutManager(addDialog.context)
 

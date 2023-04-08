@@ -5,12 +5,10 @@ import android.app.Dialog
 import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -19,7 +17,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,11 +24,8 @@ import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.example.music.R
-import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlinePlaylist
-import com.example.music.online.ui.activities.LOGActivity
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
-import com.example.music.online.ui.fragments.DetailCollectionFragment
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineViewViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -45,7 +39,6 @@ fun View.fadeVisibility(visibility: Int, duration: Long = 400) {
     TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
     this.visibility = visibility
 }
-
 fun Activity.checkNetwork(view: TextView){
     val handler = Handler(Looper.getMainLooper())
     handler.postDelayed(object : Runnable {
@@ -314,7 +307,7 @@ fun Fragment.createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistV
 fun Fragment.createDialogForAddToPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel, onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter) {
     val dialog = createDialog(R.layout.fragment_online_playlist)
 
-    val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+    val recyclerView = dialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
     recyclerView.adapter = onlineDialogPlaylistAdapter
     recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 

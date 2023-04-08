@@ -51,7 +51,7 @@ class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetai
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        binding.playlistRecyclerView.apply {
+        binding.onlinePlaylistRecyclerView.apply {
             adapter = onlinePlaylistAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }

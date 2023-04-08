@@ -5,8 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.databinding.FragmentDetailCollectionBinding
-import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.ui.adapters.DetailCollectionAdapter
@@ -166,8 +163,8 @@ class DetailCollectionFragment(
             clickASongInDetail.callBackFromClickASongInDetail(songList, position)
         }
         if (action == "Add to playlist"){
-            createDialogForAddToPlaylist()
             currentSong = songList[position]
+            createDialogForAddToPlaylist()
         }
         if (action == "Delete"){
             if (arguments?.getSerializable(FireStoreCollection.PLAYLIST) != null){
@@ -181,7 +178,7 @@ class DetailCollectionFragment(
     }
 
     private fun createDialogForAddToPlaylist() {
-        val dialog = createDialog(R.layout.fragment_online_playlist)
+        val dialog = createDialog(R.layout.playlist_dialog)
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
         recyclerView.adapter = onlineDialogPlaylistAdapter
@@ -190,6 +187,7 @@ class DetailCollectionFragment(
         FirebaseAuth.getInstance().currentUser?.let {
             playlistViewModel.getAllPlaylistOfUser(it)
         }
+
         playlistViewModel.playlist.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
@@ -209,6 +207,7 @@ class DetailCollectionFragment(
         addBtn.setOnClickListener {
             createDialogForAddPlaylist(playlistViewModel)
         }
+
         dialog.show()
     }
 

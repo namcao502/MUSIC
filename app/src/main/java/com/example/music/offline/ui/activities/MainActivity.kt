@@ -185,7 +185,7 @@ class MainActivity:
             lp.gravity = Gravity.CENTER
             dialog.window!!.attributes = lp
 
-            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
             recyclerView.adapter = dialogPlaylistAdapter
             recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 

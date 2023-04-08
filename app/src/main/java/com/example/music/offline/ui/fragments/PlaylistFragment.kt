@@ -1,14 +1,14 @@
 package com.example.music.offline.ui.fragments
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.databinding.FragmentPlaylistBinding
@@ -57,9 +57,9 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner, Observer {
+        playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner) {
             playlistAdapter.setData(it)
-        })
+        }
 
         binding.addBtn.setOnClickListener {
             createDialogForAddPlaylist()
@@ -90,23 +90,22 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
         builder.setMessage("Create")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Create",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Create") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val playlist = Playlist(0, title)
-                        playlistViewModel.addPlaylist(playlist)
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                if (title.isEmpty()) {
+                    Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val playlist = Playlist(0, title)
+                    playlistViewModel.addPlaylist(playlist)
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -122,23 +121,22 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
         builder.setMessage("Rename")
             .setTitle("")
             .setView(view)
-            .setPositiveButton("Rename",
-                DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Rename") { _, _ ->
 
-                    val title = view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
+                val title =
+                    view.findViewById<EditText>(R.id.title_et_menu_playlist_dialog).text.toString()
 
-                    if (title.isEmpty()){
-                        Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        val updatedPlaylist = Playlist(playlist.playlist_id, title)
-                        playlistViewModel.updatePlaylist(updatedPlaylist)
-                    }
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+                if (title.isEmpty()) {
+                    Toast.makeText(requireContext(), "Name can not be empty", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val updatedPlaylist = Playlist(playlist.playlist_id, title)
+                    playlistViewModel.updatePlaylist(updatedPlaylist)
+                }
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }
@@ -149,14 +147,12 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
 
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
-            .setPositiveButton("Delete",
-                DialogInterface.OnClickListener { dialog, id ->
-                    playlistViewModel.deletePlaylist(playlist)
-                })
-            .setNegativeButton("Cancel",
-                DialogInterface.OnClickListener { dialog, id ->
-                    // User cancelled the dialog
-                })
+            .setPositiveButton("Delete") { _, _ ->
+                playlistViewModel.deletePlaylist(playlist)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
         // Create the AlertDialog object and return it
         builder.create().show()
     }

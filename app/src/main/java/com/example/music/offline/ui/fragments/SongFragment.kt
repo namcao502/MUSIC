@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -116,9 +115,9 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
         recyclerView.adapter = dialogPlaylistAdapter
         recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
-        playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner, Observer {
+        playlistViewModel.readAllPlaylists().observe(viewLifecycleOwner) {
             dialogPlaylistAdapter.setData(it)
-        })
+        }
 
         val addBtn = dialog.findViewById<FloatingActionButton>(R.id.add_btn)
 
