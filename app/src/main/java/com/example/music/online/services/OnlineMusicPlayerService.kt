@@ -108,8 +108,7 @@ class OnlineMusicPlayerService: Service() {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .setStyle(NotificationCompat.BigPictureStyle()
-                    .bigPicture(image)
-                    .bigLargeIcon(null))
+                    .bigPicture(image))
 
             if (isPlaying()){
                 notification.addAction(R.drawable.ic_baseline_skip_previous_24,
@@ -157,8 +156,7 @@ class OnlineMusicPlayerService: Service() {
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .setStyle(NotificationCompat.BigPictureStyle()
-                    .bigPicture(image)
-                    .bigLargeIcon(null))
+                    .bigPicture(image))
 //            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
 //                .setShowActionsInCompactView(0, 1, 2)
 //                .setMediaSession(mediaSessionCompat.sessionToken))

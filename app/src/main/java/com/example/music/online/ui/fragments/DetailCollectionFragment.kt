@@ -108,7 +108,7 @@ class DetailCollectionFragment(
         binding.backImg.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_out, 0, 0, 0)
+                .setCustomAnimations(android.R.anim.fade_out, android.R.anim.fade_out, 0, 0)
                 .remove(this)
                 .commit()
 //            parentFragmentManager.popBackStack()
@@ -117,7 +117,7 @@ class DetailCollectionFragment(
 
         binding.nameTv.text = name
 
-        if (imgFilePath.isNotEmpty()){
+        if (imgFilePath != ""){
             Glide.with(requireContext()).load(imgFilePath).into(binding.imgImg)
         }
         else {

@@ -5,11 +5,14 @@ import android.content.*
 import android.graphics.Color
 import android.os.*
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,13 +34,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.example.music.utils.NetworkConnectivityObserver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.io.IOException
-import java.lang.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class OnlineMainActivity: AppCompatActivity(),
@@ -236,6 +238,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun listener() {
 
         binding.playerSheet.optionBtn.setOnClickListener {
@@ -318,9 +321,9 @@ class OnlineMainActivity: AppCompatActivity(),
             }
 
             addToPlaylistBtn!!.setOnClickListener {
-                val addDialog = createBottomSheetDialog(R.layout.fragment_online_playlist)
+                val addDialog = createBottomSheetDialog(R.layout.playlist_dialog)
 
-                val recyclerView = addDialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
+                val recyclerView = addDialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
                 recyclerView!!.adapter = onlineDialogPlaylistAdapter
                 recyclerView.layoutManager = LinearLayoutManager(addDialog.context)
 
@@ -338,7 +341,6 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                         is UiState.Success -> {
                             onlineDialogPlaylistAdapter.setData(it.data)
-                            Log.i("TAG502", "listener: ${it.data}")
                         }
                     }
                 }
@@ -387,11 +389,48 @@ class OnlineMainActivity: AppCompatActivity(),
             bottomDialog.show()
         }
 
-        binding.miniPlayerLayout.setOnClickListener {
-            PlayerState.isOn = true
-            binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
-            binding.bottomCard.fadeVisibility(View.GONE)
-        }
+//        binding.miniPlayerLayout.setOnClickListener {
+//            PlayerState.isOn = true
+//            binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
+//            binding.bottomCard.fadeVisibility(View.GONE)
+//        }
+
+        binding.miniPlayerLayout.setOnTouchListener(object : OnSwipeTouchListener(binding.miniPlayerLayout.context) {
+//            override fun onSwipeLeft() {
+//                super.onSwipeLeft()
+//                Toast.makeText(binding.miniPlayerLayout.context,
+//                    "Swipe Left gesture detected",
+//                    Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+//            override fun onSwipeRight() {
+//                super.onSwipeRight()
+//                Toast.makeText(
+//                    binding.miniPlayerLayout.context,
+//                    "Swipe Right gesture detected",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+            override fun onSwipeUp() {
+                super.onSwipeUp()
+                PlayerState.isOn = true
+                binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
+                binding.bottomCard.fadeVisibility(View.GONE)
+            }
+            override fun onSwipeDown() {
+                super.onSwipeDown()
+                handler.removeMessages(0)
+                handler2.removeMessages(0)
+                stopService()
+                binding.miniPlayerLayout.fadeVisibility(View.GONE)
+            }
+            override fun onClick(){
+                super.onClick()
+                PlayerState.isOn = true
+                binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
+                binding.bottomCard.fadeVisibility(View.GONE)
+            }
+        })
 
         binding.playerSheet.backBtn.setOnClickListener {
             PlayerState.isOn = false
@@ -586,7 +625,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    public fun pause(){
+    fun pause(){
         GlobalScope.launch {
             musicPlayerService!!.pause()
             runOnUiThread {
@@ -670,7 +709,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun updateProgress() {
-        val handler2 = Handler(Looper.getMainLooper())
+        handler2 = Handler(Looper.getMainLooper())
         handler2.postDelayed(object : Runnable {
             @SuppressLint("SimpleDateFormat")
             override fun run(){

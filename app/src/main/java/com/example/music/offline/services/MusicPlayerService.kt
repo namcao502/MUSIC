@@ -110,8 +110,7 @@ class MusicPlayerService: Service() {
                 .setLargeIcon(image)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setStyle(NotificationCompat.BigPictureStyle()
-                    .bigPicture(image)
-                    .bigLargeIcon(null))
+                    .bigPicture(image))
 
             if (isPlaying()){
                 notification.addAction(R.drawable.ic_baseline_skip_previous_24,

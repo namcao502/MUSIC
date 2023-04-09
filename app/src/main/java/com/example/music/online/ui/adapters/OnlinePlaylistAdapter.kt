@@ -21,10 +21,10 @@ class OnlinePlaylistAdapter(
 
     var playlist = emptyList<OnlinePlaylist>()
 
-    inner class ViewHolder(val binding: OnlinePlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: PlaylistRowItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = OnlinePlaylistRowItemBinding.inflate(
+        val binding = PlaylistRowItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false)
@@ -55,9 +55,9 @@ class OnlinePlaylistAdapter(
                 }
             }
 
-            with(playlist[position]){
-                binding.titleTxt.text = this.name
-            }
+            binding.titleTxt.text = playlist[position].name
+            binding.countSongTxt.visibility = View.GONE
+            binding.countLengthTxt.visibility = View.GONE
         }
 
     }
