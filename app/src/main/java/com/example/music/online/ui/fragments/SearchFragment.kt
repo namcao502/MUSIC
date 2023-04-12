@@ -1,6 +1,7 @@
 package com.example.music.online.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,8 @@ import com.example.music.databinding.FragmentSearchBinding
 import com.example.music.online.data.models.*
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
-import com.example.music.utils.UiState
-import com.example.music.utils.updateViewForModel
+import com.example.music.utils.*
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -26,9 +27,10 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     OnlineArtistAdapter.ClickAnArtist,
     OnlineGenreAdapter.ClickAGenre,
     OnlineAlbumAdapter.ClickAnAlbum,
-    OnlineSongInSearchAdapter.ClickASong,
     OnlineCountryAdapter.ClickACountry,
-    DetailCollectionFragment.ClickASongInDetail {
+    DetailCollectionFragment.ClickASongInDetail,
+    OnlineSongAdapter.ItemSongClickListener,
+    OnlineDialogPlaylistAdapter.ItemClickListener{
 
     private var _binding: FragmentSearchBinding? = null
     // This property is only valid between onCreateView and
@@ -63,9 +65,16 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         OnlineCountryAdapter(requireContext(), this)
     }
 
-    private val onlineSongInSearchAdapter: OnlineSongInSearchAdapter by lazy {
-        OnlineSongInSearchAdapter(requireContext(),this)
+    private val onlineSongAdapter: OnlineSongAdapter by lazy {
+        OnlineSongAdapter(requireContext(), this, viewLifecycleOwner, onlineArtistViewModel)
     }
+
+    private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
+        OnlineDialogPlaylistAdapter(requireContext(), this)
+    }
+
+    private lateinit var currentSong: OnlineSong
+    private var initialList: List<OnlineSong>? = null
 
     private var albums: List<OnlineAlbum> = emptyList()
     private var playlists: List<OnlinePlaylist> = emptyList()
@@ -86,13 +95,13 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //load data for song
-        with(binding.songRv){
-            adapter = onlineSongInSearchAdapter
-            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        //get all songs
+        with(binding.songRecyclerView) {
+            adapter = onlineSongAdapter
+            layoutManager = LinearLayoutManager(requireContext())
         }
-        onlineSongViewModel.getAllSongForSearch()
-        onlineSongViewModel.songForSearch.observe(viewLifecycleOwner){
+        onlineSongViewModel.getAllSongs()
+        onlineSongViewModel.song.observe(viewLifecycleOwner){
             when(it){
                 is UiState.Loading -> {
 
@@ -101,6 +110,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
                 }
                 is UiState.Success -> {
+                    onlineSongAdapter.setData(it.data)
                     songs = it.data
                 }
             }
@@ -253,7 +263,7 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
 
     private fun filterSong(text: String) {
         // creating a new array list to filter our data.
-        val filter: ArrayList<OnlineSong> = ArrayList<OnlineSong>()
+        val filter = ArrayList<OnlineSong>()
         // running a for loop to compare elements.
         for (item in songs) {
             // checking if the entered string matched with any item of our recycler view.
@@ -264,18 +274,13 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
             }
         }
         if (filter.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
-            binding.songLayout.visibility = View.GONE
+            onlineSongAdapter.setData(songs)
         }
         if (text.isEmpty()){
-            binding.songLayout.visibility = View.GONE
+            onlineSongAdapter.setData(songs)
         }
         else {
-            // at last we are passing that filtered
-            // list to our adapter class.
-            onlineSongInSearchAdapter.setData(filter)
-            binding.songLayout.visibility = View.VISIBLE
+            onlineSongAdapter.setData(filter)
         }
     }
 
@@ -399,13 +404,63 @@ class SearchFragment(private val clickSongFromDetail: ClickSongFromDetail) : Fra
         fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int)
     }
 
-    override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
-        clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
-    }
-
     override fun callBackFromCountryClick(country: OnlineCountry) {
         sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
         updateViewForModel(country.id!!, onlineViewViewModel)
+    }
+
+    override fun onMenuClick(action: String, playlist: OnlinePlaylist) {
+        if (action == "Rename"){
+            createDialogForRenamePlaylist(playlist, onlinePlaylistViewModel)
+        }
+        if (action == "Delete"){
+            createDialogForDeletePlaylist(playlist, onlinePlaylistViewModel)
+        }
+    }
+
+    override fun onItemPlaylistClick(playlist: OnlinePlaylist) {
+        //add song to selected playlist
+        val songSelected = currentSong
+
+        FirebaseAuth.getInstance().currentUser?.let {
+            onlineSongViewModel.addSongToPlaylist(songSelected, playlist, it)
+        }
+
+        onlineSongViewModel.addSongInPlaylist.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    toast("Song ${songSelected.name} added to ${playlist.name} playlist")
+                }
+            }
+        }
+    }
+
+    override fun callBackFromMenuSongClick(
+        action: String,
+        songList: List<OnlineSong>,
+        position: Int
+    ) {
+        if (action == "Play"){
+            clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+        }
+        if (action == "Add to playlist"){
+            createDialogForAddToPlaylist(onlinePlaylistViewModel, onlineDialogPlaylistAdapter)
+            currentSong = songList[position]
+        }
+        if (action == "Delete"){
+//            createDialogForDeleteSong(songList[position])
+            toast("Just for fun, you can't delete :>")
+        }
+    }
+
+    override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
+        clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
     }
 
 }

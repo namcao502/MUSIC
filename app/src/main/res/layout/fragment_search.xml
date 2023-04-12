@@ -25,29 +25,35 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
 
-        <LinearLayout
-            android:id="@+id/songLayout"
-            android:visibility="gone"
-            android:paddingHorizontal="10dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingHorizontal="8dp"
+            android:id="@+id/song_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent" />
 
-            <TextView
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/songs"
-                android:textAlignment="textStart"
-                android:textSize="21sp"
-                android:textStyle="bold" />
+<!--        <LinearLayout-->
+<!--            android:id="@+id/songLayout"-->
+<!--            android:visibility="gone"-->
+<!--            android:paddingHorizontal="10dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:orientation="vertical">-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/song_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginBottom="10dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/songs"-->
+<!--                android:textAlignment="textStart"-->
+<!--                android:textSize="21sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/song_rv"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent" />-->
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/playlistLayout"
@@ -170,6 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
         </LinearLayout>
+
 
 
     </LinearLayout>
