@@ -107,4 +107,10 @@ object FirebaseModule {
     fun provideViewRepository(database: FirebaseFirestore): ViewRepository{
         return ViewRepositoryImp(database)
     }
+
+    @Singleton
+    @Provides
+    fun provideDiaryRepository(database: FirebaseFirestore): DiaryRepository{
+        return DiaryRepositoryImp(database)
+    }
 }

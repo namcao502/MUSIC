@@ -4,7 +4,7 @@
     <item
         android:id="@+id/online_home_menu"
         android:title="@string/home"
-        android:icon="@drawable/ic_baseline_home_24"/>
+        android:icon="@drawable/baseline_local_fire_department_24"/>
 
     <item
         android:id="@+id/online_search_menu"
@@ -12,18 +12,18 @@
         android:icon="@drawable/ic_baseline_search_24"/>
 
     <item
-        android:id="@+id/online_song_menu"
-        android:title="@string/songs"
-        android:icon="@drawable/ic_baseline_music_note_24"/>
+        android:id="@+id/online_diary_menu"
+        android:title="@string/diary"
+        android:icon="@drawable/ic_baseline_collections_bookmark_24"/>
 
     <item
         android:id="@+id/online_collection_menu"
         android:title="@string/collection"
-        android:icon="@drawable/ic_baseline_collections_bookmark_24"/>
+        android:icon="@drawable/baseline_favorite_24"/>
 
     <item
         android:id="@+id/online_user_menu"
         android:title="@string/user"
-        android:icon="@drawable/ic_baseline_people_24"/>
+        android:icon="@drawable/baseline_account_box_24"/>
 
 </menu>

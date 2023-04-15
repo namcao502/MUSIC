@@ -24,8 +24,10 @@ import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.example.music.R
+import com.example.music.online.data.models.OnlineDiary
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
+import com.example.music.online.viewModels.OnlineDiaryViewModel
 import com.example.music.online.viewModels.OnlinePlaylistViewModel
 import com.example.music.online.viewModels.OnlineViewViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -79,11 +81,11 @@ fun getConnectionType(context: Context): Int {
 }
 
 fun Fragment.toast(message: String?){
-    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 }
 
 fun Activity.toast(message: String?){
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 fun changeEmailToXEmail(email: String): String {
@@ -261,6 +263,39 @@ fun Fragment.createDialogForDeletePlaylist(playlist: OnlinePlaylist, onlinePlayl
     builder.create().show()
 }
 
+fun Fragment.createDialogForDeleteDiary(diary: OnlineDiary, onlineDiaryViewModel: OnlineDiaryViewModel){
+
+    val builder = AlertDialog.Builder(requireContext())
+
+    builder.setMessage("Delete ${diary.subject} diary?")
+        .setTitle("Confirm delete")
+        .setPositiveButton("Delete") { _, _ ->
+
+            FirebaseAuth.getInstance().currentUser?.let {
+                onlineDiaryViewModel.deleteDiary(diary, it)
+            }
+            onlineDiaryViewModel.deleteDiary.observe(this) {
+                when (it) {
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
+                        builder.create().cancel()
+                    }
+                }
+            }
+        }
+        .setNegativeButton("Cancel") { _, _ ->
+            // User cancelled the dialog
+        }
+    // Create the AlertDialog object and return it
+    builder.create().show()
+}
+
 fun Fragment.createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel){
 
     val builder = AlertDialog.Builder(requireContext())
@@ -305,9 +340,9 @@ fun Fragment.createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistV
 }
 
 fun Fragment.createDialogForAddToPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel, onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter) {
-    val dialog = createDialog(R.layout.fragment_online_playlist)
+    val dialog = createDialog(R.layout.playlist_dialog)
 
-    val recyclerView = dialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
+    val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
     recyclerView.adapter = onlineDialogPlaylistAdapter
     recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 

@@ -70,6 +70,14 @@ class OnlinePlaylistFragment(private val clickSongFromDetail: ClickSongFromDetai
                 }
                 is UiState.Success -> {
                     onlinePlaylistAdapter.setData(it.data)
+                    if (it.data.isEmpty()){
+                        binding.onlinePlaylistRecyclerView.visibility = View.GONE
+                        binding.itemMessage.visibility = View.VISIBLE
+                    }
+                    else {
+                        binding.onlinePlaylistRecyclerView.visibility = View.VISIBLE
+                        binding.itemMessage.visibility = View.GONE
+                    }
                 }
             }
         }

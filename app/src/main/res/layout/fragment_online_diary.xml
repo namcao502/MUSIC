@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".online.ui.fragments.OnlineSongFragment">
+    tools:context=".online.ui.fragments.OnlineDiaryFragment">
 
     <androidx.appcompat.widget.SearchView
         android:layout_gravity="center"
@@ -20,9 +20,18 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
 
+    <TextView
+        android:textStyle="italic|bold"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:text="@string/no_diaries"
+        android:id="@+id/item_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:paddingHorizontal="8dp"
-        android:id="@+id/song_recyclerView"
+        android:id="@+id/diary_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -3,6 +3,7 @@ package com.example.music.utils
 import com.example.music.online.ui.fragments.DetailCollectionFragment
 
 object FireStoreCollection{
+    const val DIARY = "Diary"
     const val SONG = "Song"
     const val ARTIST = "Artist"
     const val COMMENT = "Comment"

@@ -5,14 +5,11 @@ import android.content.*
 import android.graphics.Color
 import android.os.*
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +19,7 @@ import com.example.music.databinding.ActivityOnlineMainBinding
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.dao.ConnectivityObserver
 import com.example.music.online.data.models.OnlineComment
+import com.example.music.online.data.models.OnlineDiary
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.services.OnlineMusicPlayerService
@@ -43,7 +41,6 @@ import java.util.*
 @AndroidEntryPoint
 class OnlineMainActivity: AppCompatActivity(),
     ServiceConnection,
-    OnlineSongFragment.SongFromAdapterClick,
     OnlineDialogPlaylistAdapter.ItemClickListener,
     HomeFragment.ClickSongFromDetail,
     SearchFragment.ClickSongFromDetail,
@@ -52,7 +49,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private lateinit var binding: ActivityOnlineMainBinding
 
-    private var songFragment = OnlineSongFragment(this)
+    private var diaryFragment = OnlineDiaryFragment()
     private var playlistFragment = OnlinePlaylistFragment(this)
     private var homeFragment = HomeFragment(this)
     private var searchFragment = SearchFragment(this)
@@ -75,6 +72,7 @@ class OnlineMainActivity: AppCompatActivity(),
     private val onlineCommentViewModel: OnlineCommentViewModel by viewModels()
     private val firebaseViewModel: FirebaseViewModel by viewModels()
     private val onlineViewViewModel: OnlineViewViewModel by viewModels()
+    private val onlineDiaryViewModel: OnlineDiaryViewModel by viewModels()
 
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
@@ -122,76 +120,10 @@ class OnlineMainActivity: AppCompatActivity(),
         val view = binding.root
         setContentView(view)
 
-        binding.bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.online_home_menu -> {
-                    if (DetailFragmentState.isOn){
-                        supportFragmentManager.popBackStack()
-                        DetailFragmentState.isOn = false
-                    }
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
-                        .hide(activeFragment)
-                        .show(homeFragment).commit()
-                    activeFragment = homeFragment
-                    return@setOnItemSelectedListener true
-                }
-                R.id.online_search_menu -> {
-                    if (DetailFragmentState.isOn){
-                        supportFragmentManager.popBackStack()
-                        DetailFragmentState.isOn = false
-                    }
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
-                        .hide(activeFragment)
-                        .show(searchFragment).commit()
-                    activeFragment = searchFragment
-                    return@setOnItemSelectedListener true
-                }
-                R.id.online_song_menu -> {
-                    if (DetailFragmentState.isOn){
-                        supportFragmentManager.popBackStack()
-                        DetailFragmentState.isOn = false
-                    }
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
-                        .hide(activeFragment)
-                        .show(songFragment).commit()
-                    activeFragment = songFragment
-                    return@setOnItemSelectedListener true
-                }
-                R.id.online_collection_menu -> {
-                    if (DetailFragmentState.isOn){
-                        supportFragmentManager.popBackStack()
-                        DetailFragmentState.isOn = false
-                    }
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
-                        .hide(activeFragment)
-                        .show(playlistFragment).commit()
-                    activeFragment = playlistFragment
-                    return@setOnItemSelectedListener true
-                }
-                R.id.online_user_menu -> {
-                    if (DetailFragmentState.isOn){
-                        supportFragmentManager.popBackStack()
-                        DetailFragmentState.isOn = false
-                    }
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
-                        .hide(activeFragment)
-                        .show(userFragment).commit()
-                    activeFragment = userFragment
-                    return@setOnItemSelectedListener true
-                }
-            }
-            return@setOnItemSelectedListener false
-        }
-
         with(supportFragmentManager.beginTransaction()){
             add(R.id.fragment_container, userFragment).hide(userFragment)
             add(R.id.fragment_container, playlistFragment).hide(playlistFragment)
-            add(R.id.fragment_container, songFragment).hide(songFragment)
+            add(R.id.fragment_container, diaryFragment).hide(diaryFragment)
             add(R.id.fragment_container, searchFragment).hide(searchFragment)
             add(R.id.fragment_container, homeFragment)
             commit()
@@ -233,12 +165,80 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
 
+        listener()
+
 //        checkNetwork(binding.internetTxt)
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SimpleDateFormat")
     private fun listener() {
+
+        binding.bottomNav.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.online_home_menu -> {
+                    if (DetailFragmentState.isOn){
+                        supportFragmentManager.popBackStack()
+                        DetailFragmentState.isOn = false
+                    }
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
+                        .hide(activeFragment)
+                        .show(homeFragment).commit()
+                    activeFragment = homeFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_search_menu -> {
+                    if (DetailFragmentState.isOn){
+                        supportFragmentManager.popBackStack()
+                        DetailFragmentState.isOn = false
+                    }
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
+                        .hide(activeFragment)
+                        .show(searchFragment).commit()
+                    activeFragment = searchFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_diary_menu -> {
+                    if (DetailFragmentState.isOn){
+                        supportFragmentManager.popBackStack()
+                        DetailFragmentState.isOn = false
+                    }
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
+                        .hide(activeFragment)
+                        .show(diaryFragment).commit()
+                    activeFragment = diaryFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_collection_menu -> {
+                    if (DetailFragmentState.isOn){
+                        supportFragmentManager.popBackStack()
+                        DetailFragmentState.isOn = false
+                    }
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
+                        .hide(activeFragment)
+                        .show(playlistFragment).commit()
+                    activeFragment = playlistFragment
+                    return@setOnItemSelectedListener true
+                }
+                R.id.online_user_menu -> {
+                    if (DetailFragmentState.isOn){
+                        supportFragmentManager.popBackStack()
+                        DetailFragmentState.isOn = false
+                    }
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
+                        .hide(activeFragment)
+                        .show(userFragment).commit()
+                    activeFragment = userFragment
+                    return@setOnItemSelectedListener true
+                }
+            }
+            return@setOnItemSelectedListener false
+        }
 
         binding.playerSheet.optionBtn.setOnClickListener {
             val bottomDialog = createBottomSheetDialog(R.layout.option_player_layout)
@@ -253,9 +253,73 @@ class OnlineMainActivity: AppCompatActivity(),
 
             val addToPlaylistBtn = bottomDialog.findViewById<LinearLayout>(R.id.add_to_playlist_layout)
             val commentsBtn = bottomDialog.findViewById<LinearLayout>(R.id.comment_layout)
+            val diaryBtn = bottomDialog.findViewById<LinearLayout>(R.id.diary_layout)
             val downloadBtn = bottomDialog.findViewById<LinearLayout>(R.id.download_layout)
             val playStateBtn = bottomDialog.findViewById<LinearLayout>(R.id.play_state_layout)
             val playStateTxt = bottomDialog.findViewById<TextView>(R.id.play_state_txt)
+
+            diaryBtn!!.setOnClickListener {
+                val bottomSheetDialog = createBottomSheetDialog(R.layout.diary_dialog)
+
+                val subjectTxt = bottomSheetDialog.findViewById<TextView>(R.id.subject_txt)!!
+                val contentTxt = bottomSheetDialog.findViewById<TextView>(R.id.content_txt)!!
+                val saveBtn = bottomSheetDialog.findViewById<Button>(R.id.save_btn)!!
+                val cancelBtn = bottomSheetDialog.findViewById<Button>(R.id.cancel_btn)!!
+
+                cancelBtn.setOnClickListener {
+                    bottomSheetDialog.cancel()
+                }
+
+                saveBtn.setOnClickListener {
+
+                    val song = binding.miniSongTitle.text.toString()
+                    val artist = binding.miniSongArtist.text.toString()
+
+                    if (subjectTxt.text.toString().isEmpty()){
+                        toast("Please type a subject...")
+                        return@setOnClickListener
+                    }
+
+                    if (contentTxt.text.toString().isEmpty()){
+                        toast("Please type some content...")
+                        return@setOnClickListener
+                    }
+
+                    val sdf = SimpleDateFormat("MM/dd/yyyy HH:mm")
+                    val currentDate = sdf.format(Date())
+
+                    val diary = OnlineDiary(
+                        "",
+                        subjectTxt.text.toString(),
+                        contentTxt.text.toString(),
+                        currentDate.toString(),
+                        song.plus(" - ").plus(artist),
+                        songList!![songPosition].id
+                    )
+
+                    Firebase.auth.currentUser?.let {
+                        onlineDiaryViewModel.addDiary(diary, it)
+                    }
+
+                    onlineDiaryViewModel.addDiary.observe(this){
+                        when(it){
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                toast(it.data)
+                                bottomSheetDialog.cancel()
+                            }
+                        }
+                    }
+
+                }
+                bottomSheetDialog.show()
+
+            }
 
             commentsBtn!!.setOnClickListener {
                 //create bottom sheet dialog
@@ -387,12 +451,6 @@ class OnlineMainActivity: AppCompatActivity(),
 
             bottomDialog.show()
         }
-
-//        binding.miniPlayerLayout.setOnClickListener {
-//            PlayerState.isOn = true
-//            binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
-//            binding.bottomCard.fadeVisibility(View.GONE)
-//        }
 
         binding.miniPlayerLayout.setOnTouchListener(object : OnSwipeTouchListener(binding.miniPlayerLayout.context) {
 //            override fun onSwipeLeft() {
@@ -966,12 +1024,6 @@ class OnlineMainActivity: AppCompatActivity(),
 
     override fun callBackFromClickSongInDetail(songList: List<OnlineSong>, position: Int) {
         this.songList = songList
-        this.songPosition = position
-        preparePlayer()
-    }
-
-    override fun callBackFromSongFragment(songs: List<OnlineSong>, position: Int) {
-        this.songList = songs
         this.songPosition = position
         preparePlayer()
     }

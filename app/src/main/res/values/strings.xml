@@ -62,4 +62,12 @@
     <string name="collection">Collection</string>
     <string name="user">User</string>
     <string name="sign_in_with_google">Sign in with google</string>
+    <string name="diary">Diary</string>
+    <string name="datetime">Datetime</string>
+    <string name="subject">Subject</string>
+    <string name="content">Content</string>
+    <string name="touch_outside"> * Touch outside this dialog or back button to cancel</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_diaries">You don\'t have any diaries yet...</string>
+    <string name="no_playlists">You don\'t have any playlists yet...</string>
 </resources>
