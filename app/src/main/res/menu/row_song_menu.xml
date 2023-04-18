@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:icon="@drawable/baseline_play_circle_24"
         android:id="@+id/play_song_menu"
-        android:title="Play"/>
+        android:title="@string/play"
+        app:showAsAction="always" />
 
     <item
+        android:icon="@drawable/ic_baseline_playlist_add_24"
         android:id="@+id/add_song_to_playlist_menu"
-        android:title="Add to playlist"/>
+        android:title="@string/add_to_playlist"
+        app:showAsAction="always" />
 
     <item
+        android:icon="@drawable/baseline_remove_circle_outline_24"
         android:id="@+id/delete_song_menu"
-        android:title="Delete"/>
+        android:title="@string/delete"
+        app:showAsAction="always" />
 
 </menu>

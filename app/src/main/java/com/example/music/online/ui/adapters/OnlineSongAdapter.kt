@@ -10,11 +10,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.utils.UiState
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.online.data.models.OnlineArtist
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.OnlineArtistViewModel
+import com.example.music.utils.UiState
 
 class OnlineSongAdapter(
     private val context: Context,
@@ -40,6 +40,7 @@ class OnlineSongAdapter(
         return songList.size
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         with(holder){
@@ -51,6 +52,7 @@ class OnlineSongAdapter(
             binding.menuBtn.setOnClickListener {
                 PopupMenu(context, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_song_menu, this.menu)
+                    setForceShowIcon(true)
                     setOnMenuItemClickListener { menuItem ->
                         itemClickListener.callBackFromMenuSongClick(menuItem.title.toString(), songList, position)
                         true

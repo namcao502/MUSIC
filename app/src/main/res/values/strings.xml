@@ -70,4 +70,5 @@
     <string name="cancel">Cancel</string>
     <string name="no_diaries">You don\'t have any diaries yet...</string>
     <string name="no_playlists">You don\'t have any playlists yet...</string>
+    <string name="play">Play</string>
 </resources>

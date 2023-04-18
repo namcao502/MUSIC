@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -131,16 +132,15 @@ class OnlineDiaryFragment : Fragment(), OnlineDiaryAdapter.ClickADiary {
         val contentTxt = dialog.findViewById<TextView>(R.id.content_txt)!!
         val songArtist = dialog.findViewById<TextView>(R.id.songArtist_txt)!!
         val dateTime = dialog.findViewById<TextView>(R.id.datetime_txt)!!
-        val saveBtn = dialog.findViewById<Button>(R.id.save_btn)!!
-        val cancelBtn = dialog.findViewById<Button>(R.id.cancel_btn)!!
-        val deleteBtn = dialog.findViewById<Button>(R.id.delete_btn)!!
+        val saveBtn = dialog.findViewById<ImageButton>(R.id.save_btn)!!
+        val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)!!
+        val deleteBtn = dialog.findViewById<ImageButton>(R.id.delete_btn)!!
 
         subjectTxt.text = diary.subject
         contentTxt.text = diary.content
         songArtist.text = diary.from
         dateTime.text = diary.dateTime
 
-        songArtist.visibility = View.VISIBLE
         dateTime.visibility = View.VISIBLE
         deleteBtn.visibility = View.VISIBLE
 

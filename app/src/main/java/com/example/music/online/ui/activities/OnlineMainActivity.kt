@@ -171,7 +171,7 @@ class OnlineMainActivity: AppCompatActivity(),
 
     }
 
-    @SuppressLint("ClickableViewAccessibility", "SimpleDateFormat")
+    @SuppressLint("ClickableViewAccessibility", "SimpleDateFormat", "SetTextI18n")
     private fun listener() {
 
         binding.bottomNav.setOnItemSelectedListener {
@@ -263,17 +263,20 @@ class OnlineMainActivity: AppCompatActivity(),
 
                 val subjectTxt = bottomSheetDialog.findViewById<TextView>(R.id.subject_txt)!!
                 val contentTxt = bottomSheetDialog.findViewById<TextView>(R.id.content_txt)!!
-                val saveBtn = bottomSheetDialog.findViewById<Button>(R.id.save_btn)!!
-                val cancelBtn = bottomSheetDialog.findViewById<Button>(R.id.cancel_btn)!!
+                val saveBtn = bottomSheetDialog.findViewById<ImageButton>(R.id.save_btn)!!
+                val cancelBtn = bottomSheetDialog.findViewById<ImageButton>(R.id.cancel_btn)!!
+                val songArtistTxt = bottomSheetDialog.findViewById<TextView>(R.id.songArtist_txt)!!
+
+                songArtistTxt.text =
+                    binding.miniSongTitle.text.toString()
+                    .plus(" - ")
+                    .plus(binding.miniSongArtist.text.toString())
 
                 cancelBtn.setOnClickListener {
                     bottomSheetDialog.cancel()
                 }
 
                 saveBtn.setOnClickListener {
-
-                    val song = binding.miniSongTitle.text.toString()
-                    val artist = binding.miniSongArtist.text.toString()
 
                     if (subjectTxt.text.toString().isEmpty()){
                         toast("Please type a subject...")
@@ -293,7 +296,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         subjectTxt.text.toString(),
                         contentTxt.text.toString(),
                         currentDate.toString(),
-                        song.plus(" - ").plus(artist),
+                        songArtistTxt.text.toString(),
                         songList!![songPosition].id
                     )
 
@@ -445,7 +448,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                     }
                 }
-                playStateTxt!!.text = "Mode: $playState"
+                playStateTxt!!.text = "Mode: ".plus(playState)
                 toast("Switched to $playState")
             }
 
@@ -453,21 +456,14 @@ class OnlineMainActivity: AppCompatActivity(),
         }
 
         binding.miniPlayerLayout.setOnTouchListener(object : OnSwipeTouchListener(binding.miniPlayerLayout.context) {
-//            override fun onSwipeLeft() {
-//                super.onSwipeLeft()
-//                Toast.makeText(binding.miniPlayerLayout.context,
-//                    "Swipe Left gesture detected",
-//                    Toast.LENGTH_SHORT)
-//                    .show()
-//            }
-//            override fun onSwipeRight() {
-//                super.onSwipeRight()
-//                Toast.makeText(
-//                    binding.miniPlayerLayout.context,
-//                    "Swipe Right gesture detected",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
+            override fun onSwipeLeft() {
+                super.onSwipeLeft()
+                next()
+            }
+            override fun onSwipeRight() {
+                super.onSwipeRight()
+                previous()
+            }
             override fun onSwipeUp() {
                 super.onSwipeUp()
                 PlayerState.isOn = true
