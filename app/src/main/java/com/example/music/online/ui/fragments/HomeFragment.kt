@@ -80,6 +80,13 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.playGameTxt.setOnClickListener {
+            //load all music
+            //create a popup with four answers
+            //play random a song
+
+        }
+
         showGreeting()
 
         //load data for playlist
@@ -216,23 +223,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
     }
 
-    private fun updatePlaylist(playlist: OnlinePlaylist){
-        onlinePlaylistViewModel.updatePlaylist(playlist)
-        onlinePlaylistViewModel.updatePlaylist2.observe(viewLifecycleOwner){
-            when (it) {
-                is UiState.Loading -> {
-
-                }
-                is UiState.Failure -> {
-
-                }
-                is UiState.Success -> {
-                    Log.i("TAG502", "updatePlaylist: ${it.data}")
-                }
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -262,8 +252,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                 }
             }
         }
-
-//        val name = Firebase.auth.currentUser!!.email!!.split("@")[0]
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{

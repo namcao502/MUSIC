@@ -14,9 +14,9 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_gravity="center"
+            android:padding="8dp"
+            android:layout_gravity="start"
             android:fontFamily="@font/orbitron"
-            android:layout_margin="10dp"
             android:textAlignment="center"
             android:textStyle="bold"
             android:id="@+id/app_tv"
@@ -24,21 +24,24 @@
             android:textSize="20sp"
             android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:drawableLeftCompat="@drawable/icons8_rhythm_48" />
+            android:layout_height="match_parent"
+            app:drawableLeftCompat="@drawable/baseline_local_fire_department_24_black"/>
 
         <TextView
-            android:layout_margin="10dp"
+            android:paddingBottom="8dp"
+            android:layout_marginHorizontal="16dp"
             android:textAlignment="textStart"
+            android:gravity="center"
             android:id="@+id/welcome_tv"
             android:text="@string/welcome"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:textSize="15sp"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:ignore="RtlCompat" />
 
         <androidx.cardview.widget.CardView
-            android:layout_marginHorizontal="10dp"
+            android:layout_margin="10dp"
             app:cardCornerRadius="20dp"
             android:layout_width="match_parent"
             android:layout_height="220dp">
@@ -53,6 +56,17 @@
 
         </androidx.cardview.widget.CardView>
 
+        <TextView
+            android:fontFamily="@font/orbitron"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:layout_marginHorizontal="48dp"
+            android:id="@+id/playGame_txt"
+            android:text="@string/play_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:drawableLeftCompat="@drawable/baseline_videogame_asset_24" />
+
         <LinearLayout
             android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
@@ -60,8 +74,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -84,8 +97,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/artists"
@@ -106,8 +118,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/genres"
@@ -128,8 +139,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/albums"
@@ -150,8 +160,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/countries"
