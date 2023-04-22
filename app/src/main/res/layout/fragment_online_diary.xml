@@ -1,38 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".online.ui.fragments.OnlineDiaryFragment">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.SearchView
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
-        app:queryHint="Search here..."
-        app:submitBackground="@null"
-        android:background="@drawable/shape_bg_search"
-        app:iconifiedByDefault="false"
-        android:queryHint="Search here..."
-        android:id="@+id/searchView"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content" />
-
-    <TextView
-        android:textStyle="italic|bold"
-        android:gravity="center"
-        android:layout_gravity="center_vertical"
-        android:text="@string/no_diaries"
-        android:id="@+id/item_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/diary_recyclerView"
+    <ImageView
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="8dp" />
+        android:src="@drawable/diary_bg"
+        android:contentDescription="@string/todo" />
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".online.ui.fragments.OnlineDiaryFragment">
+
+        <androidx.appcompat.widget.SearchView
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            app:queryHint="Search here..."
+            app:submitBackground="@null"
+            android:background="@drawable/shape_bg_search"
+            app:iconifiedByDefault="false"
+            android:queryHint="Search here..."
+            android:id="@+id/searchView"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:textStyle="italic|bold"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="@string/no_diaries"
+            android:id="@+id/item_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/diary_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

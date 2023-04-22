@@ -10,8 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -30,13 +28,12 @@ import com.example.music.utils.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
-import java.sql.Types.NULL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
@@ -251,23 +248,22 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun createGame(){
 
         //create dialog
         val dialog = createDialog(R.layout.game_dialog)
 
-        val timeTxt = dialog.findViewById<TextView>(R.id.time_txt)
-        val againLayout = dialog.findViewById<LinearLayout>(R.id.again)
+//        val timeTxt = dialog.findViewById<TextView>(R.id.time_txt)
+        val replayTxt = dialog.findViewById<TextView>(R.id.replayTxt)
         val answers: List<TextView> = listOf(
             dialog.findViewById(R.id.ans_A),
             dialog.findViewById(R.id.ans_B),
             dialog.findViewById(R.id.ans_C),
             dialog.findViewById(R.id.ans_D)
         )
-        val replayBtn = dialog.findViewById<ImageButton>(R.id.replayBtn)
 
         val shuffle: ArrayList<OnlineSong> = ArrayList()
-
         var tempInt = -1
 
         while (true){
@@ -305,18 +301,16 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             answers[i].text = shuffle[i].name.toString()
             answers[i].setOnClickListener {
                 checkAnswer(answers[i], mediaPlayer, correctAns)
-                againLayout.visibility = View.VISIBLE
+                replayTxt.isEnabled = true
             }
         }
 
         dialog.setOnCancelListener {
-            if (mediaPlayer.isPlaying)
-                mediaPlayer.stop()
+            stopMusic(mediaPlayer)
         }
 
-        replayBtn.setOnClickListener {
-            if (mediaPlayer.isPlaying)
-                mediaPlayer.stop()
+        replayTxt.setOnClickListener {
+            stopMusic(mediaPlayer)
             dialog.cancel()
             createGame()
         }
@@ -326,12 +320,19 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     private fun checkAnswer(view: TextView, mediaPlayer: MediaPlayer, correctAns: OnlineSong){
         if (view.text.toString() == correctAns.name){
-            toast("You're winner!")
+            toast("You win!")
             view.setBackgroundResource(R.drawable.rounded_item_correct)
         }
         else {
-            toast("You're loser!")
+            toast("You lose!")
             view.setBackgroundResource(R.drawable.rounded_item_in_correct)
+        }
+        stopMusic(mediaPlayer)
+    }
+
+    private fun stopMusic(mediaPlayer: MediaPlayer){
+        if (mediaPlayer.isPlaying){
+            mediaPlayer.stop()
         }
     }
 

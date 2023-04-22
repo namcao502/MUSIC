@@ -26,8 +26,8 @@ class SplashScreen : AppCompatActivity() {
         }
 
         //set color for status bar and navigation bar
-        window.navigationBarColor = resources.getColor(R.color.white, this.theme)
-        window.statusBarColor = resources.getColor(R.color.white, this.theme)
+        window.navigationBarColor = resources.getColor(R.color.black, this.theme)
+        window.statusBarColor = resources.getColor(R.color.black, this.theme)
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
