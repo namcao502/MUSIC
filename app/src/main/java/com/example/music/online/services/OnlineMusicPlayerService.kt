@@ -28,7 +28,6 @@ import kotlinx.coroutines.withContext
 
 
 class OnlineMusicPlayerService: Service() {
-
     companion object {
         const val CHANNEL_ID_1 = "channel_2"
         const val ACTION_PREVIOUS = 400

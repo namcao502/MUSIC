@@ -1,6 +1,8 @@
 package com.example.music.online.ui.fragments
 
 import android.annotation.SuppressLint
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
@@ -18,18 +23,20 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.example.music.R
 import com.example.music.databinding.FragmentHomeBinding
 import com.example.music.online.data.models.*
+import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
-import com.example.music.utils.FireStoreCollection
-import com.example.music.utils.UiState
-import com.example.music.utils.WelcomeText
-import com.example.music.utils.updateViewForModel
+import com.example.music.utils.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
+import java.sql.Types.NULL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
@@ -50,6 +57,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineCountryViewModel: OnlineCountryViewModel by viewModels()
     private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
     private val onlineViewViewModel: OnlineViewViewModel by viewModels()
+    private val onlineSongViewModel: OnlineSongViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -71,6 +79,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         OnlineCountryAdapter(requireContext(), this)
     }
 
+    var songs: List<OnlineSong> = emptyList()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -80,14 +90,32 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.playGameTxt.setOnClickListener {
-            //load all music
-            //create a popup with four answers
-            //play random a song
+        //load all music
+        onlineSongViewModel.getAllSongs()
+        onlineSongViewModel.song.observe(viewLifecycleOwner){
+            when(it){
+                is UiState.Loading -> {
 
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    songs = it.data
+                }
+            }
         }
 
         showGreeting()
+
+        binding.playGameTxt.setOnClickListener {
+            if ((activity as OnlineMainActivity).musicPlayerService != null){
+                if ((activity as OnlineMainActivity).musicPlayerService!!.isPlaying()){
+                    (activity as OnlineMainActivity).pause()
+                }
+            }
+            createGame()
+        }
 
         //load data for playlist
         with(binding.playlistRv){
@@ -221,6 +249,90 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.poster_08, "")
         )
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
+    }
+
+    private fun createGame(){
+
+        //create dialog
+        val dialog = createDialog(R.layout.game_dialog)
+
+        val timeTxt = dialog.findViewById<TextView>(R.id.time_txt)
+        val againLayout = dialog.findViewById<LinearLayout>(R.id.again)
+        val answers: List<TextView> = listOf(
+            dialog.findViewById(R.id.ans_A),
+            dialog.findViewById(R.id.ans_B),
+            dialog.findViewById(R.id.ans_C),
+            dialog.findViewById(R.id.ans_D)
+        )
+        val replayBtn = dialog.findViewById<ImageButton>(R.id.replayBtn)
+
+        val shuffle: ArrayList<OnlineSong> = ArrayList()
+
+        var tempInt = -1
+
+        while (true){
+            val randomInt = Random(System.currentTimeMillis()).nextInt(songs.size)
+            if (tempInt != randomInt){
+                shuffle.add(songs[randomInt])
+                tempInt = randomInt
+            }
+            if (shuffle.size == 4){
+                break
+            }
+        }
+
+        val randomInt = Random(System.currentTimeMillis()).nextInt(4)
+
+        val correctAns = shuffle[randomInt]
+
+        val mediaPlayer = MediaPlayer()
+
+        GlobalScope.launch {
+            with(mediaPlayer) {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                setDataSource(correctAns.filePath)
+                prepare()
+                start()
+            }
+        }
+
+        for (i in 0..3){
+            answers[i].text = shuffle[i].name.toString()
+            answers[i].setOnClickListener {
+                checkAnswer(answers[i], mediaPlayer, correctAns)
+                againLayout.visibility = View.VISIBLE
+            }
+        }
+
+        dialog.setOnCancelListener {
+            if (mediaPlayer.isPlaying)
+                mediaPlayer.stop()
+        }
+
+        replayBtn.setOnClickListener {
+            if (mediaPlayer.isPlaying)
+                mediaPlayer.stop()
+            dialog.cancel()
+            createGame()
+        }
+
+        dialog.show()
+    }
+
+    private fun checkAnswer(view: TextView, mediaPlayer: MediaPlayer, correctAns: OnlineSong){
+        if (view.text.toString() == correctAns.name){
+            toast("You're winner!")
+            view.setBackgroundResource(R.drawable.rounded_item_correct)
+        }
+        else {
+            toast("You're loser!")
+            view.setBackgroundResource(R.drawable.rounded_item_in_correct)
+        }
     }
 
     override fun onDestroy() {

@@ -72,4 +72,7 @@
     <string name="no_playlists">You don\'t have any playlists yet...</string>
     <string name="play">Play</string>
     <string name="play_game">Wanna play a music game?</string>
+    <string name="what_song">What is the name of this song?</string>
+    <string name="play_again">Play again?</string>
+    <string name="time_remaining">Time remaining:</string>
 </resources>
