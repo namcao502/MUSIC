@@ -387,7 +387,7 @@ class OnlineMainActivity: AppCompatActivity(),
             }
 
             addToPlaylistBtn!!.setOnClickListener {
-                val addDialog = createBottomSheetDialog(R.layout.playlist_dialog)
+                val addDialog = createDialog(R.layout.playlist_dialog)
 
                 val recyclerView = addDialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
                 recyclerView!!.adapter = onlineDialogPlaylistAdapter

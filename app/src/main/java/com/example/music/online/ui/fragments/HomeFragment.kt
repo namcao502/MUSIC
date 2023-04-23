@@ -300,7 +300,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         for (i in 0..3){
             answers[i].text = shuffle[i].name.toString()
             answers[i].setOnClickListener {
-                checkAnswer(answers[i], mediaPlayer, correctAns)
+                checkAnswer(answers[i], mediaPlayer, correctAns, answers)
                 replayTxt.isEnabled = true
             }
         }
@@ -318,7 +318,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         dialog.show()
     }
 
-    private fun checkAnswer(view: TextView, mediaPlayer: MediaPlayer, correctAns: OnlineSong){
+    private fun checkAnswer(view: TextView, mediaPlayer: MediaPlayer, correctAns: OnlineSong, answers: List<TextView>){
         if (view.text.toString() == correctAns.name){
             toast("You win!")
             view.setBackgroundResource(R.drawable.rounded_item_correct)
@@ -326,6 +326,14 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         else {
             toast("You lose!")
             view.setBackgroundResource(R.drawable.rounded_item_in_correct)
+            for (i in 0..3){
+                if (answers[i].text.toString() == correctAns.name){
+                    answers[i].setBackgroundResource(R.drawable.rounded_item_correct)
+                }
+            }
+        }
+        for (i in 0..3){
+            answers[i].isEnabled = false
         }
         stopMusic(mediaPlayer)
     }

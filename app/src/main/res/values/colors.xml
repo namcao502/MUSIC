@@ -23,4 +23,6 @@
 
     <color name="unSelectedColor">#ffffff</color>
     <color name="selectedColor">#02fbfb</color>
+
+
 </resources>
