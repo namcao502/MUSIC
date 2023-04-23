@@ -240,8 +240,11 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         }
 
         val imageList = arrayListOf(
-            SlideModel(R.drawable.poster_06, ""),
-            SlideModel(R.drawable.poster_07, ""),
+            SlideModel(R.drawable.slide_1, ""),
+            SlideModel(R.drawable.slide_2, ""),
+            SlideModel(R.drawable.slide_3, ""),
+            SlideModel(R.drawable.slide_4, ""),
+            SlideModel(R.drawable.slide_5, ""),
             SlideModel(R.drawable.alan_walker_slide, ""),
             SlideModel(R.drawable.poster_08, "")
         )
@@ -339,9 +342,15 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     }
 
     private fun stopMusic(mediaPlayer: MediaPlayer){
-        if (mediaPlayer.isPlaying){
-            mediaPlayer.stop()
-        }
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable{
+            override fun run() {
+                if (mediaPlayer.isPlaying){
+                    mediaPlayer.stop()
+                }
+                handler.postDelayed(this, 1000)
+            }
+        }, 1000)
     }
 
     override fun onDestroy() {

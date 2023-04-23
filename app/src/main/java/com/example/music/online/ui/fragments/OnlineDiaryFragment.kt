@@ -16,10 +16,7 @@ import com.example.music.databinding.FragmentOnlineDiaryBinding
 import com.example.music.online.data.models.OnlineDiary
 import com.example.music.online.ui.adapters.OnlineDiaryAdapter
 import com.example.music.online.viewModels.OnlineDiaryViewModel
-import com.example.music.utils.UiState
-import com.example.music.utils.createBottomSheetDialog
-import com.example.music.utils.createDialogForDeleteDiary
-import com.example.music.utils.toast
+import com.example.music.utils.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -126,7 +123,7 @@ class OnlineDiaryFragment : Fragment(), OnlineDiaryAdapter.ClickADiary {
     @SuppressLint("SimpleDateFormat")
     override fun callBackFromDiaryClick(diary: OnlineDiary) {
         //launch a new dialog for edit
-        val dialog = requireActivity().createBottomSheetDialog(R.layout.diary_dialog)
+        val dialog = requireActivity().createDialog(R.layout.diary_dialog)
 
         val subjectTxt = dialog.findViewById<TextView>(R.id.subject_txt)!!
         val contentTxt = dialog.findViewById<TextView>(R.id.content_txt)!!

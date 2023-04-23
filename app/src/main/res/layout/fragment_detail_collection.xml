@@ -21,11 +21,10 @@
             android:id="@+id/back_img"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+            app:srcCompat="@drawable/baseline_keyboard_double_arrow_down_24"
             android:contentDescription="@string/todo" />
 
         <TextView
-            android:textColor="@color/white"
             android:fontFamily="@font/orbitron"
             android:layout_weight="100"
             android:gravity="center"

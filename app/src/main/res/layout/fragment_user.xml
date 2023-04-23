@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:background="@drawable/circle_button"
+            android:background="@null"
             android:id="@+id/edit_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"

@@ -259,21 +259,26 @@ class OnlineMainActivity: AppCompatActivity(),
             val playStateTxt = bottomDialog.findViewById<TextView>(R.id.play_state_txt)
 
             diaryBtn!!.setOnClickListener {
-                val bottomSheetDialog = createBottomSheetDialog(R.layout.diary_dialog)
+                val dialog = createDialog(R.layout.diary_dialog)
 
-                val subjectTxt = bottomSheetDialog.findViewById<TextView>(R.id.subject_txt)!!
-                val contentTxt = bottomSheetDialog.findViewById<TextView>(R.id.content_txt)!!
-                val saveBtn = bottomSheetDialog.findViewById<ImageButton>(R.id.save_btn)!!
-                val cancelBtn = bottomSheetDialog.findViewById<ImageButton>(R.id.cancel_btn)!!
-                val songArtistTxt = bottomSheetDialog.findViewById<TextView>(R.id.songArtist_txt)!!
+                val subjectTxt = dialog.findViewById<TextView>(R.id.subject_txt)!!
+                val contentTxt = dialog.findViewById<TextView>(R.id.content_txt)!!
+                val saveBtn = dialog.findViewById<ImageButton>(R.id.save_btn)!!
+                val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)!!
+                val songArtistTxt = dialog.findViewById<TextView>(R.id.songArtist_txt)!!
+                val dateTimeTxt = dialog.findViewById<TextView>(R.id.datetime_txt)!!
 
                 songArtistTxt.text =
                     binding.miniSongTitle.text.toString()
                     .plus(" - ")
                     .plus(binding.miniSongArtist.text.toString())
 
+                val currentDate = SimpleDateFormat("MM/dd/yyyy HH:mm").format(Date())
+
+                dateTimeTxt.text = currentDate.toString()
+
                 cancelBtn.setOnClickListener {
-                    bottomSheetDialog.cancel()
+                    dialog.cancel()
                 }
 
                 saveBtn.setOnClickListener {
@@ -287,9 +292,6 @@ class OnlineMainActivity: AppCompatActivity(),
                         toast("Please type some content...")
                         return@setOnClickListener
                     }
-
-                    val sdf = SimpleDateFormat("MM/dd/yyyy HH:mm")
-                    val currentDate = sdf.format(Date())
 
                     val diary = OnlineDiary(
                         "",
@@ -314,23 +316,22 @@ class OnlineMainActivity: AppCompatActivity(),
                             }
                             is UiState.Success -> {
                                 toast(it.data)
-                                bottomSheetDialog.cancel()
+                                dialog.cancel()
                             }
                         }
                     }
 
                 }
-                bottomSheetDialog.show()
-
+                dialog.show()
             }
 
             commentsBtn!!.setOnClickListener {
                 //create bottom sheet dialog
-                val bottomSheetDialog = createBottomSheetDialog(R.layout.comment_dialog)
+                val dialog = createDialog(R.layout.comment_dialog)
 
-                val commentRv = bottomSheetDialog.findViewById<RecyclerView>(R.id.comment_rv)
-                val postBtn = bottomSheetDialog.findViewById<Button>(R.id.post_cmt_btn)
-                val message = bottomSheetDialog.findViewById<EditText>(R.id.message_et_cmt_dialog)
+                val commentRv = dialog.findViewById<RecyclerView>(R.id.comment_rv)
+                val postBtn = dialog.findViewById<Button>(R.id.post_cmt_btn)
+                val message = dialog.findViewById<EditText>(R.id.message_et_cmt_dialog)
 
                 val commentDialogAdapter: CommentDialogAdapter by lazy {
                     CommentDialogAdapter(this, this)
@@ -383,7 +384,7 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                     }
                 }
-                bottomSheetDialog.show()
+                dialog.show()
             }
 
             addToPlaylistBtn!!.setOnClickListener {
@@ -851,6 +852,7 @@ class OnlineMainActivity: AppCompatActivity(),
         isServiceConnected = false
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.extras!!.getInt("action_music")) {
