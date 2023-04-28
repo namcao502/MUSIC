@@ -60,7 +60,7 @@
             android:textColor="@color/white"
             android:paddingVertical="8dp"
             android:paddingHorizontal="16dp"
-            android:background="@drawable/gradient_item_background"
+            android:background="@drawable/gradient_background"
             android:fontFamily="@font/helvetica"
             android:gravity="center"
             android:textSize="15sp"

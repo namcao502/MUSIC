@@ -8,7 +8,7 @@
         android:title="@string/play" />
 
     <item
-        android:icon="@drawable/ic_baseline_playlist_add_24"
+        android:icon="@drawable/baseline_playlist_add_circle_36"
         android:id="@+id/add_song_to_playlist_menu"
         android:title="@string/add_to_playlist" />
 

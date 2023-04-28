@@ -50,7 +50,19 @@ class DetailCollectionAdapter(
                         clickASong.callBackFromMenuDetailClick(menuItem.title.toString(), songList, position)
                         true
                     }
-                    show()
+                    // Showing the popup menu
+                    try {
+                        val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                        fieldMPopup.isAccessible = true
+                        val mPopup = fieldMPopup.get(this)
+                        mPopup.javaClass
+                            .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                            .invoke(mPopup, true)
+                    } catch (_: Exception){
+
+                    } finally {
+                        show()
+                    }
                 }
             }
 

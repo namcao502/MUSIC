@@ -7,6 +7,7 @@
                 android:startColor="#3E4A79"
                 android:endColor="#935E4D"
                 android:type="linear" />
+            <corners android:radius="10dp"/>
         </shape>
     </item>
 </selector>

@@ -58,7 +58,18 @@ class OnlineSongAdapter(
                         true
                     }
                     // Showing the popup menu
-                    show()
+                    try {
+                        val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                        fieldMPopup.isAccessible = true
+                        val mPopup = fieldMPopup.get(this)
+                        mPopup.javaClass
+                            .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                            .invoke(mPopup, true)
+                    } catch (_: Exception){
+
+                    } finally {
+                        show()
+                    }
                 }
             }
 
