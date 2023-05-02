@@ -9,7 +9,7 @@
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="370dp"
-        android:src="@drawable/music_bg"
+        android:src="@drawable/gradient_background"
         android:contentDescription="@string/todo" />
 
     <LinearLayout

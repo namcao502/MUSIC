@@ -8,7 +8,7 @@
     android:layout_margin="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/item_color"
+        android:background="@drawable/rounded_item"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -37,7 +37,7 @@
             android:id="@+id/delete_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@color/item_color"
+            android:background="@null"
             android:contentDescription="@string/todo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bsd_layout"
     android:orientation="vertical"
-    android:background="@drawable/poster_bg_2"
+    android:background="@drawable/gradient_background_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 

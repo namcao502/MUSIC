@@ -91,6 +91,7 @@ class OnlineMainActivity: AppCompatActivity(),
             PlayerState.isOn = false
             binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
             binding.bottomCard.fadeVisibility(View.VISIBLE)
+            setStatusColor(false)
             return
         }
 
@@ -114,6 +115,7 @@ class OnlineMainActivity: AppCompatActivity(),
             , 2000)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOnlineMainBinding.inflate(layoutInflater)
@@ -133,8 +135,7 @@ class OnlineMainActivity: AppCompatActivity(),
             supportActionBar!!.hide()
         }
 
-//        window.navigationBarColor = resources.getColor(R.color.main_color, this.theme)
-//        window.statusBarColor = resources.getColor(R.color.main_color, this.theme)
+        setStatusColor(false)
 
         GlobalScope.launch {
             connectivityObserver = NetworkConnectivityObserver(this@OnlineMainActivity)
@@ -143,7 +144,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     ConnectivityObserver.Status.Available -> {
                         runOnUiThread {
                             with(binding.internetTxt){
-                                setBackgroundColor(Color.GREEN)
+                                setBackgroundColor(Color.BLUE)
                                 text = ConnectionType.BACK_ONLINE
                                 visibility = View.VISIBLE
                                 Handler(Looper.getMainLooper()).postDelayed({
@@ -169,6 +170,17 @@ class OnlineMainActivity: AppCompatActivity(),
 
 //        checkNetwork(binding.internetTxt)
 
+    }
+
+    private fun setStatusColor(playerIsOn: Boolean){
+        if (playerIsOn){
+            window.navigationBarColor = resources.getColor(R.color.black, this.theme)
+            window.statusBarColor = resources.getColor(R.color.black, this.theme)
+        }
+        else {
+            window.navigationBarColor = resources.getColor(R.color.nav_bottom, this.theme)
+            window.statusBarColor = resources.getColor(R.color.status_top, this.theme)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility", "SimpleDateFormat", "SetTextI18n")
@@ -470,6 +482,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 PlayerState.isOn = true
                 binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
                 binding.bottomCard.fadeVisibility(View.GONE)
+                setStatusColor(true)
             }
             override fun onSwipeDown() {
                 super.onSwipeDown()
@@ -483,6 +496,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 PlayerState.isOn = true
                 binding.playerSheet.playerLayout.fadeVisibility(View.VISIBLE)
                 binding.bottomCard.fadeVisibility(View.GONE)
+                setStatusColor(true)
             }
         })
 
@@ -490,6 +504,7 @@ class OnlineMainActivity: AppCompatActivity(),
             PlayerState.isOn = false
             binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
             binding.bottomCard.fadeVisibility(View.VISIBLE)
+            setStatusColor(false)
         }
 
         binding.miniNextBtn.setOnClickListener {

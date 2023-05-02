@@ -24,7 +24,7 @@
         android:id="@+id/menu_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@color/item_color"
+        android:background="@null"
         app:srcCompat="@drawable/baseline_more_vert_24_black"
         android:contentDescription="@string/todo" />
 

@@ -16,10 +16,15 @@
     <color name="item_color">#f8f8f8</color>
     <color name="button_color">#424053</color>
 
+    <color name="dark_purple">#A5A4CB</color>
+
     <color name="nav_color">#1c3e97</color>
 
     <color name="gradient_begin">#B58ECC</color>
     <color name="gradient_end">#5DE6DE</color>
+
+    <color name="nav_bottom">#5F0A87</color>
+    <color name="status_top">#A4508B</color>
 
     <color name="unSelectedColor">#ffffff</color>
     <color name="selectedColor">#02fbfb</color>

@@ -4,7 +4,7 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/poster_bg_2"
+    android:background="@drawable/gradient_background_main"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
