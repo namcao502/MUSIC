@@ -9,6 +9,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:text="@string/todo"
         android:padding="8dp"
         android:textSize="20sp"
         android:layout_margin="8dp"
@@ -25,7 +26,7 @@
         android:id="@+id/datetime_txt"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
-        android:text=""
+        android:text="@string/todo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -304,7 +305,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             answers[i].text = shuffle[i].name.toString()
             answers[i].setOnClickListener {
                 checkAnswer(answers[i], mediaPlayer, correctAns, answers)
-                replayTxt.isEnabled = true
+                replayTxt.visibility = View.VISIBLE
             }
         }
 
@@ -334,9 +335,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                     answers[i].setBackgroundResource(R.drawable.rounded_item_correct)
                 }
             }
-        }
-        for (i in 0..3){
-            answers[i].isEnabled = false
         }
         stopMusic(mediaPlayer)
     }
