@@ -1,6 +1,7 @@
 package com.example.music.online.ui.fragments
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -26,8 +26,20 @@ import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.ui.adapters.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.*
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.RadarData
+import com.github.mikephil.charting.data.RadarDataSet
+import com.github.mikephil.charting.data.RadarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.color.MaterialColors.getColor
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -35,6 +47,8 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+
 
 @AndroidEntryPoint
 class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragment(),
@@ -56,6 +70,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     private val onlineAccountViewModel: OnlineAccountViewModel by viewModels()
     private val onlineViewViewModel: OnlineViewViewModel by viewModels()
     private val onlineSongViewModel: OnlineSongViewModel by viewModels()
+    private val firebaseViewModel: FirebaseViewModel by viewModels()
 
     private val onlinePlaylistInHomeAdapter: OnlinePlaylistInHomeAdapter by lazy {
         OnlinePlaylistInHomeAdapter(requireContext(), this)
@@ -87,6 +102,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        createChart()
 
         //load all music
         onlineSongViewModel.getAllSongs()
@@ -250,6 +267,76 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.poster_08, "")
         )
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
+    }
+
+    private fun createChart() {
+
+        with(binding.chartView){
+            setNoDataTextColor(Color.WHITE)
+            setNoDataText("Come to see me now...")
+            description.isEnabled = false
+            legend.isEnabled = false
+            centerText = "trending song views".uppercase(Locale.ROOT)
+            setCenterTextColor(Color.WHITE)
+            transparentCircleRadius = 10F
+            setHoleColor(Color.TRANSPARENT)
+        }
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable{
+            override fun run() {
+
+                getDataForChart()
+
+                binding.chartView.callOnClick()
+
+                handler.postDelayed(this, 1000)
+            }
+        }, 1000)
+
+    }
+
+    private fun getDataForChart(){
+        val viewsForChart: ArrayList<Int> = ArrayList()
+        FirebaseFirestore.getInstance()
+            .collection(FireStoreCollection.VIEW)
+            .whereEqualTo("modelName", "Song").limit(10).orderBy("quantity", Query.Direction.DESCENDING)
+            .addSnapshotListener { value, _ ->
+                val views: ArrayList<String> = ArrayList()
+                if (value != null){
+                    for (document in value){
+                        val view = document.toObject(OnlineView::class.java)
+                        viewsForChart.add(view.quantity!!)
+                        views.add(view.modelId!!)
+                    }
+                    firebaseViewModel.getSongFromListSongID(views)
+                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                val dataValue: ArrayList<PieEntry> = ArrayList()
+                                for (i in 0..2){
+                                    dataValue.add(PieEntry(viewsForChart[i].toFloat(), it.data[i].name))
+                                }
+                                val dataSet = PieDataSet(dataValue, "")
+                                dataSet.colors = listOf(Color.parseColor("#F2A65A"), Color.GRAY, Color.parseColor("#B12D77"))
+                                dataSet.valueTextSize = 20F
+                                dataSet.valueTextColor = Color.WHITE
+
+                                val pieData = PieData()
+                                pieData.addDataSet(dataSet)
+
+                                binding.chartView.data = pieData
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     @OptIn(DelicateCoroutinesApi::class)

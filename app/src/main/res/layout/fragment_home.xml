@@ -57,6 +57,7 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:layout_marginBottom="8dp"
             android:textColor="@color/white"
             android:paddingVertical="8dp"
             android:paddingHorizontal="16dp"
@@ -70,6 +71,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:drawableLeftCompat="@drawable/baseline_videogame_asset_24" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:layout_gravity="center"
+            android:id="@+id/chartView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"/>
 
         <LinearLayout
             android:paddingHorizontal="10dp"

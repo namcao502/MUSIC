@@ -45,59 +45,58 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
             return
         }
 
-        if (songs.size <= 9){
-            database
-                .collection(FireStoreCollection.SONG)
-                .whereIn("id", songs)
-                .addSnapshotListener { value, _ ->
-                    val songList: ArrayList<OnlineSong> = ArrayList()
-                    if (value != null) {
-                        for (document in value){
-                            val song = document.toObject(OnlineSong::class.java)
-                            songList.add(song)
-                        }
-                    }
-                    result.invoke(
-                        UiState.Success(songList)
-                    )
-                }
-        }
-        else {
-            val songList: ArrayList<OnlineSong> = ArrayList()
-            for (listID in songs.chunked(9)){
-                database
-                    .collection(FireStoreCollection.SONG)
-                    .whereIn("id", listID)
-                    .addSnapshotListener { value, _ ->
-                        if (value != null) {
-                            for (document in value){
-                                val song = document.toObject(OnlineSong::class.java)
-                                songList.add(song)
-                            }
-                        }
-                    }
-            }
-            result.invoke(
-                UiState.Success(songList)
-            )
-        }
-
-
-//        database
-//            .collection(FireStoreCollection.SONG)
-//            .whereIn("id", songs)
-//            .addSnapshotListener { value, _ ->
-//                val songList: ArrayList<OnlineSong> = ArrayList()
-//                if (value != null) {
-//                    for (document in value){
-//                        val song = document.toObject(OnlineSong::class.java)
-//                        songList.add(song)
+//        if (songs.size <= 9){
+//            database
+//                .collection(FireStoreCollection.SONG)
+//                .whereIn("id", songs)
+//                .addSnapshotListener { value, _ ->
+//                    val songList: ArrayList<OnlineSong> = ArrayList()
+//                    if (value != null) {
+//                        for (document in value){
+//                            val song = document.toObject(OnlineSong::class.java)
+//                            songList.add(song)
+//                        }
 //                    }
+//                    result.invoke(
+//                        UiState.Success(songList)
+//                    )
 //                }
-//                result.invoke(
-//                    UiState.Success(songList)
-//                )
+//        }
+//        else {
+//            val songList: ArrayList<OnlineSong> = ArrayList()
+//            for (listID in songs.chunked(9)){
+//                database
+//                    .collection(FireStoreCollection.SONG)
+//                    .whereIn("id", listID)
+//                    .addSnapshotListener { value, _ ->
+//                        if (value != null) {
+//                            for (document in value){
+//                                val song = document.toObject(OnlineSong::class.java)
+//                                songList.add(song)
+//                            }
+//                        }
+//                    }
 //            }
+//            result.invoke(
+//                UiState.Success(songList)
+//            )
+//        }
+
+        database
+            .collection(FireStoreCollection.SONG)
+            .whereIn("id", songs)
+            .addSnapshotListener { value, _ ->
+                val songList: ArrayList<OnlineSong> = ArrayList()
+                if (value != null) {
+                    for (document in value){
+                        val song = document.toObject(OnlineSong::class.java)
+                        songList.add(song)
+                    }
+                }
+                result.invoke(
+                    UiState.Success(songList)
+                )
+            }
     }
 
     override fun getSongFromSongID(songId: String, result: (UiState<OnlineSong>) -> Unit) {
