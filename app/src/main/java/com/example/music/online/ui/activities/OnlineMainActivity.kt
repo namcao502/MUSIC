@@ -25,6 +25,7 @@ import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.services.OnlineMusicPlayerService
 import com.example.music.online.ui.adapters.CommentDialogAdapter
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
+import com.example.music.online.ui.adapters.OnlineSongAdapter
 import com.example.music.online.ui.fragments.*
 import com.example.music.online.viewModels.*
 import com.example.music.utils.*
@@ -45,7 +46,8 @@ class OnlineMainActivity: AppCompatActivity(),
     HomeFragment.ClickSongFromDetail,
     SearchFragment.ClickSongFromDetail,
     OnlinePlaylistFragment.ClickSongFromDetail,
-    CommentDialogAdapter.ClickAComment{
+    CommentDialogAdapter.ClickAComment,
+    OnlineSongAdapter.ItemSongClickListener{
 
     private lateinit var binding: ActivityOnlineMainBinding
 
@@ -77,6 +79,10 @@ class OnlineMainActivity: AppCompatActivity(),
     private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
         OnlineDialogPlaylistAdapter(this, this) }
 
+    private val onlineSongAdapter: OnlineSongAdapter by lazy {
+        OnlineSongAdapter(this, this, this, onlineArtistViewModel)
+    }
+
     private var doubleBackToExitPressedOnce = false
 
     private lateinit var connectivityObserver: ConnectivityObserver
@@ -84,6 +90,8 @@ class OnlineMainActivity: AppCompatActivity(),
     var handler: Handler = Handler(Looper.getMainLooper())
 
     var handler2: Handler = Handler(Looper.getMainLooper())
+
+    private lateinit var currentSong: OnlineSong
 
     override fun onBackPressed() {
 
@@ -468,6 +476,46 @@ class OnlineMainActivity: AppCompatActivity(),
             bottomDialog.show()
         }
 
+        binding.playerSheet.recommend.setOnClickListener {
+            val dialog = createDialog(R.layout.recommend_song_dialog)
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.songRv)
+            recyclerView.adapter = onlineSongAdapter
+            recyclerView.layoutManager = LinearLayoutManager(dialog.context, RecyclerView.VERTICAL, false)
+
+            onlineArtistViewModel.getAllArtistFromSongID(songList!![songPosition].id!!)
+            onlineArtistViewModel.artistFromSongID.observe(this){ artists ->
+                when(artists){
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        if (artists.data.isNotEmpty()){
+                            val songs = artists.data[0].songs!!
+                            firebaseViewModel.getSongFromListSongID(songs)
+                            firebaseViewModel.songFromID.observe(this){
+                                when(it){
+                                    is UiState.Loading -> {
+
+                                    }
+                                    is UiState.Failure -> {
+
+                                    }
+                                    is UiState.Success -> {
+                                        onlineSongAdapter.setData(it.data)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            dialog.show()
+        }
+
         binding.miniPlayerLayout.setOnTouchListener(object : OnSwipeTouchListener(binding.miniPlayerLayout.context) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
@@ -547,7 +595,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel) {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -586,6 +634,7 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         // Create the AlertDialog object and return it
         builder.create().show()
+
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -902,7 +951,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 override fun run() {
                     if (getConnectionType(this@OnlineMainActivity) == ConnectionType.NOT_CONNECT){
                         AlertDialog
-                            .Builder(this@OnlineMainActivity)
+                            .Builder(this@OnlineMainActivity, R.style.AlertDialogTheme)
                             .setMessage("Switch to offline mode?")
                             .setTitle("No internet connection")
                             .setPositiveButton("Yes") { _, _ ->
@@ -954,7 +1003,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun createDialogForDeletePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel) {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
 
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
@@ -985,7 +1034,7 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun createDialogForRenamePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel) {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         val inflater = this.layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -1045,7 +1094,7 @@ class OnlineMainActivity: AppCompatActivity(),
         if (action == "Edit"){
             if (comment.userId!! == Firebase.auth.currentUser!!.uid){
 
-                val builder = AlertDialog.Builder(this)
+                val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
                 val inflater = layoutInflater
                 val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -1090,7 +1139,7 @@ class OnlineMainActivity: AppCompatActivity(),
             }
         }
         if (action == "Delete"){
-            val builder = AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
             builder.setMessage("Delete this comment?")
                 .setTitle("")
                 .setPositiveButton("Delete") { _, _ ->
@@ -1120,6 +1169,60 @@ class OnlineMainActivity: AppCompatActivity(),
             // Create the AlertDialog object and return it
             builder.create().show()
         }
+    }
+
+    override fun callBackFromMenuSongClick(
+        action: String,
+        songList: List<OnlineSong>,
+        position: Int
+    ) {
+        if (action == "Play"){
+            this.songList = songList
+            this.songPosition = position
+            preparePlayer()
+        }
+        if (action == "Add to playlist"){
+            val dialog = createDialog(R.layout.playlist_dialog)
+
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
+            recyclerView.adapter = onlineDialogPlaylistAdapter
+            recyclerView.layoutManager = LinearLayoutManager(dialog.context)
+
+            FirebaseAuth.getInstance().currentUser?.let {
+                onlinePlaylistViewModel.getAllPlaylistOfUser(it)
+            }
+            onlinePlaylistViewModel.playlist.observe(this){
+                when(it){
+                    is UiState.Loading -> {
+
+                    }
+                    is UiState.Failure -> {
+
+                    }
+                    is UiState.Success -> {
+                        onlineDialogPlaylistAdapter.setData(it.data)
+                    }
+                }
+            }
+
+            val addBtn = dialog.findViewById<FloatingActionButton>(R.id.add_btn)
+
+            addBtn.setOnClickListener {
+                createDialogForAddPlaylist(onlinePlaylistViewModel)
+            }
+            dialog.show()
+            currentSong = songList[position]
+        }
+        if (action == "Delete"){
+//            createDialogForDeleteSong(songList[position])
+            toast("Just for fun, you can't delete :>")
+        }
+    }
+
+    override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
+        this.songList = songList
+        this.songPosition = position
+        preparePlayer()
     }
 
 }

@@ -29,17 +29,12 @@ import com.example.music.utils.*
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.data.RadarData
-import com.github.mikephil.charting.data.RadarDataSet
-import com.github.mikephil.charting.data.RadarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.google.android.material.color.MaterialColors.getColor
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -47,7 +42,6 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
@@ -273,7 +267,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
         with(binding.chartView){
             setNoDataTextColor(Color.WHITE)
-            setNoDataText("Come to see me now...")
+            setNoDataText("Loading top 5 trending songs...")
             description.isEnabled = false
             legend.isEnabled = false
             centerText = "trending song views".uppercase(Locale.ROOT)
@@ -285,11 +279,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{
             override fun run() {
-
                 getDataForChart()
-
                 binding.chartView.callOnClick()
-
                 handler.postDelayed(this, 1000)
             }
         }, 1000)
@@ -320,13 +311,19 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                             }
                             is UiState.Success -> {
                                 val dataValue: ArrayList<PieEntry> = ArrayList()
-                                for (i in 0..2){
+                                for (i in 0..4){
                                     dataValue.add(PieEntry(viewsForChart[i].toFloat(), it.data[i].name))
                                 }
                                 val dataSet = PieDataSet(dataValue, "")
-                                dataSet.colors = listOf(Color.parseColor("#F2A65A"), Color.GRAY, Color.parseColor("#B12D77"))
+                                dataSet.colors = listOf(
+                                    Color.parseColor("#F2A65A"),
+                                    Color.GRAY,
+                                    Color.parseColor("#B12D77"),
+                                    Color.parseColor("#20BF55"),
+                                    Color.parseColor("#01BAEF"))
                                 dataSet.valueTextSize = 20F
                                 dataSet.valueTextColor = Color.WHITE
+                                dataSet.valueFormatter = DefaultValueFormatter(0)
 
                                 val pieData = PieData()
                                 pieData.addDataSet(dataSet)

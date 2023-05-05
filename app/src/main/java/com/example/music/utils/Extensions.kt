@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Fade
@@ -189,7 +190,7 @@ fun Activity.createBottomSheetDialog(layout: Int): BottomSheetDialog {
 
 fun Fragment.createDialogForRenamePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel){
 
-    val builder = AlertDialog.Builder(requireContext())
+    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
     val inflater = this.layoutInflater
     val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -233,7 +234,7 @@ fun Fragment.createDialogForRenamePlaylist(playlist: OnlinePlaylist, onlinePlayl
 
 fun Fragment.createDialogForDeletePlaylist(playlist: OnlinePlaylist, onlinePlaylistViewModel: OnlinePlaylistViewModel){
 
-    val builder = AlertDialog.Builder(requireContext())
+    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
 
     builder.setMessage("Delete ${playlist.name} playlist?")
         .setTitle("")
@@ -265,7 +266,7 @@ fun Fragment.createDialogForDeletePlaylist(playlist: OnlinePlaylist, onlinePlayl
 
 fun Fragment.createDialogForDeleteDiary(diary: OnlineDiary, onlineDiaryViewModel: OnlineDiaryViewModel){
 
-    val builder = AlertDialog.Builder(requireContext())
+    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
 
     builder.setMessage("Delete ${diary.subject} diary?")
         .setTitle("Confirm delete")
@@ -298,7 +299,7 @@ fun Fragment.createDialogForDeleteDiary(diary: OnlineDiary, onlineDiaryViewModel
 
 fun Fragment.createDialogForAddPlaylist(onlinePlaylistViewModel: OnlinePlaylistViewModel){
 
-    val builder = AlertDialog.Builder(requireContext())
+    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
     val inflater = layoutInflater
     val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
