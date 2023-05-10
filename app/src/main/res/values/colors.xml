@@ -29,5 +29,8 @@
     <color name="unSelectedColor">#ffffff</color>
     <color name="selectedColor">#02fbfb</color>
 
+    <color name="nav_player">#182B3A</color>
+    <color name="status_player">#20A4F3</color>
+
 
 </resources>

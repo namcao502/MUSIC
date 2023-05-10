@@ -182,8 +182,8 @@ class OnlineMainActivity: AppCompatActivity(),
 
     private fun setStatusColor(playerIsOn: Boolean){
         if (playerIsOn){
-            window.navigationBarColor = resources.getColor(R.color.black, this.theme)
-            window.statusBarColor = resources.getColor(R.color.black, this.theme)
+            window.navigationBarColor = resources.getColor(R.color.nav_player, this.theme)
+            window.statusBarColor = resources.getColor(R.color.status_player, this.theme)
         }
         else {
             window.navigationBarColor = resources.getColor(R.color.nav_bottom, this.theme)
@@ -772,6 +772,8 @@ class OnlineMainActivity: AppCompatActivity(),
     }
 
     private fun loadUI(){
+
+        Glide.with(this).load(R.drawable.recommend).into(binding.playerSheet.recommend)
 
         binding.playerSheet.titleTxt.text = songList!![songPosition].name
         binding.playerSheet.songSb.max = musicPlayerService!!.getDuration()

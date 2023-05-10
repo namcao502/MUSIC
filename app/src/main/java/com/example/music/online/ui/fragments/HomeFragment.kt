@@ -267,7 +267,7 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
         with(binding.chartView){
             setNoDataTextColor(Color.WHITE)
-            setNoDataText("Loading top 5 trending songs...")
+            setNoDataText("Come here to join us...")
             description.isEnabled = false
             legend.isEnabled = false
             centerText = "trending song views".uppercase(Locale.ROOT)
@@ -276,14 +276,31 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             setHoleColor(Color.TRANSPARENT)
         }
 
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed(object : Runnable{
-            override fun run() {
-                getDataForChart()
-                binding.chartView.callOnClick()
-                handler.postDelayed(this, 1000)
-            }
-        }, 1000)
+        val dataValue = listOf(
+            PieEntry(77F, "Hellcat"),
+            PieEntry(69F, "Arrow"),
+            PieEntry(59F, "Link"),
+            PieEntry(38F, "Energy"),
+            PieEntry(28F, "Nova")
+        )
+
+        val dataSet = PieDataSet(dataValue, "")
+        dataSet.colors = listOf(
+            Color.parseColor("#F2A65A"),
+            Color.GRAY,
+            Color.parseColor("#B12D77"),
+            Color.parseColor("#20BF55"),
+            Color.parseColor("#01BAEF"))
+        dataSet.valueTextSize = 20F
+        dataSet.valueTextColor = Color.WHITE
+        dataSet.valueFormatter = DefaultValueFormatter(0)
+
+        val pieData = PieData()
+        pieData.addDataSet(dataSet)
+
+        binding.chartView.data = pieData
+
+        getDataForChart()
 
     }
 
