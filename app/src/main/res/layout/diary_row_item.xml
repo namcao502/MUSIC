@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
-    android:layout_margin="10dp">
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@drawable/rounded_item"
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:text="@string/datetime"
             android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/title_txt"
             app:layout_constraintTop_toBottomOf="@+id/title_txt" />
 

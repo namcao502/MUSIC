@@ -67,7 +67,8 @@ class OnlinePlaylistAdapter(
             }
 
             binding.titleTxt.text = playlist[position].name
-            binding.countSongTxt.visibility = View.GONE
+            binding.countSongTxt.text = playlist[position].songs!!.size.toString().plus(" song(s)")
+//            binding.countSongTxt.visibility = View.GONE
             binding.countLengthTxt.visibility = View.GONE
         }
 

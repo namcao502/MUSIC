@@ -14,7 +14,7 @@
         <!--        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>-->
         <!-- Customize your theme here. -->
 
-        <item name="android:fontFamily">@font/comfortaa_regular</item>
+        <item name="android:fontFamily">@font/rubik</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme"
