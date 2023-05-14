@@ -51,7 +51,7 @@ class OnlineSongAdapter(
 
             binding.menuBtn.setOnClickListener {
                 PopupMenu(context, binding.menuBtn).apply {
-                    menuInflater.inflate(R.menu.row_song_menu, this.menu)
+                    menuInflater.inflate(R.menu.song_menu, this.menu)
                     setForceShowIcon(true)
                     setOnMenuItemClickListener { menuItem ->
                         itemClickListener.callBackFromMenuSongClick(menuItem.title.toString(), songList, position)
