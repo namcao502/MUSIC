@@ -172,20 +172,9 @@ class MainActivity:
         }
 
         binding.addToPlaylistBtn.setOnClickListener {
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.fragment_playlist)
+            val dialog = createDialog(R.layout.playlist_dialog)
 
-            //set size for dialog
-            val lp = WindowManager.LayoutParams()
-            lp.copyFrom(dialog.window!!.attributes)
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            lp.gravity = Gravity.CENTER
-            dialog.window!!.attributes = lp
-
-            val recyclerView = dialog.findViewById<RecyclerView>(R.id.online_playlist_recyclerView)
+            val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
             recyclerView.adapter = dialogPlaylistAdapter
             recyclerView.layoutManager = LinearLayoutManager(dialog.context)
 
@@ -568,7 +557,7 @@ class MainActivity:
 
     private fun createDialogForRenamePlaylist(playlist: Playlist){
 
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         val inflater = this.layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -598,7 +587,7 @@ class MainActivity:
 
     private fun createDialogForDeletePlaylist(playlist: Playlist){
 
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
             .setPositiveButton("Delete") { _, _ ->

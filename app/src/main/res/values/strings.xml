@@ -78,4 +78,6 @@
     <string name="tracks_for_you">tracks for you</string>
     <string name="rename">Rename</string>
     <string name="recommend_for_you">recommend for you</string>
+    <string name="see_more">More... </string>
+    <string name="collapse">Collapse</string>
 </resources>

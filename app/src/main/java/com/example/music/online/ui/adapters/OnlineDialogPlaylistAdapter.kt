@@ -48,7 +48,12 @@ class OnlineDialogPlaylistAdapter(
                 }
             }
             binding.titleTxt.text = playlist[position].name
-            binding.countSongTxt.visibility = View.GONE
+            if (playlist[position].songs!!.size > 1){
+                binding.countSongTxt.text = playlist[position].songs!!.size.toString().plus(" songs")
+            }
+            else {
+                binding.countSongTxt.text = playlist[position].songs!!.size.toString().plus(" song")
+            }
             binding.countLengthTxt.visibility = View.GONE
         }
     }

@@ -109,7 +109,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
     private fun createDialogForAddToPlaylist() {
 
-        val dialog = createDialog(R.layout.fragment_playlist)
+        val dialog = createDialog(R.layout.playlist_dialog)
 
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.playlist_recyclerView)
         recyclerView.adapter = dialogPlaylistAdapter
@@ -193,7 +193,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
 
     private fun createDialogForRenamePlaylist(playlist: Playlist){
 
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -222,7 +222,7 @@ class SongFragment(private val songFromAdapterClick: SongFromAdapterClick)
     }
 
     private fun createDialogForDeletePlaylist(playlist: Playlist){
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
             .setPositiveButton("Delete") { _, _ ->

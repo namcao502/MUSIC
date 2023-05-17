@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
@@ -261,6 +262,62 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
             SlideModel(R.drawable.poster_08, "")
         )
         binding.sliderImg.setImageList(imageList, ScaleTypes.FIT)
+
+        binding.playListSeeAll.setOnClickListener {
+            if (binding.playListSeeAll.text.toString() == getString(R.string.collapse)){
+                binding.playListSeeAll.text = getString(R.string.see_more)
+                binding.playlistRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+            else {
+                binding.playListSeeAll.text = getString(R.string.collapse)
+                binding.playlistRv.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+            }
+        }
+
+        binding.artistSeeAll.setOnClickListener {
+            if (binding.artistSeeAll.text.toString() == getString(R.string.collapse)){
+                binding.artistSeeAll.text = getString(R.string.see_more)
+                binding.artistRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+            else {
+                binding.artistSeeAll.text = getString(R.string.collapse)
+                binding.artistRv.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+            }
+        }
+
+        binding.albumSeeAll.setOnClickListener {
+            if (binding.albumSeeAll.text.toString() == getString(R.string.collapse)){
+                binding.albumSeeAll.text = getString(R.string.see_more)
+                binding.albumRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+            else {
+                binding.albumSeeAll.text = getString(R.string.collapse)
+                binding.albumRv.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+            }
+        }
+
+        binding.genreSeeAll.setOnClickListener {
+            if (binding.genreSeeAll.text.toString() == getString(R.string.collapse)){
+                binding.genreSeeAll.text = getString(R.string.see_more)
+                binding.genreRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+            else {
+                binding.genreSeeAll.text = getString(R.string.collapse)
+                binding.genreRv.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+            }
+        }
+
+        binding.countrySeeAll.setOnClickListener {
+            if (binding.countrySeeAll.text.toString() == getString(R.string.collapse)){
+                binding.countrySeeAll.text = getString(R.string.see_more)
+                binding.countryRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            }
+            else {
+                binding.countrySeeAll.text = getString(R.string.collapse)
+                binding.countryRv.layoutManager = GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
+            }
+        }
+
     }
 
     private fun createChart() {

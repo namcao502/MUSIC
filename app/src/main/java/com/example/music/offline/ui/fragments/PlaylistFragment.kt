@@ -83,7 +83,7 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
 
     private fun createDialogForAddPlaylist(){
 
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -112,7 +112,7 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
 
     private fun createDialogForRenamePlaylist(playlist: Playlist){
 
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.menu_playlist_dialog, null)
 
@@ -143,7 +143,7 @@ class PlaylistFragment(private val songInPlaylistClick: SongInPlaylistAdapter.It
 
     private fun createDialogForDeletePlaylist(playlist: Playlist){
 
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
 
         builder.setMessage("Delete ${playlist.name} playlist?")
             .setTitle("")
