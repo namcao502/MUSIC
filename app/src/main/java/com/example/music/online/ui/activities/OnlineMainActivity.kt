@@ -285,8 +285,11 @@ class OnlineMainActivity: AppCompatActivity(),
                 val contentTxt = dialog.findViewById<TextView>(R.id.content_txt)!!
                 val saveBtn = dialog.findViewById<ImageButton>(R.id.save_btn)!!
                 val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)!!
+                val deleteBtn = dialog.findViewById<ImageButton>(R.id.delete_btn)!!
                 val songArtistTxt = dialog.findViewById<TextView>(R.id.songArtist_txt)!!
                 val dateTimeTxt = dialog.findViewById<TextView>(R.id.datetime_txt)!!
+
+                deleteBtn.visibility = View.GONE
 
                 songArtistTxt.text =
                     binding.miniSongTitle.text.toString()
