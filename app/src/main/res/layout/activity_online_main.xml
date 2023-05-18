@@ -33,7 +33,7 @@
         android:id="@+id/mini_player_layout"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/gradient_item_background"
+        android:background="@drawable/gradient_mini_player"
         app:layout_constraintBottom_toTopOf="@+id/bottom_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

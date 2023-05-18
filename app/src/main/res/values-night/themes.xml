@@ -32,11 +32,15 @@
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">#CF2121</item>
+        <item name="android:textColor">#00BCD4</item>
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">#4DCC36</item>
+        <item name="android:textColor">#00BCD4</item>
+    </style>
+
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:backgroundTint">#728F72</item>
     </style>
 
 

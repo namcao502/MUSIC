@@ -80,4 +80,9 @@
     <string name="recommend_for_you">recommend for you</string>
     <string name="see_more">More... </string>
     <string name="collapse">Collapse</string>
+    <string name="your_own_playlist">Your own playlist</string>
+    <string name="your_own_diary">Your own diary</string>
+    <string name="one_must_know_oneself">One must know oneself</string>
+    <string name="welcome_to_music">Welcome to MUSIC</string>
+    <string name="i_do_not_seek_i_find">We do not seek. We find</string>
 </resources>

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.*
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -522,11 +523,17 @@ class OnlineMainActivity: AppCompatActivity(),
         binding.miniPlayerLayout.setOnTouchListener(object : OnSwipeTouchListener(binding.miniPlayerLayout.context) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                next()
+                handler.removeMessages(0)
+                handler2.removeMessages(0)
+                stopService()
+                binding.miniPlayerLayout.fadeVisibility(View.GONE)
             }
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                previous()
+                handler.removeMessages(0)
+                handler2.removeMessages(0)
+                stopService()
+                binding.miniPlayerLayout.fadeVisibility(View.GONE)
             }
             override fun onSwipeUp() {
                 super.onSwipeUp()

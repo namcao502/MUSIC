@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginEnd="5dp"
+    android:layout_margin="2dp"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -10,8 +10,8 @@
     <androidx.cardview.widget.CardView
         app:cardCornerRadius="20dp"
         android:id="@+id/card_img"
-        android:layout_width="160dp"
-        android:layout_height="160dp">
+        android:layout_width="167dp"
+        android:layout_height="167dp">
 
         <ImageView
             android:id="@+id/item_img"
@@ -24,7 +24,6 @@
             android:contentDescription="@string/todo" />
 
     </androidx.cardview.widget.CardView>
-
 
     <TextView
         android:singleLine="true"

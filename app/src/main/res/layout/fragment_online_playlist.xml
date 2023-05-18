@@ -18,6 +18,17 @@
         tools:context=".online.ui.fragments.OnlinePlaylistFragment">
 
         <TextView
+            android:padding="10dp"
+            android:fontFamily="@font/orbitron"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="@string/your_own_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
             android:textStyle="italic|bold"
             android:gravity="center"
             android:layout_gravity="center_vertical"

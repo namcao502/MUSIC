@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -50,7 +51,8 @@ class OnlineSongAdapter(
             }
 
             binding.menuBtn.setOnClickListener {
-                PopupMenu(context, binding.menuBtn).apply {
+                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
+                PopupMenu(wrapper, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.song_menu, this.menu)
                     setForceShowIcon(true)
                     setOnMenuItemClickListener { menuItem ->

@@ -18,6 +18,17 @@
         android:layout_height="match_parent"
         tools:context=".online.ui.fragments.OnlineDiaryFragment">
 
+        <TextView
+            android:padding="10dp"
+            android:fontFamily="@font/orbitron"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="@string/your_own_diary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <androidx.appcompat.widget.SearchView
             android:layout_gravity="center"
             android:layout_margin="16dp"

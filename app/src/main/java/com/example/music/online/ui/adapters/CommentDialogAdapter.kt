@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.music.R
-import com.example.music.databinding.CommentRowItemBinding
 import com.example.music.databinding.OnlinePlaylistRowItemBinding
 import com.example.music.online.data.models.OnlineComment
+
 
 class CommentDialogAdapter(val context: Context, private val clickAComment: ClickAComment)
     : RecyclerView.Adapter<CommentDialogAdapter.ViewHolder>() {
@@ -30,7 +31,8 @@ class CommentDialogAdapter(val context: Context, private val clickAComment: Clic
         with(holder){
 
             binding.menuBtn.setOnClickListener {
-                PopupMenu(context, binding.menuBtn).apply {
+                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
+                PopupMenu(wrapper, binding.menuBtn).apply {
                     menuInflater.inflate(R.menu.row_comment_menu, this.menu)
                     setOnMenuItemClickListener { menuItem ->
                         clickAComment.callBackFromMenuClickComment(menuItem.title.toString(), commentList[position])
