@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -245,36 +246,45 @@ class DetailCollectionFragment(
     }
 
     private fun deleteSongInPlaylistForUser(song: OnlineSong, playlist: OnlinePlaylist, user: FirebaseUser){
-        playlistViewModel.deleteSongInPlaylist(song, playlist, user)
-        playlistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner){ result ->
-            when (result) {
-                is UiState.Loading -> {
 
-                }
-                is UiState.Failure -> {
+        val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+        builder.setMessage("Delete ${song.name} in ${playlist.name}?")
+            .setTitle("Confirm delete")
+            .setPositiveButton("Delete") { _, _ ->
 
-                }
-                is UiState.Success -> {
-                    toast(result.data)
-                    firebaseViewModel.getSongFromListSongID(songs)
-                    firebaseViewModel.songFromID.observe(viewLifecycleOwner){
-                        when(it){
-                            is UiState.Loading -> {
+                playlistViewModel.deleteSongInPlaylist(song, playlist, user)
+                playlistViewModel.deleteSongInPlaylist.observe(viewLifecycleOwner){ result ->
+                    when (result) {
+                        is UiState.Loading -> {
 
-                            }
-                            is UiState.Failure -> {
+                        }
+                        is UiState.Failure -> {
 
-                            }
-                            is UiState.Success -> {
-                                detailCollectionAdapter.setData(it.data)
+                        }
+                        is UiState.Success -> {
+                            toast(result.data)
+                            firebaseViewModel.getSongFromListSongID(songs)
+                            firebaseViewModel.songFromID.observe(viewLifecycleOwner){
+                                when(it){
+                                    is UiState.Loading -> {
+
+                                    }
+                                    is UiState.Failure -> {
+
+                                    }
+                                    is UiState.Success -> {
+                                        detailCollectionAdapter.setData(it.data)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+            .setNegativeButton("Cancel") { _, _ ->
+                // User cancelled the dialog
+            }
+        // Create the AlertDialog object and return it
+        builder.create().show()
     }
-
-
-
 }

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.*
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -806,20 +805,26 @@ class OnlineMainActivity: AppCompatActivity(),
 
                 }
                 is UiState.Success -> {
-                    var text = ""
-                    for (x in it.data){
-                        text += x.name.plus(", ")
+                    if (it.data.isNotEmpty()){
+                        var text = ""
+                        for (x in it.data){
+                            text += x.name.plus(", ")
+                        }
+                        text = text.dropLast(2)
+                        currentArtists = text
+                        PlayerState.artistText = text
+                        musicPlayerService!!.recreateNotification(text)
+                        binding.miniSongArtist.text = text
+                        binding.playerSheet.artistTxt.text = text
+
+                        //save song id for recent
+                        Recent.IDs = it.data[0].songs!!
                     }
-                    text = text.dropLast(2)
-                    currentArtists = text
-                    PlayerState.artistText = text
-                    musicPlayerService!!.recreateNotification(text)
-                    binding.miniSongArtist.text = text
-                    binding.playerSheet.artistTxt.text = text
                 }
             }
         }
 
+        //update view
         onlineViewViewModel.updateView(songList!![songPosition].id!!)
         onlineViewViewModel.updateView.observe(this){
             when(it) {

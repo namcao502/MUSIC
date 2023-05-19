@@ -49,3 +49,8 @@ object ConnectionType{
     const val BACK_ONLINE = "Internet access"
 }
 
+object Recent {
+    const val SHARE_REF = "OWN_REF"
+    var IDs: List<String> = emptyList()
+}
+

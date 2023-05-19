@@ -83,7 +83,7 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 //        }
 
         database
-            .collection(FireStoreCollection.SONG)
+            .collection(FireStoreCollection.SONG).limit(10)
             .whereIn("id", songs)
             .addSnapshotListener { value, _ ->
                 val songList: ArrayList<OnlineSong> = ArrayList()

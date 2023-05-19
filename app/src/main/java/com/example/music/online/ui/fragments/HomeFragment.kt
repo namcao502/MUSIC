@@ -1,6 +1,8 @@
 package com.example.music.online.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -31,11 +33,12 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -52,7 +55,9 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     OnlineGenreAdapter.ClickAGenre,
     OnlineAlbumAdapter.ClickAnAlbum,
     OnlineCountryAdapter.ClickACountry,
-    DetailCollectionFragment.ClickASongInDetail {
+    DetailCollectionFragment.ClickASongInDetail,
+    OnlineSongAdapter.ItemSongClickListener,
+    OnlineDialogPlaylistAdapter.ItemClickListener{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -87,7 +92,19 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         OnlineCountryAdapter(requireContext(), this)
     }
 
+    private val onlineSongAdapter: OnlineSongAdapter by lazy {
+        OnlineSongAdapter(requireContext(), this, this, onlineArtistViewModel)
+    }
+
+    private val onlineDialogPlaylistAdapter: OnlineDialogPlaylistAdapter by lazy {
+        OnlineDialogPlaylistAdapter(requireContext(), this)
+    }
+
     var songs: List<OnlineSong> = emptyList()
+
+    private var sharedPreference: SharedPreferences? = null
+
+    private lateinit var currentSong: OnlineSong
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -97,6 +114,56 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //load data for recent
+        with(binding.recentRv){
+            adapter = onlineSongAdapter
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
+        sharedPreference = requireActivity().getSharedPreferences(Recent.SHARE_REF, Context.MODE_PRIVATE)
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed(object : Runnable{
+            override fun run() {
+                //Set the values
+                if (Recent.IDs.isNotEmpty()){
+                    val gson = Gson()
+                    val jsonTextIn = gson.toJson(Recent.IDs)
+                    val editor = sharedPreference!!.edit()
+                    editor.putString("listID", jsonTextIn)
+                    editor.apply()
+                }
+
+                //Retrieve the values
+                val jsonTextOut = sharedPreference!!.getString("listID", "")
+                if (jsonTextOut != ""){
+                    val gson = Gson()
+                    val idList = gson.fromJson(jsonTextOut, Array<String>::class.java).toList()
+                    firebaseViewModel.getSongFromListSongIDForRecent(idList)
+                    firebaseViewModel.songFromIDRecent.observe(viewLifecycleOwner){
+                        when(it){
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                onlineSongAdapter.setData(it.data)
+                            }
+                        }
+                    }
+                    binding.recentLayout.visibility = View.VISIBLE
+                }
+                else {
+                    binding.recentLayout.visibility = View.GONE
+                }
+
+                handler.postDelayed(this, 5000)
+            }
+        }, 1000)
+
+
 
         createChart()
 
@@ -602,6 +669,60 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
     override fun callBackFromCountryClick(country: OnlineCountry) {
         sendDataToDetailFragment(country.name!!, country.songs!!, country.imgFilePath!!)
         updateViewForModel(country.id!!, onlineViewViewModel)
+    }
+
+    override fun callBackFromMenuSongClick(
+        action: String,
+        songList: List<OnlineSong>,
+        position: Int
+    ) {
+        if (action == "Play"){
+            clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+        }
+        if (action == "Add to playlist"){
+            createDialogForAddToPlaylist(onlinePlaylistViewModel, onlineDialogPlaylistAdapter)
+            currentSong = songList[position]
+        }
+        if (action == "Delete"){
+//            createDialogForDeleteSong(songList[position])
+            toast("Just for fun, you can't delete :>")
+        }
+    }
+
+    override fun callBackFromSongClick(songList: List<OnlineSong>, position: Int) {
+        clickSongFromDetail.callBackFromClickSongInDetail(songList, position)
+    }
+
+    override fun onMenuClick(action: String, playlist: OnlinePlaylist) {
+        if (action == "Rename"){
+            createDialogForRenamePlaylist(playlist, onlinePlaylistViewModel)
+        }
+        if (action == "Delete"){
+            createDialogForDeletePlaylist(playlist, onlinePlaylistViewModel)
+        }
+    }
+
+    override fun onItemPlaylistClick(playlist: OnlinePlaylist) {
+        //add song to selected playlist
+        val songSelected = currentSong
+
+        FirebaseAuth.getInstance().currentUser?.let {
+            onlineSongViewModel.addSongToPlaylist(songSelected, playlist, it)
+        }
+
+        onlineSongViewModel.addSongInPlaylist.observe(viewLifecycleOwner) {
+            when (it) {
+                is UiState.Loading -> {
+
+                }
+                is UiState.Failure -> {
+
+                }
+                is UiState.Success -> {
+                    toast("Song ${songSelected.name} added to ${playlist.name} playlist")
+                }
+            }
+        }
     }
 
 }
