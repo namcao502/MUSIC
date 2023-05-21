@@ -38,6 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 
+
 @AndroidEntryPoint
 class UserFragment: Fragment() {
 
@@ -69,53 +70,43 @@ class UserFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signOutBtn.setOnClickListener {
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed(object : Runnable {
-                override fun run() {
-                    if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
-                        AlertDialog
-                            .Builder(requireContext())
-                            .setMessage("Switch to offline mode?")
-                            .setTitle("No internet connection")
-                            .setPositiveButton("Yes") { _, _ ->
-                                startActivity(Intent(requireContext(), MainActivity::class.java))
-                            }
-                            .setNegativeButton("Retry") { _, _ ->
-                                handler.postDelayed(this, 100)
-                            }
-                            .create()
-                            .show()
+            if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
+                AlertDialog
+                    .Builder(requireContext())
+                    .setMessage("Switch to offline mode?")
+                    .setTitle("No internet connection")
+                    .setPositiveButton("Yes") { _, _ ->
+                        startActivity(Intent(requireContext(), MainActivity::class.java))
                     }
-                    else {
-                        // call requestIdToken as follows
-                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(getString(R.string.default_web_client_id))
-                            .requestEmail()
-                            .build()
-                        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-
-                        mGoogleSignInClient.signOut()
-                            .addOnCompleteListener {
-                                firebaseAuthViewModel.signOut()
-                                (activity as OnlineMainActivity).stopService()
-                                (activity as OnlineMainActivity).handler.removeMessages(0)
-                                (activity as OnlineMainActivity).handler2.removeMessages(0)
-                                (activity as OnlineMainActivity).finish()
-                                startActivity(Intent(requireContext(), LOGActivity::class.java))
-                            }
-                            .addOnFailureListener {
-                                firebaseAuthViewModel.signOut()
-                                (activity as OnlineMainActivity).stopService()
-                                (activity as OnlineMainActivity).handler.removeMessages(0)
-                                (activity as OnlineMainActivity).handler2.removeMessages(0)
-                                (activity as OnlineMainActivity).finish()
-                                startActivity(Intent(requireContext(), LOGActivity::class.java))
-                            }
+                    .setNegativeButton("Retry") { _, _ ->
+                        binding.signOutBtn.performClick()
                     }
-                }
-            }, 500)
+                    .create()
+                    .show()
+            }
+            else {
+                // call requestIdToken as follows
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+                mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
+                firebaseAuthViewModel.signOut()
 
+                (activity as OnlineMainActivity).stopService()
+                (activity as OnlineMainActivity).handler.removeMessages(0)
+                (activity as OnlineMainActivity).handler2.removeMessages(0)
+                (activity as OnlineMainActivity).finish()
+
+                mGoogleSignInClient.signOut()
+                    .addOnSuccessListener {
+                        startActivity(Intent(requireContext(), LOGActivity::class.java))
+                    }
+                    .addOnFailureListener {
+                        startActivity(Intent(requireContext(), LOGActivity::class.java))
+                    }
+            }
         }
 
         binding.libraryBtn.setOnClickListener {

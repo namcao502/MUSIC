@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.example.music.online.data.models.OnlineDiary
 import com.example.music.online.ui.adapters.OnlineDiaryAdapter
 import com.example.music.online.viewModels.OnlineDiaryViewModel
 import com.example.music.utils.*
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -146,8 +149,35 @@ class OnlineDiaryFragment : Fragment(), OnlineDiaryAdapter.ClickADiary {
         }
 
         deleteBtn.setOnClickListener {
-            createDialogForDeleteDiary(diary, onlineDiaryViewModel)
-            dialog.cancel()
+            val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+            builder.setMessage("Delete ${diary.subject} diary?")
+                .setTitle("Confirm delete")
+                .setPositiveButton("Delete") { _, _ ->
+
+                    FirebaseAuth.getInstance().currentUser?.let {
+                        onlineDiaryViewModel.deleteDiary(diary, it)
+                    }
+                    onlineDiaryViewModel.deleteDiary.observe(this) {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Failure -> {
+
+                            }
+                            is UiState.Success -> {
+                                Toast.makeText(requireContext(), it.data, Toast.LENGTH_SHORT).show()
+                                builder.create().cancel()
+                                dialog.cancel()
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    // User cancelled the dialog
+                }
+            // Create the AlertDialog object and return it
+            builder.create().show()
         }
 
         saveBtn.setOnClickListener {

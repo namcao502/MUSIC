@@ -106,6 +106,8 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
 
     private lateinit var currentSong: OnlineSong
 
+    var handler: Handler = Handler(Looper.getMainLooper())
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -122,7 +124,6 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
         }
         sharedPreference = requireActivity().getSharedPreferences(Recent.SHARE_REF, Context.MODE_PRIVATE)
 
-        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable{
             override fun run() {
                 //Set the values
@@ -139,31 +140,35 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                 if (jsonTextOut != ""){
                     val gson = Gson()
                     val idList = gson.fromJson(jsonTextOut, Array<String>::class.java).toList()
-                    firebaseViewModel.getSongFromListSongIDForRecent(idList)
-                    firebaseViewModel.songFromIDRecent.observe(viewLifecycleOwner){
-                        when(it){
-                            is UiState.Loading -> {
+                    if (getView() != null){
+                        firebaseViewModel.getSongFromListSongIDForRecent(idList)
+                        firebaseViewModel.songFromIDRecent.observe(viewLifecycleOwner){
+                            when(it){
+                                is UiState.Loading -> {
 
-                            }
-                            is UiState.Failure -> {
+                                }
+                                is UiState.Failure -> {
 
-                            }
-                            is UiState.Success -> {
-                                onlineSongAdapter.setData(it.data)
+                                }
+                                is UiState.Success -> {
+                                    onlineSongAdapter.setData(it.data)
+                                }
                             }
                         }
                     }
-                    binding.recentLayout.visibility = View.VISIBLE
+                    if (_binding != null){
+                        binding.recentLayout.visibility = View.VISIBLE
+                    }
                 }
                 else {
-                    binding.recentLayout.visibility = View.GONE
+                    if (_binding != null){
+                        binding.recentLayout.visibility = View.GONE
+                    }
                 }
 
                 handler.postDelayed(this, 5000)
             }
         }, 1000)
-
-
 
         createChart()
 
@@ -469,7 +474,9 @@ class HomeFragment(private val clickSongFromDetail: ClickSongFromDetail): Fragme
                                 val pieData = PieData()
                                 pieData.addDataSet(dataSet)
 
-                                binding.chartView.data = pieData
+                                if (_binding != null){
+                                    binding.chartView.data = pieData
+                                }
                             }
                         }
                     }
