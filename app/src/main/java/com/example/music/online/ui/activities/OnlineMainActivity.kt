@@ -152,7 +152,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     ConnectivityObserver.Status.Available -> {
                         runOnUiThread {
                             with(binding.internetTxt){
-                                setBackgroundColor(Color.BLUE)
+                                setBackgroundColor(Color.GREEN)
                                 text = ConnectionType.BACK_ONLINE
                                 visibility = View.VISIBLE
                                 Handler(Looper.getMainLooper()).postDelayed({
