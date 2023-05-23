@@ -1,6 +1,7 @@
 package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.TimePickerDialog
 import android.content.*
 import android.graphics.Color
 import android.os.*
@@ -38,6 +39,7 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @AndroidEntryPoint
 class OnlineMainActivity: AppCompatActivity(),
@@ -92,6 +94,9 @@ class OnlineMainActivity: AppCompatActivity(),
     var handler2: Handler = Handler(Looper.getMainLooper())
 
     private lateinit var currentSong: OnlineSong
+
+    //Declare timer
+    var cTimer: CountDownTimer? = null
 
     override fun onBackPressed() {
 
@@ -277,6 +282,71 @@ class OnlineMainActivity: AppCompatActivity(),
             val downloadBtn = bottomDialog.findViewById<LinearLayout>(R.id.download_layout)
             val playStateBtn = bottomDialog.findViewById<LinearLayout>(R.id.play_state_layout)
             val playStateTxt = bottomDialog.findViewById<TextView>(R.id.play_state_txt)
+            val timer = bottomDialog.findViewById<LinearLayout>(R.id.timer_layout)
+
+            timer!!.setOnClickListener {
+
+                val dialog = createDialog(R.layout.timer_dialog)
+                val timePicker = dialog.findViewById<TimePicker>(R.id.timePicker)
+                val setTimeBtn = dialog.findViewById<Button>(R.id.setTime_btn)
+                val cancelBtn = dialog.findViewById<Button>(R.id.cancel_btn)
+
+                timePicker.setIs24HourView(true)
+                timePicker.hour = 0
+                timePicker.minute = 0
+
+                cancelBtn.setOnClickListener {
+                    dialog.cancel()
+                }
+
+                setTimeBtn.setOnClickListener {
+                    val hour = timePicker.hour
+                    val minute = timePicker.minute
+                    if(cTimer != null){
+                        cTimer!!.cancel()
+                    }
+                    val time = hour * 60 * 60 * 1000 + minute * 60 * 1000
+                    cTimer = object : CountDownTimer(time.toLong(), 1000) {
+                        override fun onTick(millisUntilFinished: Long) {}
+                        override fun onFinish() {
+                            handler.removeMessages(0)
+                            handler2.removeMessages(0)
+                            stopService()
+                            if (PlayerState.isOn){
+                                PlayerState.isOn = false
+                                binding.playerSheet.playerLayout.fadeVisibility(View.GONE)
+                                binding.bottomCard.fadeVisibility(View.VISIBLE)
+                                setStatusColor(false)
+                                return
+                            }
+                            bottomDialog.dismiss()
+                        }
+                    }
+                    cTimer!!.start()
+                    toast("We will be silent about $hour hour(s) and $minute minute(s)!")
+                    dialog.cancel()
+                }
+                dialog.show()
+            }
+
+            timer.setOnLongClickListener {
+                val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+
+                builder.setMessage("Do you want to cancel this timer?")
+                    .setTitle("Confirm cancel")
+                    .setPositiveButton("Cancel") { _, _ ->
+                        if(cTimer != null){
+                            cTimer!!.cancel()
+                        }
+                        toast("Timer has been canceled!")
+                    }
+                    .setNegativeButton("No") { _, _ ->
+                        // User cancelled the dialog
+                    }
+                // Create the AlertDialog object and return it
+                builder.create().show()
+                true
+            }
 
             diaryBtn!!.setOnClickListener {
                 val dialog = createDialog(R.layout.diary_dialog)

@@ -45,5 +45,10 @@
         <item name="android:backgroundTint">#728F72</item>
     </style>
 
+    <style name="TimePickerStyle" parent="@android:style/Widget.Material.TimePicker">
+        <item name="android:textColorPrimary">#00BCD4</item>
+        <item name="android:textColorSecondary">#00BCD4</item>
+        <item name="android:colorButtonNormal">#00BCD4</item>
+    </style>
 
 </resources>

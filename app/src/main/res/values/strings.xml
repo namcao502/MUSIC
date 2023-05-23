@@ -86,4 +86,6 @@
     <string name="welcome_to_music">Welcome to MUSIC</string>
     <string name="i_do_not_seek_i_find">We do not seek. We find</string>
     <string name="recent">Recent &amp; for you</string>
+    <string name="timer">Timer</string>
+    <string name="set_time">Set time</string>
 </resources>
