@@ -1,10 +1,13 @@
 package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.TimePickerDialog
+import android.app.DownloadManager
 import android.content.*
 import android.graphics.Color
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.*
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -36,6 +39,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -283,6 +287,71 @@ class OnlineMainActivity: AppCompatActivity(),
             val playStateBtn = bottomDialog.findViewById<LinearLayout>(R.id.play_state_layout)
             val playStateTxt = bottomDialog.findViewById<TextView>(R.id.play_state_txt)
             val timer = bottomDialog.findViewById<LinearLayout>(R.id.timer_layout)
+            val ringtone = bottomDialog.findViewById<LinearLayout>(R.id.ringtone_layout)
+
+            ringtone!!.setOnClickListener {
+                val builder = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+
+                builder.setMessage("Do you want to set this track as your ringtone?")
+                    .setTitle("Confirm set ringtone")
+                    .setPositiveButton("Agree") { _, _ ->
+
+                        val fileName = binding.miniSongTitle.text.toString().plus(" - ") +
+                                binding.miniSongArtist.text.toString().plus(".mp3")
+
+                        val file = File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_MUSIC).toString() + "/$fileName"
+                        )
+
+                        if (file.exists()){
+
+                            //We now create a new content values object to store all the information
+                            //about the ringtone.
+                            val values = ContentValues()
+                            values.put(MediaStore.MediaColumns.DATA, file.absolutePath)
+                            values.put(MediaStore.MediaColumns.TITLE, file.name)
+                            values.put(MediaStore.MediaColumns.SIZE, file.length())
+                            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+                            values.put(MediaStore.Audio.AudioColumns.IS_RINGTONE, true)
+                            values.put(MediaStore.Audio.AudioColumns.IS_NOTIFICATION, false)
+                            values.put(MediaStore.Audio.AudioColumns.IS_ALARM, false)
+                            values.put(MediaStore.Audio.AudioColumns.IS_MUSIC, false)
+
+                            //Work with the content resolver now
+                            //First get the file we may have added previously and delete it,
+                            //otherwise we will fill up the ringtone manager with a bunch of copies over time.
+
+                            val uri = MediaStore.Audio.Media.getContentUriForPath(file.absolutePath)
+                            if (uri != null) {
+//                                this.contentResolver.delete(
+//                                    uri,
+//                                    null,
+//                                    null,
+//                                )
+                                //Ok now insert it
+                                val newUri: Uri? = this.contentResolver.insert(uri, values)
+
+                                //Ok now set the ringtone from the content manager's uri, NOT the file's uri
+                                RingtoneManager.setActualDefaultRingtoneUri(
+                                    this,
+                                    RingtoneManager.TYPE_RINGTONE,
+                                    newUri
+                                )
+
+                                toast("This track has been set as your ringtone!")
+                            }
+                        }
+                        else {
+                            toast("Please download this song first!")
+                        }
+
+                    }
+                    .setNegativeButton("No") { _, _ ->
+                        // User cancelled the dialog
+                    }
+                // Create the AlertDialog object and return it
+                builder.create().show()
+            }
 
             timer!!.setOnClickListener {
 
@@ -323,7 +392,20 @@ class OnlineMainActivity: AppCompatActivity(),
                         }
                     }
                     cTimer!!.start()
-                    toast("We will be silent about $hour hour(s) and $minute minute(s)!")
+
+                    val hourText = if (hour > 1){
+                        "hour"
+                    } else {
+                        "hours"
+                    }
+
+                    val minuteText = if (hour > 1){
+                        "minute"
+                    } else {
+                        "minutes"
+                    }
+
+                    toast("We will be silent about $hour $hourText and $minute $minuteText!")
                     dialog.cancel()
                 }
                 dialog.show()
@@ -513,21 +595,15 @@ class OnlineMainActivity: AppCompatActivity(),
             }
 
             downloadBtn!!.setOnClickListener {
-                firebaseViewModel.downloadSingleSongFile(this,
-                    songList!![songPosition].name!!.plus(" - $currentArtists"),
-                    songList!![songPosition].filePath!!){
-                    when(it){
-                        is UiState.Loading -> {
-
-                        }
-                        is UiState.Failure -> {
-
-                        }
-                        is UiState.Success -> {
-                            toast(it.data)
-                        }
-                    }
-                }
+                val manager: DownloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+                val uri = Uri.parse(songList!![songPosition].filePath)
+                val request = DownloadManager.Request(uri)
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,
+                    binding.miniSongTitle.text.toString().plus(" - ") +
+                    binding.miniSongArtist.text.toString() + ".mp3")
+                manager.enqueue(request)
+                toast("Downloading...")
             }
 
             playStateBtn!!.setOnClickListener {

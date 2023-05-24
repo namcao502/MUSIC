@@ -88,4 +88,5 @@
     <string name="recent">Recent &amp; for you</string>
     <string name="timer">Timer</string>
     <string name="set_time">Set time</string>
+    <string name="set_this_track_as_ringtone">Set this track as ringtone</string>
 </resources>
