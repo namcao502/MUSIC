@@ -2,6 +2,7 @@ package com.example.music.online.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.music.R
 import com.example.music.databinding.SongRowItemBinding
 import com.example.music.online.data.models.OnlineSong
 import com.example.music.online.viewModels.OnlineArtistViewModel
+import com.example.music.utils.PopupMenuCustomLayout
 import com.example.music.utils.UiState
 class DetailCollectionAdapter(
     private val context: Context,
@@ -37,7 +39,7 @@ class DetailCollectionAdapter(
         return songList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         with(holder){
             itemView.setOnClickListener {
@@ -45,27 +47,45 @@ class DetailCollectionAdapter(
             }
 
             binding.menuBtn.setOnClickListener {
-                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
-                PopupMenu(wrapper, binding.menuBtn).apply {
-                    menuInflater.inflate(R.menu.row_song_menu, this.menu)
-                    setOnMenuItemClickListener { menuItem ->
-                        clickASong.callBackFromMenuDetailClick(menuItem.title.toString(), songList, position)
-                        true
-                    }
-                    // Showing the popup menu
-                    try {
-                        val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-                        fieldMPopup.isAccessible = true
-                        val mPopup = fieldMPopup.get(this)
-                        mPopup.javaClass
-                            .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                            .invoke(mPopup, true)
-                    } catch (_: Exception){
-
-                    } finally {
-                        show()
-                    }
-                }
+                val popupMenu = PopupMenuCustomLayout(
+                    context, R.layout.custom_popup_menu_song_detail,
+                    object : PopupMenuCustomLayout.PopupMenuCustomOnClickListener {
+                        override fun onClick(menuItemId: Int) {
+                            when (menuItemId) {
+                                R.id.popup_menu_custom_item_a -> {
+                                    clickASong.callBackFromMenuDetailClick("Play", songList, position)
+                                }
+                                R.id.popup_menu_custom_item_b -> {
+                                    clickASong.callBackFromMenuDetailClick("Add to playlist", songList, position)
+                                }
+                                R.id.popup_menu_custom_item_c -> {
+                                    clickASong.callBackFromMenuDetailClick("Delete", songList, position)
+                                }
+                            }
+                        }
+                    })
+                popupMenu.show(binding.menuBtn, Gravity.BOTTOM, 0, 0)
+//                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
+//                PopupMenu(wrapper, binding.menuBtn).apply {
+//                    menuInflater.inflate(R.menu.row_song_menu, this.menu)
+//                    setOnMenuItemClickListener { menuItem ->
+//                        clickASong.callBackFromMenuDetailClick(menuItem.title.toString(), songList, position)
+//                        true
+//                    }
+//                    // Showing the popup menu
+//                    try {
+//                        val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+//                        fieldMPopup.isAccessible = true
+//                        val mPopup = fieldMPopup.get(this)
+//                        mPopup.javaClass
+//                            .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+//                            .invoke(mPopup, true)
+//                    } catch (_: Exception){
+//
+//                    } finally {
+//                        show()
+//                    }
+//                }
             }
 
             with(songList[position]){

@@ -436,7 +436,6 @@ class OnlineMainActivity: AppCompatActivity(),
                 val subjectTxt = dialog.findViewById<TextView>(R.id.subject_txt)!!
                 val contentTxt = dialog.findViewById<TextView>(R.id.content_txt)!!
                 val saveBtn = dialog.findViewById<ImageButton>(R.id.save_btn)!!
-                val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)!!
                 val deleteBtn = dialog.findViewById<ImageButton>(R.id.delete_btn)!!
                 val songArtistTxt = dialog.findViewById<TextView>(R.id.songArtist_txt)!!
                 val dateTimeTxt = dialog.findViewById<TextView>(R.id.datetime_txt)!!
@@ -451,10 +450,6 @@ class OnlineMainActivity: AppCompatActivity(),
                 val currentDate = SimpleDateFormat("MM/dd/yyyy HH:mm").format(Date())
 
                 dateTimeTxt.text = currentDate.toString()
-
-                cancelBtn.setOnClickListener {
-                    dialog.cancel()
-                }
 
                 saveBtn.setOnClickListener {
 

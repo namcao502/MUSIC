@@ -133,7 +133,6 @@ class OnlineDiaryFragment : Fragment(), OnlineDiaryAdapter.ClickADiary {
         val songArtist = dialog.findViewById<TextView>(R.id.songArtist_txt)!!
         val dateTime = dialog.findViewById<TextView>(R.id.datetime_txt)!!
         val saveBtn = dialog.findViewById<ImageButton>(R.id.save_btn)!!
-        val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)!!
         val deleteBtn = dialog.findViewById<ImageButton>(R.id.delete_btn)!!
 
         subjectTxt.text = diary.subject
@@ -143,10 +142,6 @@ class OnlineDiaryFragment : Fragment(), OnlineDiaryAdapter.ClickADiary {
 
         dateTime.visibility = View.VISIBLE
         deleteBtn.visibility = View.VISIBLE
-
-        cancelBtn.setOnClickListener {
-            dialog.cancel()
-        }
 
         deleteBtn.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)

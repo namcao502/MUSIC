@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@drawable/gradient_background"
+    android:orientation="horizontal">
+    <ImageView
+        android:textAppearance="?android:textAppearanceMedium"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/baseline_play_circle_24"
+        android:id="@+id/popup_menu_custom_item_a"
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
+    <ImageView
+        android:textAppearance="?android:textAppearanceMedium"
+        android:src="@drawable/baseline_playlist_add_circle_36"
+        android:id="@+id/popup_menu_custom_item_b"
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
+</LinearLayout>

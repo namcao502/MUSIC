@@ -78,18 +78,6 @@
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:background="@null"
-            android:src="@drawable/baseline_remove_circle_outline_24"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/cancel"
-            android:id="@+id/cancel_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:contentDescription="@string/todo" />
-
-        <ImageButton
             android:layout_marginHorizontal="16dp"
             android:background="@null"
             android:src="@drawable/baseline_bookmark_remove_24"
