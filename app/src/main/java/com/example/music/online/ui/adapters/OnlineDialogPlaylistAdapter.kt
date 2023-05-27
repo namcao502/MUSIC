@@ -3,6 +3,7 @@ package com.example.music.online.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import com.example.music.databinding.OnlinePlaylistDialogRowItemBinding
 import com.example.music.databinding.OnlinePlaylistRowItemBinding
 import com.example.music.databinding.PlaylistRowItemBinding
 import com.example.music.online.data.models.OnlinePlaylist
+import com.example.music.utils.PopupMenuCustomLayout
+
 class OnlineDialogPlaylistAdapter(
     private val context: Context,
     private val itemClickListener: ItemClickListener
@@ -31,23 +34,38 @@ class OnlineDialogPlaylistAdapter(
     override fun getItemCount(): Int {
         return playlist.size
     }
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
 
         with(holder){
             itemView.setOnClickListener {
                 itemClickListener.onItemPlaylistClick(playlist[position])
             }
             binding.menuBtn.setOnClickListener {
-                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
-                PopupMenu(wrapper, binding.menuBtn).apply {
-                    menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
-                    setOnMenuItemClickListener { menuItem ->
-                        itemClickListener.onMenuClick(menuItem.title.toString(), playlist[position])
-                        true
-                    }
-                    // Showing the popup menu
-                    show()
-                }
+                val popupMenu = PopupMenuCustomLayout(
+                    context, R.layout.custom_popup_menu_playlist,
+                    object : PopupMenuCustomLayout.PopupMenuCustomOnClickListener {
+                        override fun onClick(menuItemId: Int) {
+                            when (menuItemId) {
+                                R.id.popup_menu_custom_item_a -> {
+                                    itemClickListener.onMenuClick("Rename", playlist[position])
+                                }
+                                R.id.popup_menu_custom_item_b -> {
+                                    itemClickListener.onMenuClick("Delete", playlist[position])
+                                }
+                            }
+                        }
+                    })
+                popupMenu.show(binding.menuBtn, Gravity.CENTER, 0, 0)
+//                val wrapper: Context = ContextThemeWrapper(context, R.style.PopupMenu)
+//                PopupMenu(wrapper, binding.menuBtn).apply {
+//                    menuInflater.inflate(R.menu.row_playlist_menu, this.menu)
+//                    setOnMenuItemClickListener { menuItem ->
+//                        itemClickListener.onMenuClick(menuItem.title.toString(), playlist[position])
+//                        true
+//                    }
+//                    // Showing the popup menu
+//                    show()
+//                }
             }
             binding.titleTxt.text = playlist[position].name
             if (playlist[position].songs!!.size > 1){

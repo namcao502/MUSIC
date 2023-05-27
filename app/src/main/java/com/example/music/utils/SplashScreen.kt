@@ -34,7 +34,7 @@ class SplashScreen : AppCompatActivity() {
             override fun run() {
                 if (getConnectionType(this@SplashScreen) == ConnectionType.NOT_CONNECT){
                     AlertDialog
-                        .Builder(this@SplashScreen)
+                        .Builder(this@SplashScreen, R.style.AlertDialogTheme)
                         .setMessage("Switch to offline mode?")
                         .setTitle("No internet connection")
                         .setPositiveButton("Yes") { _, _ ->

@@ -72,7 +72,7 @@ class UserFragment: Fragment() {
         binding.signOutBtn.setOnClickListener {
             if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
                 AlertDialog
-                    .Builder(requireContext())
+                    .Builder(requireContext(), R.style.AlertDialogTheme)
                     .setMessage("Switch to offline mode?")
                     .setTitle("No internet connection")
                     .setPositiveButton("Yes") { _, _ ->
@@ -152,7 +152,7 @@ class UserFragment: Fragment() {
                 override fun run() {
                     if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
                         AlertDialog
-                            .Builder(requireContext())
+                            .Builder(requireContext(), R.style.AlertDialogTheme)
                             .setMessage("Switch to offline mode?")
                             .setTitle("No internet connection")
                             .setPositiveButton("Yes") { _, _ ->
@@ -180,7 +180,7 @@ class UserFragment: Fragment() {
                 override fun run() {
                     if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
                         AlertDialog
-                            .Builder(requireContext())
+                            .Builder(requireContext(), R.style.AlertDialogTheme)
                             .setMessage("Switch to offline mode?")
                             .setTitle("No internet connection")
                             .setPositiveButton("Yes") { _, _ ->

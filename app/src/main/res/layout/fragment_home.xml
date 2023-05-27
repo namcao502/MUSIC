@@ -15,6 +15,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:drawablePadding="10dp"
             android:padding="8dp"
             android:layout_gravity="start"
             android:fontFamily="@font/orbitron"
@@ -29,13 +30,14 @@
             app:drawableLeftCompat="@drawable/baseline_local_fire_department_24_black"/>
 
         <TextView
+            android:fontFamily="@font/billabong"
             android:paddingBottom="8dp"
             android:layout_marginHorizontal="16dp"
             android:textAlignment="textStart"
             android:gravity="center"
             android:id="@+id/welcome_tv"
             android:text="@string/welcome"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
