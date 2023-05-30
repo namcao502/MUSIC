@@ -82,9 +82,19 @@ class FirebaseRepositoryImp(val database: FirebaseFirestore,
 //            )
 //        }
 
+        val songs10: List<String> = if (songs.size > 10){
+            var count = 0
+            for (i in 10..songs.size){
+                count++
+            }
+            songs.dropLast(count)
+        } else {
+            songs
+        }
+
         database
-            .collection(FireStoreCollection.SONG).limit(10)
-            .whereIn("id", songs)
+            .collection(FireStoreCollection.SONG)
+            .whereIn("id", songs10)
             .addSnapshotListener { value, _ ->
                 val songList: ArrayList<OnlineSong> = ArrayList()
                 if (value != null) {
