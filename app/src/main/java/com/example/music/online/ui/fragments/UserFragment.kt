@@ -21,7 +21,6 @@ import com.example.music.R
 import com.example.music.databinding.FragmentUserBinding
 import com.example.music.offline.ui.activities.MainActivity
 import com.example.music.online.data.models.OnlineAccount
-import com.example.music.online.ui.activities.CRUDActivity
 import com.example.music.online.ui.activities.LOGActivity
 import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
@@ -165,7 +164,7 @@ class UserFragment: Fragment() {
                             .show()
                     }
                     else {
-                        startActivity(Intent(requireContext(), CRUDActivity::class.java))
+//                        startActivity(Intent(requireContext(), CRUDActivity::class.java))
                         (activity as OnlineMainActivity).stopService()
                     }
                 }
