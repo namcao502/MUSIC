@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -187,6 +188,10 @@ class OnlineMainActivity: AppCompatActivity(),
 
 //        checkNetwork(binding.internetTxt)
 
+    }
+
+    fun setThemeColor(color: String){
+        binding.mainLayout.setBackgroundColor(Color.parseColor(color))
     }
 
     private fun setStatusColor(playerIsOn: Boolean){

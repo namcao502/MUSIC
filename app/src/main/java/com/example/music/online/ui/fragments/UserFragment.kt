@@ -33,9 +33,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
+import java.lang.String
 
 
 @AndroidEntryPoint
@@ -335,6 +338,24 @@ class UserFragment: Fragment() {
 
             showUI(false)
             isEditing = false
+        }
+
+        binding.themeBtn.setOnClickListener {
+//            (activity as OnlineMainActivity).setThemeColor()
+            ColorPickerDialog.Builder(context)
+                .setTitle("ColorPicker Dialog")
+                .setPreferenceName("MyColorPickerDialog")
+                .setPositiveButton("Confirm", ColorEnvelopeListener { envelope, fromUser ->
+//                    toast(String.format("#%06X", 0xFFFFFF and envelope.color))
+                    (activity as OnlineMainActivity).setThemeColor(String.format("#%06X", 0xFFFFFF and envelope.color))
+                })
+                .setNegativeButton("Cancel") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+                .attachAlphaSlideBar(true) // the default value is true.
+                .attachBrightnessSlideBar(true) // the default value is true.
+                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                .show()
         }
 
     }
