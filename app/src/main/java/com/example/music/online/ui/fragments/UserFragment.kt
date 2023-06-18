@@ -2,6 +2,8 @@ package com.example.music.online.ui.fragments
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +11,8 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -26,7 +30,12 @@ import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
-import com.example.music.utils.*
+import com.example.music.utils.ConnectionType
+import com.example.music.utils.UiState
+import com.example.music.utils.createDialog
+import com.example.music.utils.createProgressDialog
+import com.example.music.utils.getConnectionType
+import com.example.music.utils.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -341,23 +350,81 @@ class UserFragment: Fragment() {
         }
 
         binding.themeBtn.setOnClickListener {
-//            (activity as OnlineMainActivity).setThemeColor()
-            ColorPickerDialog.Builder(context)
-                .setTitle("ColorPicker Dialog")
-                .setPreferenceName("MyColorPickerDialog")
-                .setPositiveButton("Confirm", ColorEnvelopeListener { envelope, fromUser ->
-//                    toast(String.format("#%06X", 0xFFFFFF and envelope.color))
-                    (activity as OnlineMainActivity).setThemeColor(String.format("#%06X", 0xFFFFFF and envelope.color))
-                })
-                .setNegativeButton("Cancel") { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                }
-                .attachAlphaSlideBar(true) // the default value is true.
-                .attachBrightnessSlideBar(true) // the default value is true.
-                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
-                .show()
-        }
 
+            val dialog = createDialog(R.layout.theme_dialog)
+
+            val beginTxt = dialog.findViewById<TextView>(R.id.preview_color_begin)
+            val endTxt = dialog.findViewById<TextView>(R.id.preview_color_end)
+            val previewTxt = dialog.findViewById<TextView>(R.id.preview_color)
+            val saveBtn = dialog.findViewById<Button>(R.id.save_btn)
+            val cancelBtn =  dialog.findViewById<Button>(R.id.cancel_btn)
+            val defaultBtn =  dialog.findViewById<Button>(R.id.default_btn)
+
+            var beginColor = "#aaaaaa"
+            var endColor = "#aaaaaa"
+
+            beginTxt.setOnClickListener {
+                ColorPickerDialog.Builder(context, R.style.AlertDialogTheme)
+                    .setTitle("Pick your color")
+                    .setPositiveButton("Confirm", ColorEnvelopeListener { envelope, _ ->
+                        beginColor = String.format("#%06X", 0xFFFFFF and envelope.color)
+                        beginTxt.setBackgroundColor(Color.parseColor(beginColor))
+                        beginTxt.text = "Picked"
+                        val gd = GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(Color.parseColor(beginColor), Color.parseColor(endColor))
+                        )
+                        previewTxt.setBackgroundDrawable(gd)
+                    })
+                    .setNegativeButton("Cancel") { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .show()
+            }
+
+            endTxt.setOnClickListener {
+                ColorPickerDialog.Builder(context, R.style.AlertDialogTheme)
+                    .setTitle("Pick your color")
+                    .setPositiveButton("Confirm", ColorEnvelopeListener { envelope, _ ->
+                        endColor = String.format("#%06X", 0xFFFFFF and envelope.color)
+                        endTxt.setBackgroundColor(Color.parseColor(endColor))
+                        endTxt.text = "Picked"
+                        val gd = GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(Color.parseColor(beginColor), Color.parseColor(endColor))
+                        )
+                        previewTxt.setBackgroundDrawable(gd)
+                    })
+                    .setNegativeButton("Cancel") { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .show()
+            }
+
+            defaultBtn.setOnClickListener {
+                (activity as OnlineMainActivity).setStatusColor(false)
+                (activity as OnlineMainActivity).setThemeColor("#A4508B", "#5F0A87")
+                toast("Back to default")
+                dialog.dismiss()
+            }
+
+            saveBtn.setOnClickListener {
+                if (beginTxt.text.equals("Picked") && endTxt.text.equals("Picked")){
+                    (activity as OnlineMainActivity).setThemeColor(beginColor, endColor)
+                    toast("Please enjoy your new look")
+                    dialog.dismiss()
+                }
+                else {
+                    toast("Please pick both begin and end color")
+                    return@setOnClickListener
+                }
+            }
+
+            cancelBtn.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+
+        }
     }
 
     private fun showUI(check: Boolean){

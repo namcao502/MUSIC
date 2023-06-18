@@ -89,4 +89,5 @@
     <string name="timer">Timer</string>
     <string name="set_time">Set time</string>
     <string name="set_this_track_as_ringtone">Set this track as ringtone</string>
+    <string name="use_default">Use default theme color</string>
 </resources>

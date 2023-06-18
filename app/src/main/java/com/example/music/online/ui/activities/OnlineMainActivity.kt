@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.*
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
@@ -190,11 +191,20 @@ class OnlineMainActivity: AppCompatActivity(),
 
     }
 
-    fun setThemeColor(color: String){
-        binding.mainLayout.setBackgroundColor(Color.parseColor(color))
+    fun setThemeColor(beginColor: String, endColor: String){
+
+        val gd = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(Color.parseColor(beginColor), Color.parseColor(endColor))
+        )
+
+        binding.mainLayout.setBackgroundDrawable(gd)
+
+        window.navigationBarColor = Color.parseColor(endColor)
+        window.statusBarColor = Color.parseColor(beginColor)
+
     }
 
-    private fun setStatusColor(playerIsOn: Boolean){
+    fun setStatusColor(playerIsOn: Boolean){
         if (playerIsOn){
             window.navigationBarColor = resources.getColor(R.color.nav_player, this.theme)
             window.statusBarColor = resources.getColor(R.color.status_player, this.theme)
