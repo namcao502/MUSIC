@@ -1,7 +1,9 @@
 package com.example.music.online.ui.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -13,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -31,14 +34,17 @@ import com.example.music.online.viewModels.FirebaseAuthViewModel
 import com.example.music.online.viewModels.FirebaseViewModel
 import com.example.music.online.viewModels.OnlineAccountViewModel
 import com.example.music.utils.ConnectionType
+import com.example.music.utils.Recent
 import com.example.music.utils.UiState
 import com.example.music.utils.createDialog
+import com.example.music.utils.createDialogForDeletePlaylist
 import com.example.music.utils.createProgressDialog
 import com.example.music.utils.getConnectionType
 import com.example.music.utils.toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -71,6 +77,8 @@ class UserFragment: Fragment() {
     // declare the GoogleSignInClient
     lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    private var sharedPreference: SharedPreferences? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentUserBinding.inflate(layoutInflater, container, false)
@@ -79,6 +87,13 @@ class UserFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        sharedPreference = requireActivity().getSharedPreferences(Recent.SHARE_REF, Context.MODE_PRIVATE)
+
+        val beginColorTxt = sharedPreference!!.getString("beginColorTxt", "#A4508B")
+        val endColorTxt = sharedPreference!!.getString("endColorTxt", "#5F0A87")
+
+        (activity as OnlineMainActivity).setThemeColor(beginColorTxt!!, endColorTxt!!)
 
         binding.signOutBtn.setOnClickListener {
             if (getConnectionType(requireContext()) == ConnectionType.NOT_CONNECT){
@@ -402,6 +417,10 @@ class UserFragment: Fragment() {
             defaultBtn.setOnClickListener {
                 (activity as OnlineMainActivity).setStatusColor(false)
                 (activity as OnlineMainActivity).setThemeColor("#A4508B", "#5F0A87")
+                val editor = sharedPreference!!.edit()
+                editor.putString("beginColorTxt", "#A4508B")
+                editor.putString("endColorTxt", "#5F0A87")
+                editor.apply()
                 toast("Back to default")
                 dialog.dismiss()
             }
@@ -409,8 +428,26 @@ class UserFragment: Fragment() {
             saveBtn.setOnClickListener {
                 if (beginTxt.text.equals("Picked") && endTxt.text.equals("Picked")){
                     (activity as OnlineMainActivity).setThemeColor(beginColor, endColor)
-                    toast("Please enjoy your new look")
-                    dialog.dismiss()
+
+                    val builder = AlertDialog.Builder(requireContext(), R.style.AlertDialogTheme)
+
+                    builder.setMessage("Do you want to set this as default color?")
+                        .setTitle("")
+                        .setPositiveButton("Yes") { _, _ ->
+                            val editor = sharedPreference!!.edit()
+                            editor.putString("beginColorTxt", beginColor)
+                            editor.putString("endColorTxt", endColor)
+                            editor.apply()
+                            toast("Please enjoy your default new look")
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("No") { _, _ ->
+                            // User cancelled the dialog
+                            toast("Please enjoy your new look")
+                            dialog.dismiss()
+                        }
+                    // Create the AlertDialog object and return it
+                    builder.create().show()
                 }
                 else {
                     toast("Please pick both begin and end color")

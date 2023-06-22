@@ -104,6 +104,8 @@ class OnlineMainActivity: AppCompatActivity(),
     //Declare timer
     var cTimer: CountDownTimer? = null
 
+    private var sharedPreference: SharedPreferences? = null
+
     override fun onBackPressed() {
 
         if (PlayerState.isOn){
@@ -202,6 +204,11 @@ class OnlineMainActivity: AppCompatActivity(),
         window.navigationBarColor = Color.parseColor(endColor)
         window.statusBarColor = Color.parseColor(beginColor)
 
+        val editor = sharedPreference!!.edit()
+        editor.putString("beginColorTxt", beginColor)
+        editor.putString("endColorTxt", endColor)
+        editor.apply()
+
     }
 
     fun setStatusColor(playerIsOn: Boolean){
@@ -210,8 +217,11 @@ class OnlineMainActivity: AppCompatActivity(),
             window.statusBarColor = resources.getColor(R.color.status_player, this.theme)
         }
         else {
-            window.navigationBarColor = resources.getColor(R.color.nav_bottom, this.theme)
-            window.statusBarColor = resources.getColor(R.color.status_top, this.theme)
+            sharedPreference = getSharedPreferences(Recent.SHARE_REF, Context.MODE_PRIVATE)
+            val beginColorTxt = sharedPreference!!.getString("beginColorTxt", "#A4508B")
+            val endColorTxt = sharedPreference!!.getString("endColorTxt", "#5F0A87")
+            window.navigationBarColor = Color.parseColor(endColorTxt)
+            window.statusBarColor = Color.parseColor(beginColorTxt)
         }
     }
 
