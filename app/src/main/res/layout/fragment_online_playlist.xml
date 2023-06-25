@@ -19,7 +19,7 @@
 
         <TextView
             android:padding="10dp"
-            android:fontFamily="@font/orbitron"
+            android:fontFamily="@font/mkx"
             android:textSize="25sp"
             android:textStyle="bold"
             android:gravity="center"

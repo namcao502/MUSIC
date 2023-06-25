@@ -234,6 +234,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     if (DetailFragmentState.isOn){
                         supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
+                        setStatusColor(false)
                     }
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
@@ -246,6 +247,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     if (DetailFragmentState.isOn){
                         supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
+                        setStatusColor(false)
                     }
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
@@ -258,6 +260,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     if (DetailFragmentState.isOn){
                         supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
+                        setStatusColor(false)
                     }
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
@@ -270,6 +273,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     if (DetailFragmentState.isOn){
                         supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
+                        setStatusColor(false)
                     }
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)
@@ -282,6 +286,7 @@ class OnlineMainActivity: AppCompatActivity(),
                     if (DetailFragmentState.isOn){
                         supportFragmentManager.popBackStack()
                         DetailFragmentState.isOn = false
+                        setStatusColor(false)
                     }
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, 0, 0, 0)

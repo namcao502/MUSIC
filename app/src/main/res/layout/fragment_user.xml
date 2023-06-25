@@ -29,12 +29,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:fontFamily="@font/orbitron"
+            android:fontFamily="@font/mkx"
             android:gravity="center"
             android:padding="10dp"
             android:text="@string/one_must_know_oneself"
             android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_img"

@@ -1,5 +1,6 @@
 package com.example.music.online.ui.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.music.R
 import com.example.music.databinding.FragmentDetailCollectionBinding
 import com.example.music.online.data.models.OnlinePlaylist
 import com.example.music.online.data.models.OnlineSong
+import com.example.music.online.ui.activities.OnlineMainActivity
 import com.example.music.online.ui.adapters.DetailCollectionAdapter
 import com.example.music.online.ui.adapters.OnlineDialogPlaylistAdapter
 import com.example.music.online.viewModels.FirebaseViewModel
@@ -73,6 +75,9 @@ class DetailCollectionFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as OnlineMainActivity).window.navigationBarColor = Color.parseColor("#5F0A87")
+        (activity as OnlineMainActivity).window.statusBarColor = Color.parseColor("#A4508B")
+
         DetailFragmentState.isOn = true
         DetailFragmentState.instance = this
 
@@ -113,6 +118,7 @@ class DetailCollectionFragment(
                 .remove(this)
                 .commit()
 //            parentFragmentManager.popBackStack()
+            (activity as OnlineMainActivity).setStatusColor(false)
             DetailFragmentState.isOn = false
         }
 

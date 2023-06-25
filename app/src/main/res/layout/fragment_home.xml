@@ -18,7 +18,7 @@
             android:drawablePadding="10dp"
             android:padding="8dp"
             android:layout_gravity="start"
-            android:fontFamily="@font/orbitron"
+            android:fontFamily="@font/mkx"
             android:textAlignment="center"
             android:textStyle="bold"
             android:id="@+id/app_tv"
