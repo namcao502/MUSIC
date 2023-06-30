@@ -2,6 +2,7 @@ package com.example.music.online.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -819,6 +820,10 @@ class OnlineMainActivity: AppCompatActivity(),
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun previous() {
+        val progressDialog = ProgressDialog(this@OnlineMainActivity)
+        progressDialog.setTitle("Please wait...")
+        progressDialog.setMessage("We are preparing your wonderful track...")
+        progressDialog.show()
         GlobalScope.launch {
             songPosition -= 1
             val maxLength: Int = songList!!.size
@@ -855,12 +860,17 @@ class OnlineMainActivity: AppCompatActivity(),
                 setTime()
                 loadUI()
                 setCompleteListener()
+                progressDialog.cancel()
             }
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun next() {
+        val progressDialog = ProgressDialog(this@OnlineMainActivity)
+        progressDialog.setTitle("Please wait...")
+        progressDialog.setMessage("We are preparing your wonderful track...")
+        progressDialog.show()
         GlobalScope.launch {
             songPosition += 1
             val maxLength: Int = songList!!.size
@@ -897,6 +907,7 @@ class OnlineMainActivity: AppCompatActivity(),
                 setTime()
                 loadUI()
                 setCompleteListener()
+                progressDialog.cancel()
             }
         }
     }
@@ -1133,6 +1144,10 @@ class OnlineMainActivity: AppCompatActivity(),
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun preparePlayer(){
+        val progressDialog = ProgressDialog(this@OnlineMainActivity)
+        progressDialog.setTitle("Please wait...")
+        progressDialog.setMessage("We are preparing your wonderful track...")
+        progressDialog.show()
         GlobalScope.launch {
             handler = Handler(Looper.getMainLooper())
             handler.postDelayed(object : Runnable {
@@ -1174,6 +1189,7 @@ class OnlineMainActivity: AppCompatActivity(),
                             }
                         }
                         registerReceiver(broadcastReceiver, IntentFilter("TRACKS_TRACKS"))
+                        progressDialog.cancel()
                     }
                 }
             }, 500)

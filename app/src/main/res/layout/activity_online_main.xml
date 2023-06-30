@@ -30,7 +30,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_margin="5dp"
         android:visibility="gone"
         android:id="@+id/mini_player_layout"
         android:layout_width="match_parent"
